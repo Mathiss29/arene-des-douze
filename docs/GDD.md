@@ -17,7 +17,8 @@
 - Critique : 15 % de taux et 50 % de dégâts critiques au départ.
 - Éléments : Feu > Air > Eau > Feu ; Bonta ⇄ Brâkmar, neutres face aux trois autres.
 - Avantage d'élément : +15 % de taux critique ; en désavantage, coups « effleurés » (moins de dégâts, aucun malus posé). ⏳ Chiffres exacts des coups effleurés et écrasants.
-- Malus : Précision de l'attaquant contre Résistance de la cible. ⏳ Résistance minimale.
+- Malus : chance de résister = max(15 %, Résistance − Précision) ✓. Un coup effleuré ne pose aucun malus ✓.
+- Bonus/malus (valeurs SW usuelles, ⚠ à confirmer) : Attaque +50 % / −50 %, Défense +70 % / −70 %, Vitesse +30 % / −30 %, taux critique +30 %, dégâts continus 5 % des PV max par pile. Toutes les constantes sont dans `src/sim/regles.ts`.
 - Sorts : 2 à 4 par monstre, temps de recharge, passifs ; skill de leader pour certains monstres (un seul actif par équipe).
 - Moteur déterministe, partagé entre le jeu et le serveur.
 
@@ -75,7 +76,7 @@ TypeScript, Vite, Phaser 3.80.1, vitest (même architecture que Diablofus : `sim
 Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus) pour la sauvegarde et la validation du PvP.
 
 ## 9. Décisions ouvertes ⏳
-1. Chiffres de l'avantage d'élément et résistance minimale.
+1. Chances exactes des coups écrasants et effleurés (50 % provisoire) et leurs effets sur les dégâts (±30 % provisoire).
 2. Fiches des 35 monstres (stats, sorts, éveils).
 3. Apparence Bonta/Brâkmar des Kwaks et Kwakères.
 4. Montants de l'économie.

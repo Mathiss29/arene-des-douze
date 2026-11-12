@@ -18,7 +18,8 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
 ## Étapes
 
 - [x] **1. Squelette** — Vite + TS + Phaser 3.80.1 + vitest, planches Diablofus chargées depuis le R2, vitrine des 13 monstres animés.
-- [ ] **2. Moteur de combat (`src/sim/`)** — un combat 4 contre 4 tourne dans les tests ; même graine = même résultat.
+- [x] **2. Moteur de combat (`src/sim/`)** — un combat 4 contre 4 tourne dans les tests ; même graine = même résultat.
+  `combat.ts` (jauge, sorts, bonus/malus, éléments, leader), `regles.ts` (constantes SW, ✓ vérifiées / ⚠ à confirmer), `ia.ts` (mode auto).
 - [ ] **3. Scène de combat Phaser** — un combat entier jouable à la souris : sorts, cibles, animations, mode auto.
 - [ ] **4. Données des 13 monstres** — stats, sorts et skills de leader en JSON.
 - [ ] **5. Collection et progression** — XP, niveaux, évolution, sauvegarde locale.
