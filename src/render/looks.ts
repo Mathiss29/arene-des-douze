@@ -7,11 +7,13 @@ export interface Look {
   atlas: string;
   echelle: number;
   attaques: Record<number, number>;
+  /** Animation d'attaque jouée pour chaque sort (index du sort → numéro d'AnimAttaque). */
+  animSorts: number[];
 }
 
-const PIOU = (attaque2: number): Omit<Look, 'atlas'> => ({ echelle: 0.55, attaques: { 1: 16 / 32, 2: attaque2 } });
-const SCARAFEUILLE: Omit<Look, 'atlas'> = { echelle: 0.64, attaques: { 0: 16 / 28, 1: 17 / 31 } };
-const KWAK: Omit<Look, 'atlas'> = { echelle: 0.64, attaques: { 0: 11 / 20, 1: 5 / 15 } };
+const PIOU = (attaque2: number): Omit<Look, 'atlas'> => ({ echelle: 0.55, attaques: { 1: 16 / 32, 2: attaque2 }, animSorts: [1, 2] });
+const SCARAFEUILLE: Omit<Look, 'atlas'> = { echelle: 0.64, attaques: { 0: 16 / 28, 1: 17 / 31 }, animSorts: [0, 1, 1] };
+const KWAK: Omit<Look, 'atlas'> = { echelle: 0.64, attaques: { 0: 11 / 20, 1: 5 / 15 }, animSorts: [0, 1, 1] };
 
 export const LOOKS: Record<string, Look> = {
   piou_rouge: { atlas: 'piou_rouge', ...PIOU(22 / 44) },

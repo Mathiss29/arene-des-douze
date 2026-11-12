@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config';
 // En dév, Vite les relaie sous /r2 (même origine, donc pas de CORS). En ligne, le build lit VITE_ASSETS_URL.
 export default defineConfig({
   base: './',
+  build: { target: 'es2022' },
   server: {
     proxy: {
       '/r2': {

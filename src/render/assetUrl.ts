@@ -11,3 +11,6 @@ export const dossierPlanches = `${DISTANT}/sprites/`;
 
 /** Atlas JSON d'une planche. */
 export const atlasPlanche = (cle: string) => `assets/sprites/${cle}.json`;
+
+/** Fichier lourd hébergé sur le R2 (décors d'arène…), ex. « mondes/astrub/sol_arene_kwakwa.webp ». */
+export const distant = (chemin: string) => `${DISTANT}/${chemin}`;

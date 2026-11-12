@@ -1,8 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import MONSTRES from '../src/data/monstres.json';
 import { ELEMENTS, avantage, type FicheMonstre } from '../src/sim/types';
 import { LOOKS } from '../src/render/looks';
+import FICHES_COMBAT from '../src/data/fiches.json';
+import { monstreCombat } from '../src/sim/fiches';
+import { Combat } from '../src/sim/combat';
+import { choisirAction } from '../src/sim/ia';
 
 const FICHES = MONSTRES as FicheMonstre[];
 
@@ -47,5 +51,41 @@ describe('éléments (fidèles à Summoners War)', () => {
     expect(avantage('brakmar', 'bonta')).toBe(1);
     expect(avantage('bonta', 'feu')).toBe(0);
     expect(avantage('eau', 'brakmar')).toBe(0);
+  });
+});
+
+describe('fiches de combat', () => {
+  it('chaque monstre de l\'alpha a sa fiche, et rien de plus', () => {
+    expect(Object.keys(FICHES_COMBAT).sort()).toEqual(FICHES.map((f) => f.id).sort());
+  });
+
+  it.each(FICHES.map((f) => [f.id]))('%s : sorts valides, icônes et animations présentes', (id) => {
+    const m = monstreCombat(id);
+    const look = LOOKS[id];
+    const anims = animations(look.atlas);
+    expect(m.sorts.length).toBeGreaterThanOrEqual(2);
+    expect(m.sorts[0].recharge).toBe(0);
+    m.sorts.forEach((s, i) => {
+      expect(s.desc, `${id}/${s.id} sans description`).toBeTruthy();
+      expect(existsSync(`public/assets/ui/sorts/sort_${s.icone}.png`), `${id}/${s.id} : icône ${s.icone}`).toBe(true);
+      const num = look.animSorts[i];
+      expect(num, `${id} : pas d'animation pour le sort ${i}`).toBeDefined();
+      expect(anims.has(`AnimAttaque${num}_1`), `${id} : AnimAttaque${num}_1`).toBe(true);
+    });
+  });
+
+  it('le combat d\'essai se joue jusqu\'au bout, à l\'identique avec la même graine', () => {
+    const jouer = () => {
+      const c = new Combat({
+        equipeA: ['scarafeuille_blanc', 'kwak_de_flamme', 'scarafeuille_bleu', 'piou_vert'].map(monstreCombat),
+        equipeB: ['kwak_de_vent', 'scarafeuille_noir', 'scarafeuille_rouge', 'piou_rouge'].map(monstreCombat),
+        graine: 77, mode: 'histoire',
+      });
+      c.simuler(choisirAction);
+      return c;
+    };
+    const a = jouer(), b = jouer();
+    expect(a.vainqueur).not.toBeNull();
+    expect(b.historique).toEqual(a.historique);
   });
 });

@@ -134,6 +134,24 @@ export class Combat {
     return [];
   }
 
+  /**
+   * Ordre prévu des `n` prochains tours (acteur en cours exclu), d'après les jauges et vitesses actuelles.
+   * Ne tient pas compte des effets à venir : c'est l'aperçu de la frise d'initiative.
+   */
+  ordrePrevu(n: number): Unite[] {
+    const vivants = this.unites.filter((u) => u.vivant);
+    if (!vivants.length) return [];
+    const jauges = new Map(vivants.map((u) => [u, u.jauge]));
+    const ordre: Unite[] = [];
+    while (ordre.length < n) {
+      while (![...jauges.values()].some((j) => j >= 100)) for (const u of vivants) jauges.set(u, jauges.get(u)! + this.vitesse(u) * REGLES.jaugeParVitesse);
+      const u = vivants.reduce((m, x) => (jauges.get(x)! > jauges.get(m)! || (jauges.get(x) === jauges.get(m) && this.vitesse(x) > this.vitesse(m)) ? x : m));
+      jauges.set(u, 0);
+      ordre.push(u);
+    }
+    return ordre;
+  }
+
   // ───────────── déroulement ─────────────
 
   /** Fait avancer les jauges jusqu'au prochain acteur et commence son tour. Renvoie l'acteur, ou null si le combat est fini. */

@@ -22,6 +22,13 @@
 - Sorts : 2 à 4 par monstre, temps de recharge, passifs ; skill de leader pour certains monstres (un seul actif par équipe).
 - Moteur déterministe, partagé entre le jeu et le serveur.
 
+### Écran de combat (maquette « Combat : » 1B 2B 3A 4B 5A, 12 nov. 2026)
+- Disposition en diagonale à la Dofus : alliés en bas à gauche, ennemis en haut à droite (en miroir).
+- Ordre des tours : jauge d'attaque sous chaque monstre + frise de portraits en haut (prochains tours).
+- Sorts : boutons ronds en bas à droite (icônes officielles), bulle de description du sort choisi.
+- Arène : la salle de la zone ou du donjon où l'on combat (arènes de Diablofus).
+- Téléphone : paysage uniquement.
+
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.

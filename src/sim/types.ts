@@ -82,6 +82,10 @@ export interface Sort {
   jauge?: { cible?: { valeur: number; chance: number }; soi?: number; allies?: number };
   /** Passif : jamais lancé (effets permanents à venir). */
   passif?: boolean;
+  /** Icône officielle de Dofus (public/assets/ui/sorts/sort_<icone>.png). */
+  icone?: number;
+  /** Description affichée au joueur. */
+  desc?: string;
 }
 
 export type ZoneLeader = 'general' | 'arene' | 'donjon' | Element;

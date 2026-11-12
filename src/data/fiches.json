@@ -1,0 +1,676 @@
+{
+ "piou_rouge": {
+  "stats": {
+   "pv": 2700,
+   "atq": 276,
+   "def": 189,
+   "vit": 103,
+   "tc": 20,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "picoree",
+    "nom": "Picorée",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.4
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "plongeon",
+    "nom": "Plongeon",
+    "icone": 11855,
+    "recharge": 3,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 5.0
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 30,
+      "tours": 2
+     }
+    ],
+    "desc": "Fonce sur un ennemi. 30 % de chance de réduire sa Défense pendant 2 tours."
+   }
+  ]
+ },
+ "piou_vert": {
+  "stats": {
+   "pv": 3150,
+   "atq": 218,
+   "def": 220,
+   "vit": 108,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "leader": {
+   "stat": "vit",
+   "valeur": 10,
+   "zone": "general"
+  },
+  "sorts": [
+   {
+    "id": "picoree",
+    "nom": "Picorée",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "bourrasque",
+    "nom": "Bourrasque",
+    "icone": 11866,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "vit_hausse",
+      "chance": 100,
+      "tours": 2
+     }
+    ],
+    "jauge": {
+     "allies": 15
+    },
+    "desc": "Augmente la Vitesse des alliés pendant 2 tours et remplit leur jauge d'attaque de 15 %."
+   }
+  ]
+ },
+ "piou_bleu": {
+  "stats": {
+   "pv": 3150,
+   "atq": 218,
+   "def": 220,
+   "vit": 101,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "picoree",
+    "nom": "Picorée",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "rosee",
+    "nom": "Rosée",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Rend 15 % de leurs PV max à tous les alliés."
+   }
+  ]
+ },
+ "piou_jaune": {
+  "stats": {
+   "pv": 4050,
+   "atq": 207,
+   "def": 210,
+   "vit": 97,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "picoree",
+    "nom": "Picorée",
+    "icone": 11844,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.8,
+     "pv": 0.1
+    },
+    "desc": "Frappe un ennemi. Les dégâts augmentent avec les PV max."
+   },
+   {
+    "id": "plumage",
+    "nom": "Plumage",
+    "icone": 11848,
+    "recharge": 3,
+    "cible": "soi",
+    "bouclier": {
+     "part": 0.25,
+     "tours": 2
+    },
+    "desc": "Se protège d'un bouclier égal à 25 % de ses PV max pendant 2 tours."
+   }
+  ]
+ },
+ "piou_violet": {
+  "stats": {
+   "pv": 2700,
+   "atq": 276,
+   "def": 189,
+   "vit": 104,
+   "tc": 20,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "picoree",
+    "nom": "Picorée",
+    "icone": 11835,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.4
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "bec_sombre",
+    "nom": "Bec sombre",
+    "icone": 11979,
+    "recharge": 3,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 4.6
+    },
+    "effets": [
+     {
+      "type": "poison",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de lui infliger des dégâts continus pendant 2 tours."
+   }
+  ]
+ },
+ "scarafeuille_rouge": {
+  "stats": {
+   "pv": 5670,
+   "atq": 361,
+   "def": 357,
+   "vit": 103,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "mandibule",
+    "nom": "Mandibule",
+    "icone": 11849,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.4
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 25,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe un ennemi. 25 % de chance de réduire son Attaque pendant 2 tours."
+   },
+   {
+    "id": "seve_ardente",
+    "nom": "Sève ardente",
+    "icone": 11904,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2
+     }
+    ],
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours."
+   },
+   {
+    "id": "floraison",
+    "nom": "Floraison",
+    "icone": 11869,
+    "recharge": 4,
+    "cible": "allies",
+    "soin": 0.2,
+    "desc": "Rend 20 % de leurs PV max à tous les alliés."
+   }
+  ]
+ },
+ "scarafeuille_vert": {
+  "stats": {
+   "pv": 5400,
+   "atq": 323,
+   "def": 459,
+   "vit": 96,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "mandibule",
+    "nom": "Mandibule",
+    "icone": 11852,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.6,
+     "def": 2.0
+    },
+    "desc": "Frappe un ennemi. Les dégâts augmentent avec la Défense."
+   },
+   {
+    "id": "carapace",
+    "nom": "Carapace de feuilles",
+    "icone": 11939,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "ruade",
+    "nom": "Ruade",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.5,
+     "def": 2.6
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 40,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi selon la Défense. 40 % de chance de l'étourdir 1 tour."
+   }
+  ]
+ },
+ "scarafeuille_bleu": {
+  "stats": {
+   "pv": 5670,
+   "atq": 361,
+   "def": 357,
+   "vit": 104,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "mandibule",
+    "nom": "Mandibule",
+    "icone": 11832,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "pluie_seve",
+    "nom": "Pluie de sève",
+    "icone": 11862,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "nettoie": true,
+    "desc": "Rend 18 % de leurs PV max aux alliés et retire leurs effets négatifs."
+   },
+   {
+    "id": "bourgeon",
+    "nom": "Bourgeon",
+    "icone": 11968,
+    "recharge": 4,
+    "cible": "allie",
+    "soin": 0.35,
+    "desc": "Rend 35 % de ses PV max à un allié."
+   }
+  ]
+ },
+ "scarafeuille_blanc": {
+  "stats": {
+   "pv": 7290,
+   "atq": 342,
+   "def": 340,
+   "vit": 99,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "leader": {
+   "stat": "res",
+   "valeur": 18,
+   "zone": "general"
+  },
+  "sorts": [
+   {
+    "id": "mandibule",
+    "nom": "Mandibule",
+    "icone": 11847,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.5,
+     "pv": 0.14
+    },
+    "desc": "Frappe un ennemi. Les dégâts augmentent avec les PV max."
+   },
+   {
+    "id": "ecorce",
+    "nom": "Écorce",
+    "icone": 12220,
+    "recharge": 3,
+    "cible": "allies",
+    "bouclier": {
+     "part": 0.15,
+     "tours": 2
+    },
+    "desc": "Protège les alliés d'un bouclier égal à 15 % de ses PV max pendant 2 tours."
+   },
+   {
+    "id": "eclat",
+    "nom": "Éclat",
+    "icone": 11957,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.0,
+     "pv": 0.1
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 35,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 35 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ]
+ },
+ "scarafeuille_noir": {
+  "stats": {
+   "pv": 4860,
+   "atq": 456,
+   "def": 306,
+   "vit": 102,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "mandibule",
+    "nom": "Mandibule",
+    "icone": 11925,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.6
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "epines",
+    "nom": "Épines",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.45
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "seve_noire",
+    "nom": "Sève noire",
+    "icone": 11979,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.2
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ]
+ },
+ "kwak_de_flamme": {
+  "stats": {
+   "pv": 4860,
+   "atq": 456,
+   "def": 306,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "bec_ardent",
+    "nom": "Bec ardent",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.6
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 30,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "pluie_plumes",
+    "nom": "Pluie de plumes",
+    "icone": 11923,
+    "recharge": 3,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 2.2
+    },
+    "effets": [
+     {
+      "type": "poison",
+      "chance": 40,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 40 % de chance de leur infliger des dégâts continus pendant 2 tours."
+   },
+   {
+    "id": "souffle_lave",
+    "nom": "Souffle de lave",
+    "icone": 12218,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.0
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ]
+ },
+ "kwak_de_vent": {
+  "stats": {
+   "pv": 4860,
+   "atq": 456,
+   "def": 306,
+   "vit": 112,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "leader": {
+   "stat": "tc",
+   "valeur": 19,
+   "zone": "donjon"
+  },
+  "sorts": [
+   {
+    "id": "bec_tranchant",
+    "nom": "Bec tranchant",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.5
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "rafale",
+    "nom": "Rafale",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.5
+    },
+    "jauge": {
+     "soi": 25
+    },
+    "desc": "Frappe un ennemi 3 fois, puis remplit sa propre jauge d'attaque de 25 %."
+   },
+   {
+    "id": "tornade",
+    "nom": "Tornade",
+    "icone": 11929,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 2.6
+    },
+    "jauge": {
+     "cible": {
+      "valeur": -30,
+      "chance": 50
+     }
+    },
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur jauge d'attaque de 30 %."
+   }
+  ]
+ },
+ "kwak_de_glace": {
+  "stats": {
+   "pv": 5670,
+   "atq": 361,
+   "def": 357,
+   "vit": 108,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "bec_gele",
+    "nom": "Bec gelé",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 35,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe un ennemi. 35 % de chance de le ralentir pendant 2 tours."
+   },
+   {
+    "id": "blizzard",
+    "nom": "Blizzard",
+    "icone": 11941,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 2.0
+    },
+    "jauge": {
+     "cible": {
+      "valeur": -25,
+      "chance": 70
+     }
+    },
+    "desc": "Frappe tous les ennemis. 70 % de chance de réduire leur jauge d'attaque de 25 %."
+   },
+   {
+    "id": "cristallisation",
+    "nom": "Cristallisation",
+    "icone": 11882,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.8
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 60,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 60 % de chance de l'étourdir 1 tour."
+   }
+  ]
+ }
+}
