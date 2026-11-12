@@ -36,8 +36,9 @@ const ENNEMIS = ['kwak_de_vent', 'scarafeuille_noir', 'scarafeuille_rouge', 'pio
 const ARENE = 'mondes/astrub/sol_arene_scarafeuilles.webp';
 /** Pieds des monstres : alliés en bas à gauche, ennemis en haut à droite. */
 const PLACES = {
-  A: [[330, 470], [210, 525], [430, 550], [280, 610]],
-  B: [[900, 250], [1020, 295], [800, 315], [960, 370]],
+  // Formation en losange, sans chevauchement : le leader devant, les plus petits sur les côtés
+  A: [[380, 500], [190, 465], [530, 430], [330, 370]],
+  B: [[900, 225], [1070, 265], [750, 290], [950, 355]],
 } as const;
 
 const NIVEAU_MAX: Record<number, number> = { 1: 15, 2: 20, 3: 25, 4: 30, 5: 35 };
