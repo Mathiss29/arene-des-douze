@@ -7,8 +7,9 @@ import { avantage } from './types';
  * - garde un sort de soin tant que personne n'est sous 70 % de PV ;
  * - vise en priorité un ennemi sur lequel elle a l'avantage d'élément, puis le plus blessé ;
  * - soigne l'allié le plus blessé.
+ * `cibleVoulue` : ennemi désigné par le joueur (réticule), visé en priorité tant qu'il est debout.
  */
-export function choisirAction(c: Combat): { sort: number; cible?: number } {
+export function choisirAction(c: Combat, cibleVoulue?: number): { sort: number; cible?: number } {
   const u = c.acteur!;
   const allies = c.vivants(u.camp);
   const blesse = allies.some((a) => a.pv / a.stats.pv < 0.7);
@@ -21,6 +22,8 @@ export function choisirAction(c: Combat): { sort: number; cible?: number } {
   }) ?? dispo[0];
 
   const s = u.monstre.sorts[sort];
+  const voulue = cibleVoulue !== undefined ? c.ciblesValides(s, u).find((x) => x.uid === cibleVoulue) : undefined;
+  if (s.cible === 'ennemi' && voulue) return { sort, cible: voulue.uid };
   if (s.cible === 'ennemi') return { sort, cible: meilleure(c.ciblesValides(s, u), (x) => x.pv / x.stats.pv - 0.3 * avantage(u.element, x.element)).uid };
   if (s.cible === 'allie') return { sort, cible: meilleure(c.ciblesValides(s, u), (x) => x.pv / x.stats.pv).uid };
   return { sort };

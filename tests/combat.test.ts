@@ -252,6 +252,16 @@ describe('skill de leader', () => {
   });
 });
 
+describe('IA', () => {
+  it('vise l\'ennemi désigné par le joueur tant qu\'il est debout', () => {
+    const c = new Combat({ equipeA: [monstre('a', 'feu', { vit: 300 })], equipeB: [monstre('b1', 'bonta'), monstre('b2', 'bonta')], graine: 1, mode: 'histoire' });
+    c.prochainTour();
+    c.unite(2).pv = 100;
+    expect(choisirAction(c).cible).toBe(2); // sans consigne : le plus blessé
+    expect(choisirAction(c, 1).cible).toBe(1);
+  });
+});
+
 describe('fin de combat', () => {
   it('s\'arrête quand une équipe n\'a plus de monstre debout', () => {
     const c = new Combat({ equipeA: [monstre('a', 'feu', { atq: 5000, vit: 300 })], equipeB: [monstre('b', 'bonta', { pv: 100 })], graine: 1, mode: 'histoire' });

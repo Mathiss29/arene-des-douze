@@ -54,6 +54,8 @@ interface Vue {
   barres: Phaser.GameObjects.Graphics;
   niveau: Phaser.GameObjects.Text;
   effets: Phaser.GameObjects.Text;
+  /** Zone de clic : le corps du monstre et ses barres (pas toute l'image, souvent très grande). */
+  zone: Phaser.GameObjects.Zone;
   pvAffiche: number;
 }
 
@@ -65,12 +67,16 @@ export class CombatScene extends Phaser.Scene {
   private occupe = false;
   private sortChoisi = 0;
   private survol: Vue | null = null;
+  /** Ennemi désigné (réticule rouge), comme dans SW : visé par le sort relancé, et par le mode auto. */
+  private cibleFocus: number | null = null;
+  private reticule!: Phaser.GameObjects.Graphics;
 
   private boutonsSorts: { cercle: Phaser.GameObjects.Graphics; icone: Phaser.GameObjects.Image; voile: Phaser.GameObjects.Graphics; cd: Phaser.GameObjects.Text; zone: Phaser.GameObjects.Zone }[] = [];
   private bulle!: Phaser.GameObjects.Container;
   private bulleFond!: Phaser.GameObjects.Graphics;
   private bulleTexte!: Phaser.GameObjects.Text;
   private bulleNom!: Phaser.GameObjects.Text;
+  private bulleConsigne!: Phaser.GameObjects.Text;
   private flecheCible!: Phaser.GameObjects.Text;
   private tags: Phaser.GameObjects.Text[] = [];
   private frise: { cadre: Phaser.GameObjects.Graphics; portrait: Phaser.GameObjects.Sprite; r: number; x: number }[] = [];
@@ -97,6 +103,7 @@ export class CombatScene extends Phaser.Scene {
 
   create() {
     this.vues.clear();
+    this.cibleFocus = null;
     this.boutonsSorts = [];
     this.frise = [];
     this.tags = [];
@@ -142,14 +149,14 @@ export class CombatScene extends Phaser.Scene {
     const effets = this.add.text(x, y + 44, '', { fontFamily: POLICE, fontSize: '10px', color: '#ffffff', backgroundColor: 'rgba(0,0,0,0.55)', padding: { x: 3, y: 1 } })
       .setOrigin(0.5, 0).setDepth(2001);
 
-    const vue: Vue = { u, x, y, haut, echelle, sprite, socle, barres, niveau, effets, pvAffiche: u.pv };
+    const largeur = Math.max(80, Math.min(170, f.cutWidth * echelle));
+    const zone = this.add.zone(x, (haut + y + 52) / 2, largeur, y + 52 - haut).setDepth(y + 0.5).setInteractive({ useHandCursor: true });
+    const vue: Vue = { u, x, y, haut, echelle, sprite, socle, barres, niveau, effets, zone, pvAffiche: u.pv };
     this.vues.set(u.uid, vue);
 
-    // Clic : cible du sort choisi
-    sprite.setInteractive({ useHandCursor: true, pixelPerfect: false });
-    sprite.on('pointerover', () => { this.survol = vue; this.majCibles(); });
-    sprite.on('pointerout', () => { if (this.survol === vue) this.survol = null; this.majCibles(); });
-    sprite.on('pointerdown', () => this.clicCible(vue));
+    zone.on('pointerover', () => { this.survol = vue; this.majCibles(); });
+    zone.on('pointerout', () => { if (this.survol === vue) this.survol = null; this.majCibles(); });
+    zone.on('pointerdown', () => this.clicCible(vue));
     this.majVue(vue);
   }
 
@@ -203,7 +210,11 @@ export class CombatScene extends Phaser.Scene {
     this.bulleTexte = this.add.text(14, 10, '', { fontFamily: POLICE, fontSize: '13px', color: '#e9efe6', wordWrap: { width: 318 }, lineSpacing: 3 });
     this.bulleNom = this.add.text(14, 10, '', { fontFamily: POLICE, fontSize: '15px', fontStyle: '600', color: '#ffe08a' });
     this.bulleTexte.setY(32);
-    this.bulle = this.add.container(W - 64 - 2 * 100 - 56 - 346, H - 100, [this.bulleFond, this.bulleNom, this.bulleTexte]).setDepth(3000);
+    this.bulleConsigne = this.add.text(14, 0, '', { fontFamily: POLICE, fontSize: '12px', fontStyle: '600', color: '#ffcf4a', wordWrap: { width: 318 } });
+    this.bulle = this.add.container(W - 64 - 2 * 100 - 56 - 346, H - 100, [this.bulleFond, this.bulleNom, this.bulleTexte, this.bulleConsigne]).setDepth(3000);
+
+    this.reticule = this.add.graphics();
+    this.tweens.add({ targets: this.reticule, alpha: 0.45, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     this.flecheCible = this.add.text(0, 0, '▼', { fontFamily: POLICE, fontSize: '30px', color: '#ff4d3d' }).setOrigin(0.5, 1)
       .setShadow(0, 0, '#000', 6, false, true).setDepth(2500).setVisible(false);
@@ -242,7 +253,8 @@ export class CombatScene extends Phaser.Scene {
 
   private jouerIA() {
     if (this.occupe || !this.combat.acteur) return;
-    const { sort, cible } = choisirAction(this.combat);
+    const allie = this.combat.acteur.camp === 'A';
+    const { sort, cible } = choisirAction(this.combat, allie ? this.focus()?.u.uid : undefined);
     this.jouerAction(sort, cible);
   }
 
@@ -258,29 +270,74 @@ export class CombatScene extends Phaser.Scene {
 
   // ───────────── choix du joueur ─────────────
 
+  private get tourJoueur(): boolean {
+    const u = this.combat.acteur;
+    return !this.occupe && !this.auto && !this.combat.fini && !!u && u.camp === 'A';
+  }
+
+  /** Ennemi désigné ; s'il est tombé, on en choisit un autre comme l'IA (avantage d'élément, puis le plus blessé). */
+  private focus(): Vue | null {
+    const ennemis = this.combat.vivants('B');
+    if (!ennemis.length) return null;
+    if (this.cibleFocus === null || !this.combat.unite(this.cibleFocus).vivant) {
+      const ref = this.combat.acteur?.camp === 'A' ? this.combat.acteur : this.combat.vivants('A')[0];
+      const score = (x: Unite) => x.pv / x.stats.pv - (ref ? 0.3 * avantage(ref.element, x.element) : 0);
+      this.cibleFocus = ennemis.reduce((m, x) => (score(x) < score(m) ? x : m)).uid;
+    }
+    return this.vues.get(this.cibleFocus)!;
+  }
+
+  /** Allié visé par défaut par un sort sur un seul allié : le plus blessé. */
+  private allieParDefaut(): Vue | null {
+    const allies = this.combat.vivants('A');
+    return allies.length ? this.vues.get(allies.reduce((m, x) => (x.pv / x.stats.pv < m.pv / m.stats.pv ? x : m)).uid)! : null;
+  }
+
+  private sortCourant(): Sort | null {
+    return this.tourJoueur ? this.combat.acteur!.monstre.sorts[this.sortChoisi] ?? null : null;
+  }
+
+  /** Clic sur un sort : le choisir ; recliquer sur le sort déjà choisi le lance (sur la cible désignée). */
   private clicSort(i: number) {
     const u = this.combat.acteur;
-    if (this.occupe || this.auto || !u || u.camp !== 'A' || !this.combat.sortsDisponibles(u).includes(i)) return;
-    this.sortChoisi = i;
-    this.majSorts();
-    this.majCibles();
+    if (!this.tourJoueur || !this.combat.sortsDisponibles(u!).includes(i)) return;
+    if (i !== this.sortChoisi) {
+      this.sortChoisi = i;
+      this.majSorts();
+      this.majCibles();
+      return;
+    }
+    const s = u!.monstre.sorts[i];
+    if (s.cible === 'ennemi') this.lancer(this.focus());
+    else if (s.cible === 'allie') this.lancer(this.allieParDefaut());
+    else this.lancer(null);
   }
 
   /** Cibles possibles du sort choisi : tous les ennemis (ou alliés) pour un sort de groupe, comme dans SW. */
   private ciblesPossibles(): Vue[] {
-    const u = this.combat.acteur;
-    if (this.occupe || this.auto || !u || u.camp !== 'A') return [];
-    const s = u.monstre.sorts[this.sortChoisi];
-    const camp = s.cible === 'ennemi' || s.cible === 'ennemis' ? 'B' : 'A';
+    const s = this.sortCourant();
+    if (!s) return [];
+    const u = this.combat.acteur!;
     if (s.cible === 'soi') return [this.vues.get(u.uid)!];
+    const camp = s.cible === 'ennemi' || s.cible === 'ennemis' ? 'B' : 'A';
     return this.combat.vivants(camp).map((x) => this.vues.get(x.uid)!);
   }
 
+  /** Clic sur un monstre : pendant ton tour, lance le sort ; sinon (ou sur un ennemi hors cible), le désigne. */
   private clicCible(vue: Vue) {
-    if (!this.ciblesPossibles().includes(vue)) return;
-    const s = this.combat.acteur!.monstre.sorts[this.sortChoisi];
+    if (!vue.u.vivant) return;
+    if (vue.u.camp === 'B') this.cibleFocus = vue.u.uid;
+    if (this.ciblesPossibles().includes(vue)) this.lancer(vue);
+    else this.majCibles();
+  }
+
+  private lancer(cible: Vue | null) {
+    const s = this.sortCourant();
+    if (!s) return;
+    const unique = s.cible === 'ennemi' || s.cible === 'allie';
+    if (unique && !cible) return;
     this.survol = null;
-    this.jouerAction(this.sortChoisi, s.cible === 'ennemi' || s.cible === 'allie' ? vue.u.uid : undefined);
+    this.jouerAction(this.sortChoisi, unique ? cible!.u.uid : undefined);
   }
 
   // ───────────── animation des événements ─────────────
@@ -336,6 +393,7 @@ export class CombatScene extends Phaser.Scene {
     switch (e.type) {
       case 'tour': {
         for (const vue of this.vues.values()) this.majVue(vue);
+        this.majCibles();
         break;
       }
       case 'passe':
@@ -380,6 +438,7 @@ export class CombatScene extends Phaser.Scene {
         vue.sprite.play({ key: `${look.atlas}/AnimMort_1`, timeScale: this.v });
         vue.sprite.once('animationcomplete', () => this.tweens.add({ targets: [vue.sprite, vue.socle], alpha: 0, duration: 500 }));
         this.majVue(vue);
+        this.majCibles();
         break;
       }
       case 'fin':
@@ -413,13 +472,12 @@ export class CombatScene extends Phaser.Scene {
     const { u, x, y } = vue;
     const g = vue.barres.clear();
     if (!u.vivant) {
+      vue.zone.disableInteractive();
       vue.niveau.setVisible(false);
       vue.effets.setVisible(false);
       vue.socle.setStrokeStyle();
       return;
     }
-    const actif = this.combat.acteur === u;
-    vue.socle.setFillStyle(actif ? 0xffcf4a : 0x000000, actif ? 0.35 : 0.35).setStrokeStyle(actif ? 4 : 0, 0xffcf4a);
 
     // Élément + niveau (+ couronne du leader)
     const f = fiche(u.monstre.id);
@@ -475,9 +533,9 @@ export class CombatScene extends Phaser.Scene {
       if (!s) return;
       const cx = b.icone.x, cy = b.icone.y;
       const choisi = i === this.sortChoisi;
-      if (choisi) b.cercle.fillStyle(0xffcf4a, 0.35).fillCircle(cx, cy, 52);
+      if (choisi) b.cercle.fillStyle(0xffcf4a, 0.45).fillCircle(cx, cy, 53).lineStyle(3, 0xfff1b0).strokeCircle(cx, cy, 51);
       b.cercle.fillStyle(0x000000, 0.6).fillCircle(cx, cy, 45);
-      b.icone.setTexture(s.icone ? `sort_${s.icone}` : '__DEFAULT').setDisplaySize(80, 80);
+      b.icone.setTexture(s.icone ? `sort_${s.icone}` : '__DEFAULT').setDisplaySize(choisi ? 86 : 76, choisi ? 86 : 76);
       const r = u!.recharges[i];
       if (r > 0) { b.voile.setVisible(true); b.cd.setText(String(r)); }
     });
@@ -485,6 +543,7 @@ export class CombatScene extends Phaser.Scene {
     this.bulleFond.clear();
     this.bulleTexte.setText('');
     this.bulleNom.setText('');
+    this.bulleConsigne?.setText('');
     if (joueur) {
       const s = u!.monstre.sorts[this.sortChoisi];
       if (s) {
@@ -498,24 +557,71 @@ export class CombatScene extends Phaser.Scene {
     }
   }
 
-  /** Flèche sur la cible survolée, et repère d'avantage d'élément sur les ennemis. */
+  /** Réticule de la cible désignée, cibles possibles en évidence, flèche au survol, repères d'avantage d'élément. */
   private majCibles() {
     for (const t of this.tags) t.destroy();
     this.tags = [];
     const possibles = this.ciblesPossibles();
+    const s = this.sortCourant();
     const u = this.combat.acteur;
-    if (u && possibles.length && possibles[0].u.camp === 'B') {
+
+    // Cibles possibles : socle cerclé (rouge = ennemis, vert = alliés)
+    for (const vue of this.vues.values()) {
+      if (!vue.u.vivant) continue;
+      const actif = this.combat.acteur === vue.u;
+      const possible = possibles.includes(vue);
+      const couleur = actif ? 0xffcf4a : vue.u.camp === 'A' ? 0x7ee07a : 0xff5a45;
+      vue.socle.setFillStyle(actif ? 0xffcf4a : possible ? couleur : 0x000000, actif ? 0.35 : possible ? 0.22 : 0.35)
+        .setStrokeStyle(actif || possible ? 3 : 0, couleur);
+    }
+
+    // Réticule sur l'ennemi désigné (toujours visible, comme dans SW)
+    this.reticule.clear();
+    const f = this.combat.fini ? null : this.focus();
+    if (f) {
+      const g = this.reticule.setDepth(f.y - 0.6);
+      g.lineStyle(3, 0xff3b2f, 1).strokeEllipse(f.x, f.y, 118, 38);
+      for (const a of [0, Math.PI / 2, Math.PI, Math.PI * 1.5]) {
+        const cx = f.x + Math.cos(a) * 66, cy = f.y + Math.sin(a) * 22;
+        g.fillStyle(0xff3b2f).fillTriangle(cx, cy, cx - Math.cos(a) * 12 - Math.sin(a) * 6, cy - Math.sin(a) * 4 + Math.cos(a) * 6, cx - Math.cos(a) * 12 + Math.sin(a) * 6, cy - Math.sin(a) * 4 - Math.cos(a) * 6);
+      }
+    }
+
+    // Repères d'avantage d'élément, pour un sort offensif
+    if (u && s && (s.cible === 'ennemi' || s.cible === 'ennemis')) {
       for (const vue of possibles) {
         const av = avantage(u.element, vue.u.element);
         if (!av) continue;
-        this.tags.push(this.add.text(vue.x, vue.haut - 40, av > 0 ? '▲ Avantage' : '▼ Désavantage', {
-          fontFamily: POLICE, fontSize: '11px', fontStyle: '600', color: av > 0 ? '#8dff8d' : '#ff9a8a',
-        }).setOrigin(0.5, 1).setShadow(0, 1, '#000', 3, false, true).setDepth(2500));
+        this.tags.push(this.add.text(vue.x, vue.y + 66, av > 0 ? '▲ Avantage' : '▼ Désavantage', {
+          fontFamily: POLICE, fontSize: '11px', fontStyle: '600', color: av > 0 ? '#8dff8d' : '#ff9a8a', backgroundColor: 'rgba(0,0,0,0.55)', padding: { x: 4, y: 1 },
+        }).setOrigin(0.5, 0).setDepth(2500));
       }
     }
-    const cible = this.survol && possibles.includes(this.survol) ? this.survol : null;
-    this.flecheCible.setVisible(!!cible);
-    if (cible) this.flecheCible.setPosition(cible.x, cible.haut - 4).setColor(cible.u.camp === 'A' ? '#7ee07a' : '#ff4d3d');
+
+    // Flèche : cible survolée, sinon cible qu'un nouveau clic sur le sort viserait
+    let fleche: Vue | null = this.survol && possibles.includes(this.survol) ? this.survol : null;
+    if (!fleche && s?.cible === 'ennemi') fleche = f;
+    if (!fleche && s?.cible === 'allie') fleche = this.allieParDefaut();
+    this.flecheCible.setVisible(!!fleche);
+    if (fleche) this.flecheCible.setPosition(fleche.x, fleche.haut - 4).setColor(fleche.u.camp === 'A' ? '#7ee07a' : '#ff4d3d');
+    this.majConsigne();
+  }
+
+  /** Dernière ligne de la bulle : comment lancer le sort choisi. */
+  private majConsigne() {
+    const s = this.sortCourant();
+    this.bulleConsigne.setText('');
+    if (!s || !this.bulleNom.text) return;
+    const f = this.focus();
+    const consigne = s.cible === 'ennemi' ? `Touche un ennemi, ou retouche le sort pour viser ${f ? f.u.monstre.nom : 'la cible'}.`
+      : s.cible === 'ennemis' ? 'Retouche le sort (ou touche un ennemi) pour frapper tous les ennemis.'
+      : s.cible === 'allie' ? 'Touche un allié, ou retouche le sort pour le plus blessé.'
+      : s.cible === 'allies' ? 'Retouche le sort (ou touche un allié) pour toute l\'équipe.'
+      : 'Retouche le sort pour le lancer.';
+    this.bulleConsigne.setText(consigne).setY(this.bulleTexte.y + this.bulleTexte.height + 6);
+    const h = this.bulleConsigne.y + this.bulleConsigne.height + 12;
+    this.bulle.setY(H - 14 - h);
+    this.bulleFond.clear().fillStyle(0x0c1210, 0.92).fillRoundedRect(0, 0, 346, h, 10).lineStyle(1.5, 0xc9a24a).strokeRoundedRect(0, 0, 346, h, 10);
   }
 
   private majBoutons() {
