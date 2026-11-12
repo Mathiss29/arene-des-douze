@@ -105,6 +105,9 @@ export interface MonstreCombat {
   stats: Stats;
   sorts: Sort[];
   leader?: Leader;
+  /** Pour l'affichage. */
+  etoiles?: number;
+  niveau?: number;
 }
 
 export type ModeCombat = 'histoire' | 'donjon' | 'arene';

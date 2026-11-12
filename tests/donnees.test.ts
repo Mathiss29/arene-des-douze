@@ -77,8 +77,8 @@ describe('fiches de combat', () => {
   it('le combat d\'essai se joue jusqu\'au bout, à l\'identique avec la même graine', () => {
     const jouer = () => {
       const c = new Combat({
-        equipeA: ['scarafeuille_blanc', 'kwak_de_flamme', 'scarafeuille_bleu', 'piou_vert'].map(monstreCombat),
-        equipeB: ['kwak_de_vent', 'scarafeuille_noir', 'scarafeuille_rouge', 'piou_rouge'].map(monstreCombat),
+        equipeA: ['scarafeuille_blanc', 'kwak_de_flamme', 'scarafeuille_bleu', 'piou_vert'].map((id) => monstreCombat(id)),
+        equipeB: ['kwak_de_vent', 'scarafeuille_noir', 'scarafeuille_rouge', 'piou_rouge'].map((id) => monstreCombat(id)),
         graine: 77, mode: 'histoire',
       });
       c.simuler(choisirAction);

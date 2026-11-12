@@ -32,7 +32,12 @@
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
-- Évolution : monstre au niveau max + autant de monstres de même étoile que son nombre d'étoiles → +1★.
+- Évolution ✓ : monstre au niveau max + autant de monstres de même étoile que son nombre d'étoiles, et des kamas
+  (1 600 / 4 000 / 9 600 / 22 400 / 35 200) → +1★, retour au niveau 1.
+- XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`) ; l'XP en trop au niveau max est perdue.
+- Stats : les fiches donnent les stats 6★ niveau 40 ; PV, Attaque et Défense suivent le niveau et les étoiles (⚠ courbe provisoire),
+  les autres stats sont fixes. Un monstre naturellement 1★ reste 15 % moins fort qu'un 3★ une fois monté 6★.
+- Départ : Piou Vert (leader), Kwak de Flamme, Piou Bleu, Piou Rouge, niveau 1, et 5 000 kamas.
 - Éveil : avec des essences (nom, apparence, stats, sort amélioré). Amélioration des sorts : doublon ou objet dédié.
 
 ### Liste de lancement (35)

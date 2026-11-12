@@ -25,6 +25,9 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
 - [ ] **4. Données des 13 monstres** — stats, sorts et skills de leader en JSON.
   Fiches provisoires en place (`src/data/fiches.json`) : stats « niveau max » par type, 2 sorts (Pious) ou 3 sorts, icônes officielles. À équilibrer.
 - [ ] **5. Collection et progression** — XP, niveaux, évolution, sauvegarde locale.
+  Fait : état du joueur (`src/sim/joueur.ts`), table d'XP et niveaux max de SW, croissance des stats, évolution (`progression.ts`),
+  butin des stages (`stages.ts`), sauvegarde locale, XP et montées de niveau après chaque victoire.
+  Reste : écrans de préparation d'équipe, de récompenses et de collection (maquette d'abord).
 - [ ] **6. Histoire** — 7 stages enchaînés avec récompenses.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
 - [ ] **8. Invocation** — les pierres d'âme donnent des monstres.

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "astrub-1",
+    "nom": "Salle des Scarafeuilles",
+    "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+    "ennemis": [
+      {
+        "id": "scarafeuille_vert",
+        "etoiles": 3,
+        "niveau": 5
+      },
+      {
+        "id": "piou_violet",
+        "etoiles": 1,
+        "niveau": 5
+      },
+      {
+        "id": "piou_rouge",
+        "etoiles": 1,
+        "niveau": 5
+      },
+      {
+        "id": "piou_jaune",
+        "etoiles": 1,
+        "niveau": 4
+      }
+    ],
+    "recompenses": {
+      "xp": 700,
+      "kamas": 350,
+      "pierreChance": 15
+    }
+  }
+]

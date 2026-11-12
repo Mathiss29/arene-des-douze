@@ -17,5 +17,7 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
 - Écrans : combat d'essai par défaut, vitrine des planches avec `#vitrine`. Paysage uniquement, 1280 × 720 mis à l'échelle.
   Débogage dans la console : `window.game.scene.getScene('combat')`.
-- Fiches de combat (stats, sorts, leader) dans `src/data/fiches.json` ; l'animation jouée par chaque sort dans `looks.ts` (`animSorts`).
+- État du joueur : `src/sim/joueur.ts` (pur) ; sauvegarde locale sous la clé `arene-des-douze:joueur` (`src/render/sauvegarde.ts`).
+  Stages et butin : `src/data/stages.json`, `src/sim/stages.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.
+- Fiches de combat (stats 6★ niveau 40, sorts, leader) dans `src/data/fiches.json` ; l'animation jouée par chaque sort dans `looks.ts` (`animSorts`).
 - Le site est publié sur GitHub Pages (`.github/workflows/deploiement.yml`), seule origine autorisée en CORS par le R2 avec diablofus.com.

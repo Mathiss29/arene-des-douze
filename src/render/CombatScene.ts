@@ -1,7 +1,11 @@
 import Phaser from 'phaser';
 import { Combat, type Evenement, type Unite } from '../sim/combat';
 import { choisirAction } from '../sim/ia';
-import { fiche, monstreCombat } from '../sim/fiches';
+import { monstreCombat } from '../sim/fiches';
+import { monstre, type Joueur } from '../sim/joueur';
+import { appliquerVictoire, equipeEnnemie, equipeJoueur, stage, tirerButin, type Stage } from '../sim/stages';
+import { charger, sauver } from './sauvegarde';
+import { NIVEAU_MAX, XP_NIVEAU } from '../sim/progression';
 import { avantage, estBonus, type Element, type Sort, type TypeEffet } from '../sim/types';
 import { LOOKS } from './looks';
 import { atlasPlanche, distant, dossierPlanches } from './assetUrl';
@@ -30,10 +34,8 @@ const COURT_EFFET: Record<TypeEffet, string> = {
   atq_baisse: 'ATQ↓', def_baisse: 'DÉF↓', lenteur: 'VIT↓', etourdi: 'ÉTO', poison: 'POI',
 };
 
-/** Équipes du combat d'essai (le leader en premier). */
-const ALLIES = ['scarafeuille_blanc', 'kwak_de_flamme', 'scarafeuille_bleu', 'piou_vert'];
-const ENNEMIS = ['kwak_de_vent', 'scarafeuille_noir', 'scarafeuille_rouge', 'piou_rouge'];
-const ARENE = 'mondes/astrub/sol_arene_scarafeuilles.webp';
+/** Stage joué tant que la carte de l'histoire n'existe pas. */
+const STAGE = 'astrub-1';
 /** Pieds des monstres : alliés en bas à gauche, ennemis en haut à droite. */
 const PLACES = {
   // Formation en losange, sans chevauchement : le leader devant, les plus petits sur les côtés
@@ -41,7 +43,6 @@ const PLACES = {
   B: [[900, 225], [1070, 265], [750, 290], [950, 355]],
 } as const;
 
-const NIVEAU_MAX: Record<number, number> = { 1: 15, 2: 20, 3: 25, 4: 30, 5: 35 };
 
 interface Vue {
   u: Unite;
@@ -62,6 +63,9 @@ interface Vue {
 
 export class CombatScene extends Phaser.Scene {
   private combat!: Combat;
+  private joueur!: Joueur;
+  private stage!: Stage;
+  private graine = 0;
   private vues = new Map<number, Vue>();
   private auto = false;
   /** Vitesse du combat : ×1, ×2 ou ×3 (comme dans SW). Gardée d'un combat à l'autre. */
@@ -94,8 +98,11 @@ export class CombatScene extends Phaser.Scene {
     this.load.on('progress', (p: number) => barre.setText(`Chargement… ${Math.round(p * 100)} %`));
     this.load.on('loaderror', (f: Phaser.Loader.File) => console.error('Fichier introuvable :', f.key, f.url));
     this.load.once('complete', () => barre.destroy());
-    this.load.image('arene', distant(ARENE));
-    for (const id of [...ALLIES, ...ENNEMIS]) {
+    this.joueur = charger();
+    this.stage = stage(STAGE);
+    this.load.image(`arene:${this.stage.arene}`, distant(this.stage.arene));
+    const ids = [...this.joueur.equipe.map((u) => monstre(this.joueur, u).id), ...this.stage.ennemis.map((e) => e.id)];
+    for (const id of ids) {
       const look = LOOKS[id];
       if (!this.textures.exists(look.atlas)) this.load.multiatlas(look.atlas, atlasPlanche(look.atlas), dossierPlanches);
       this.load.json(`${look.atlas}:meta`, atlasPlanche(look.atlas));
@@ -114,12 +121,13 @@ export class CombatScene extends Phaser.Scene {
     // Arène : la salle des Scarafeuilles (recadrée sur la zone de combat)
     this.cameras.main.setBackgroundColor('#0b120e');
     const s = W / 2300;
-    this.add.image(-520 * s, -600 * s, 'arene').setOrigin(0).setScale(s);
+    this.add.image(-520 * s, -600 * s, `arene:${this.stage.arene}`).setOrigin(0).setScale(s);
 
+    this.graine = (Date.now() ^ (Math.random() * 1e9)) >>> 0;
     this.combat = new Combat({
-      equipeA: ALLIES.map(monstreCombat),
-      equipeB: ENNEMIS.map(monstreCombat),
-      graine: (Date.now() ^ (Math.random() * 1e9)) >>> 0,
+      equipeA: equipeJoueur(this.joueur),
+      equipeB: equipeEnnemie(this.stage),
+      graine: this.graine,
       mode: 'histoire',
     });
     for (const u of this.combat.unites) this.creerVue(u);
@@ -191,7 +199,7 @@ export class CombatScene extends Phaser.Scene {
       if (this.auto && !this.occupe && this.combat.acteur?.camp === 'A') this.jouerIA();
       this.majSorts();
     });
-    this.add.text(14, 22, 'Combat d\'essai · Salle des Scarafeuilles', {
+    this.add.text(14, 22, `Astrub · ${this.stage.nom}`, {
       fontFamily: POLICE, fontSize: '13px', fontStyle: '600', color: '#ffe08a', backgroundColor: 'rgba(10,20,15,0.8)', padding: { x: 12, y: 7 },
     }).setDepth(3000);
     this.majBoutons();
@@ -482,9 +490,8 @@ export class CombatScene extends Phaser.Scene {
     }
 
     // Élément + niveau (+ couronne du leader)
-    const f = fiche(u.monstre.id);
     g.fillStyle(COULEUR[u.element]).fillCircle(x - 40, y + 20, 7).lineStyle(1.5, 0x000000, 0.7).strokeCircle(x - 40, y + 20, 7);
-    vue.niveau.setText(`${u.place === 0 ? '♛ ' : ''}Niv. ${NIVEAU_MAX[f.etoiles]}`).setPosition(x - 30, y + 13);
+    vue.niveau.setText(`${u.place === 0 ? '♛ ' : ''}Niv. ${u.monstre.niveau ?? '?'}`).setPosition(x - 30, y + 13);
 
     // PV (vert allié, rouge ennemi) et jauge d'attaque
     const l = 96, bx = x - l / 2;
@@ -632,17 +639,50 @@ export class CombatScene extends Phaser.Scene {
     this.boutonRapide.setText(`×${this.vitesseJeu}`).setBackgroundColor(vite ? '#c9a24a' : 'rgba(10,20,15,0.8)').setColor(vite ? '#1d1405' : '#ffffff');
   }
 
+  /** Fin du combat. En cas de victoire : butin, XP et montées de niveau, puis sauvegarde (écran provisoire en attendant la maquette). */
   private afficherFin(vainqueur: 'A' | 'B' | null) {
     this.majSorts();
     for (const slot of this.frise) { slot.cadre.clear(); slot.portrait.setVisible(false); }
-    const voile = this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.6).setDepth(4000).setInteractive();
+    this.reticule.clear();
+    this.flecheCible.setVisible(false);
+    const D = 4000;
+    this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.62).setDepth(D).setInteractive();
     const titre = vainqueur === 'A' ? 'Victoire !' : vainqueur === 'B' ? 'Défaite…' : 'Match nul';
-    this.add.text(W / 2, H / 2 - 40, titre, { fontFamily: POLICE_CHIFFRES, fontSize: '64px', color: vainqueur === 'A' ? '#ffd23f' : '#ff8a7a' })
-      .setOrigin(0.5).setStroke('#2a1600', 8).setDepth(4001);
-    this.add.text(W / 2, H / 2 + 50, 'Rejouer', {
+    this.add.text(W / 2, 120, titre, { fontFamily: POLICE_CHIFFRES, fontSize: '60px', color: vainqueur === 'A' ? '#ffd23f' : '#ff8a7a' })
+      .setOrigin(0.5).setStroke('#2a1600', 8).setDepth(D + 1);
+
+    let y = 200;
+    if (vainqueur === 'A') {
+      const avant = this.joueur;
+      const butin = tirerButin(avant, this.stage, this.graine);
+      const { joueur, niveaux } = appliquerVictoire(avant, this.stage, butin);
+      this.joueur = joueur;
+      sauver(joueur);
+
+      const ligne = (texte: string, couleur = '#e9efe6', taille = 17) => {
+        this.add.text(W / 2, y, texte, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: couleur }).setOrigin(0.5, 0).setDepth(D + 1);
+        y += taille + 14;
+      };
+      ligne(`+${fmt(butin.kamas)} kamas   ·   ${butin.pierresAme ? `+${butin.pierresAme} pierre${butin.pierresAme > 1 ? 's' : ''} d'âme` : 'pas de pierre d\'âme'}`, '#ffe08a', 19);
+      if (butin.premiere) ligne('Première victoire sur ce stage : une pierre d\'âme offerte', '#8ff0d8', 14);
+      y += 8;
+      for (const uid of avant.equipe) {
+        const a = monstre(avant, uid), b = monstre(joueur, uid);
+        const nom = this.combat.unites.find((u) => u.camp === 'A' && u.monstre.id === a.id)?.monstre.nom ?? a.id;
+        const max = b.niveau >= NIVEAU_MAX[b.etoiles];
+        const suite = max ? ' (max)' : `  (${fmt(b.xp)} / ${fmt(XP_NIVEAU[b.etoiles][b.niveau - 1])} XP)`;
+        const gain = niveaux[uid] ? `Niv. ${a.niveau} → ${b.niveau} ▲${suite}` : `Niv. ${b.niveau}${suite}`;
+        ligne(`${nom}   +${fmt(butin.xp)} XP   ${gain}`, niveaux[uid] ? '#7ee07a' : '#e9efe6', 16);
+      }
+    } else {
+      this.add.text(W / 2, y, 'Monte le niveau de tes monstres ou change d\'équipe, puis réessaie.', { fontFamily: POLICE, fontSize: '16px', color: '#cfdccf' })
+        .setOrigin(0.5, 0).setDepth(D + 1);
+      y += 40;
+    }
+    this.add.text(W / 2, Math.max(y + 30, 470), 'Rejouer', {
       fontFamily: POLICE, fontSize: '20px', fontStyle: '600', color: '#1d1405', backgroundColor: '#e3b54c', padding: { x: 22, y: 10 },
-    }).setOrigin(0.5).setDepth(4001).setInteractive({ useHandCursor: true }).on('pointerdown', () => { voile.destroy(); this.scene.restart(); });
-    this.add.text(W / 2, H / 2 + 100, `${this.combat.tour} tours`, { fontFamily: POLICE, fontSize: '14px', color: '#cfdccf' }).setOrigin(0.5).setDepth(4001);
+    }).setOrigin(0.5).setDepth(D + 1).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.restart());
+    this.add.text(W / 2, Math.max(y + 30, 470) + 50, `${this.combat.tour} tours`, { fontFamily: POLICE, fontSize: '13px', color: '#93a89b' }).setOrigin(0.5).setDepth(D + 1);
   }
 }
 
