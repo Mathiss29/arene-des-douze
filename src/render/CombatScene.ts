@@ -63,7 +63,8 @@ export class CombatScene extends Phaser.Scene {
   private combat!: Combat;
   private vues = new Map<number, Vue>();
   private auto = false;
-  private rapide = false;
+  /** Vitesse du combat : ×1, ×2 ou ×3 (comme dans SW). Gardée d'un combat à l'autre. */
+  private vitesseJeu = 1;
   private occupe = false;
   private sortChoisi = 0;
   private survol: Vue | null = null;
@@ -182,7 +183,7 @@ export class CombatScene extends Phaser.Scene {
     const bouton = (bx: number, texte: string, action: () => void) => this.add.text(bx, 22, texte, {
       fontFamily: POLICE, fontSize: '14px', fontStyle: '600', color: '#ffffff', backgroundColor: 'rgba(10,20,15,0.8)', padding: { x: 12, y: 7 },
     }).setOrigin(1, 0).setDepth(3000).setInteractive({ useHandCursor: true }).on('pointerdown', action);
-    this.boutonRapide = bouton(W - 14, '×2', () => { this.rapide = !this.rapide; this.majBoutons(); });
+    this.boutonRapide = bouton(W - 14, '×1', () => { this.vitesseJeu = (this.vitesseJeu % 3) + 1; this.majBoutons(); });
     this.boutonAuto = bouton(W - 70, 'Auto', () => {
       this.auto = !this.auto;
       this.majBoutons();
@@ -225,7 +226,7 @@ export class CombatScene extends Phaser.Scene {
   // ───────────── déroulement ─────────────
 
   private get v() {
-    return this.rapide ? 2 : 1;
+    return this.vitesseJeu;
   }
 
   private attendre(ms: number) {
@@ -626,7 +627,8 @@ export class CombatScene extends Phaser.Scene {
 
   private majBoutons() {
     this.boutonAuto.setBackgroundColor(this.auto ? '#c9a24a' : 'rgba(10,20,15,0.8)').setColor(this.auto ? '#1d1405' : '#ffffff');
-    this.boutonRapide.setBackgroundColor(this.rapide ? '#c9a24a' : 'rgba(10,20,15,0.8)').setColor(this.rapide ? '#1d1405' : '#ffffff');
+    const vite = this.vitesseJeu > 1;
+    this.boutonRapide.setText(`×${this.vitesseJeu}`).setBackgroundColor(vite ? '#c9a24a' : 'rgba(10,20,15,0.8)').setColor(vite ? '#1d1405' : '#ffffff');
   }
 
   private afficherFin(vainqueur: 'A' | 'B' | null) {
