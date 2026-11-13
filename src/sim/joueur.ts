@@ -2,7 +2,7 @@
  * État du joueur : monstres possédés, équipe, ressources et progression. Pur et sérialisable (sauvegarde).
  * Toutes les opérations renvoient un nouvel état ou lèvent une erreur explicite ; rien n'est modifié en place.
  */
-import { COUT_EVOLUTION, NIVEAU_MAX, ajouterXp, type Etoiles } from './progression';
+import { COUT_EVOLUTION, NIVEAU_MAX, POINTS_NOURRITURE, XP_NIVEAU, ajouterXp, pointsRequis, type Etoiles } from './progression';
 import { fiche } from './fiches';
 import { ELEMENTS } from './types';
 
@@ -71,12 +71,19 @@ export function equipePourStage(j: Joueur, stageId: string): number[] {
 /** Le monstre a-t-il atteint le niveau max de ses étoiles ? */
 export const auNiveauMax = (m: MonstrePossede) => m.niveau >= NIVEAU_MAX[m.etoiles];
 
-/** Peut-il évoluer tout de suite : niveau max, assez de monstres de même étoile pour le nourrir, assez de kamas ? */
+/** Points d'évolution apportés par des monstres donnés en nourriture (SW : 1★ = 1, 2★ = 2, 3★ = 6…). */
+export const pointsNourriture = (j: Joueur, uids: readonly number[]) => uids.reduce((s, u) => s + POINTS_NOURRITURE[monstre(j, u).etoiles as Etoiles], 0);
+
+/**
+ * Peut-il évoluer tout de suite ? Assez de points avec les monstres d'autant ou moins d'étoiles
+ * qui ne sont pas dans l'équipe (on ne propose jamais de sacrifier l'équipe), et assez de kamas.
+ */
 export function peutEvoluer(j: Joueur, uid: number): boolean {
   const m = monstre(j, uid);
-  if (m.etoiles >= 6 || !auNiveauMax(m)) return false;
-  const nourriture = j.monstres.filter((x) => x.uid !== uid && x.etoiles === m.etoiles).length;
-  return nourriture >= m.etoiles && j.kamas >= COUT_EVOLUTION[m.etoiles as 1 | 2 | 3 | 4 | 5];
+  if (m.etoiles >= 6) return false;
+  const e = m.etoiles as 1 | 2 | 3 | 4 | 5;
+  const dispo = j.monstres.filter((x) => x.uid !== uid && x.etoiles <= e && !j.equipe.includes(x.uid)).map((x) => x.uid);
+  return pointsNourriture(j, dispo) >= pointsRequis(e) && j.kamas >= COUT_EVOLUTION[e];
 }
 
 export type Tri = 'etoiles' | 'niveau' | 'element';
@@ -111,13 +118,17 @@ export function donnerXp(j: Joueur, uids: number[], gain: number): { joueur: Jou
 export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
   const m = monstre(j, uid);
   if (m.etoiles >= 6) throw new Error('Déjà 6★');
-  if (m.niveau < NIVEAU_MAX[m.etoiles]) throw new Error(`Il faut d'abord atteindre le niveau ${NIVEAU_MAX[m.etoiles]}`);
-  if (nourriture.length !== m.etoiles) throw new Error(`Il faut ${m.etoiles} monstre(s) ${m.etoiles}★`);
-  if (new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
-  for (const u of nourriture) if (monstre(j, u).etoiles !== m.etoiles) throw new Error(`La nourriture doit être ${m.etoiles}★`);
-  const cout = COUT_EVOLUTION[m.etoiles as 1 | 2 | 3 | 4 | 5];
+  const e = m.etoiles as 1 | 2 | 3 | 4 | 5;
+  if (!nourriture.length || new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
+  for (const u of nourriture) if (monstre(j, u).etoiles > e) throw new Error(`La nourriture doit avoir ${e}★ ou moins`);
+  const points = pointsNourriture(j, nourriture), requis = pointsRequis(e);
+  if (points < requis) throw new Error(`Il faut ${requis} points de nourriture (${points} donnés)`);
+  const cout = COUT_EVOLUTION[e];
   if (j.kamas < cout) throw new Error(`Il faut ${cout} kamas`);
-  const restants = j.monstres.filter((x) => !nourriture.includes(x.uid)).map((x) => (x.uid === uid ? { ...x, etoiles: (x.etoiles + 1) as Etoiles, niveau: 1, xp: 0 } : x));
+  // SW (RELOADED) : le niveau est gardé ; l'XP en cours est gardée sans dépasser le palier suivant
+  const etoiles = (e + 1) as Etoiles;
+  const restants = j.monstres.filter((x) => !nourriture.includes(x.uid)).map((x) =>
+    x.uid === uid ? { ...x, etoiles, xp: Math.min(x.niveau >= NIVEAU_MAX[e] ? 0 : x.xp, XP_NIVEAU[etoiles][x.niveau - 1] - 1) } : x);
   const equipe = j.equipe.filter((u) => !nourriture.includes(u));
   const equipesStages = Object.fromEntries(Object.entries(j.equipesStages).map(([k, v]) => [k, v.filter((u) => !nourriture.includes(u))]));
   return { ...j, kamas: j.kamas - cout, monstres: restants, equipe: equipe.length ? equipe : [uid], equipesStages };

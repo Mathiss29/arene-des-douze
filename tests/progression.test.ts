@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoiles } from '../src/sim/progression';
+import { pointsRequis } from '../src/sim/progression';
 import { ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
 import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
 import { Combat } from '../src/sim/combat';
@@ -57,17 +58,28 @@ describe('joueur', () => {
     expect(() => definirEquipe(j, [1, 2, 3, 4, 1])).toThrow();
   });
 
-  it('évolution : niveau max, autant de nourriture que d\'étoiles, kamas ; repart niveau 1', () => {
-    let j = nouveauJoueur(); // Piou Vert uid 1, 1★
-    expect(() => evoluer(j, 1, [3])).toThrow(/niveau 15/);
-    j = donnerXp(j, [1], 99999).joueur;
-    expect(() => evoluer(j, 1, [2])).toThrow(/1★/); // uid 2 = Kwak 3★
-    expect(() => evoluer(j, 1, [3, 4])).toThrow(/1 monstre/);
+  it('évolution (SW RELOADED) : pas besoin du niveau max, points de nourriture, kamas ; le niveau est gardé', () => {
+    let j = nouveauJoueur(); // Piou Vert uid 1, 1★ ; Kwak uid 2, 3★ ; Pious 1★ uid 3 et 4
+    j = donnerXp(j, [1], 1000).joueur;
+    const niveau = monstre(j, 1).niveau;
+    expect(niveau).toBeGreaterThan(1);
+    expect(() => evoluer(j, 1, [2])).toThrow(/1★ ou moins/); // un 3★ ne nourrit pas un 1★
+    expect(() => evoluer(j, 1, [])).toThrow();
     const apres = evoluer(j, 1, [3]);
-    expect(monstre(apres, 1)).toMatchObject({ etoiles: 2, niveau: 1, xp: 0 });
+    expect(monstre(apres, 1)).toMatchObject({ etoiles: 2, niveau });
     expect(apres.monstres.some((m) => m.uid === 3)).toBe(false);
     expect(apres.equipe).not.toContain(3);
     expect(apres.kamas).toBe(j.kamas - 1600);
+    // 2★ → 3★ : 4 points ; deux Pious 1★ n'en font que 2, il en faut quatre (ou deux 2★)
+    let k = { ...apres, kamas: 10000 };
+    const ajout: number[] = [];
+    for (const id of ['piou_rouge', 'piou_jaune', 'piou_violet']) { const r = ajouterMonstre(k, id); k = r.joueur; ajout.push(r.uid); }
+    expect(() => evoluer(k, 1, [4, ajout[0]])).toThrow(/4 points/);
+    expect(monstre(evoluer(k, 1, [4, ...ajout]), 1)).toMatchObject({ etoiles: 3, niveau });
+  });
+
+  it('points de nourriture : 1★ = 1, 2★ = 2, 3★ = 6 ; il en faut N × points(N★)', () => {
+    expect([1, 2, 3, 4, 5].map((e) => pointsRequis(e as 1 | 2 | 3 | 4 | 5))).toEqual([1, 4, 18, 96, 600]);
   });
 
   it('retient l\'équipe de chaque stage, sans les monstres disparus', () => {
@@ -83,9 +95,9 @@ describe('joueur', () => {
 
   it('repère les monstres prêts à évoluer', () => {
     let j = nouveauJoueur();
-    expect(peutEvoluer(j, 1)).toBe(false);
-    j = donnerXp(j, [1], 99999).joueur;
-    expect(peutEvoluer(j, 1)).toBe(true); // Pious 1★ en nourriture, 5000 kamas
+    expect(peutEvoluer(j, 1)).toBe(false); // les autres Pious sont dans l'équipe : jamais proposés
+    j = ajouterMonstre(j, 'piou_rouge').joueur;
+    expect(peutEvoluer(j, 1)).toBe(true); // pas besoin du niveau max
     expect(peutEvoluer({ ...j, kamas: 100 }, 1)).toBe(false);
   });
 

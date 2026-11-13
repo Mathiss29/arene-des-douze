@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { monstreCombat, fiche } from '../sim/fiches';
 import { auNiveauMax, definirEquipe, equipePourStage, monstre, peutEvoluer, TAILLE_EQUIPE, trierMonstres, type Joueur, type MonstrePossede, type Tri } from '../sim/joueur';
-import { NIVEAU_MAX, type Etoiles } from '../sim/progression';
+import { NIVEAU_MAX, pointsRequis, type Etoiles } from '../sim/progression';
 import { LISTE_STAGES, stage, type Stage } from '../sim/stages';
 import { ELEMENTS, type Element, type Stats } from '../sim/types';
 import { LOOKS } from './looks';
@@ -291,7 +291,7 @@ export class PreparationScene extends Phaser.Scene {
     tx(X + 170, Y + 400, `Niv. ${m.niveau} / ${NIVEAU_MAX[m.etoiles as Etoiles]}`, 15, '#ffffff', true, 0.5);
     tx(X + 170, Y + 424, `${NOM_ELEMENT[f.element]} · ${NOM_TYPE[f.type]}`, 13, hex(COULEUR[f.element]), true, 0.5);
     if (peutEvoluer(this.joueur, m.uid)) tx(X + 170, Y + 452, '▲ Prêt à évoluer', 13, '#7ee07a', true, 0.5);
-    else if (auNiveauMax(m) && m.etoiles < 6) tx(X + 170, Y + 452, `Niveau max : il faut ${m.etoiles} monstre${m.etoiles > 1 ? 's' : ''} ${m.etoiles}★ pour évoluer`, 11, '#9fb3a6', false, 0.5).setWordWrapWidth(300).setAlign('center');
+    else if (m.etoiles < 6) tx(X + 170, Y + 452, `Pour évoluer : ${pointsRequis(m.etoiles as 1 | 2 | 3 | 4 | 5)} point${m.etoiles > 1 ? 's' : ''} de nourriture hors équipe (1★ = 1, 2★ = 2, 3★ = 6)`, 11, '#9fb3a6', false, 0.5).setWordWrapWidth(300).setAlign('center');
 
     // Stats
     const sx = X + 350;

@@ -40,9 +40,12 @@
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
-- Évolution ✓ : monstre au niveau max + autant de monstres de même étoile que son nombre d'étoiles, et des kamas
-  (1 600 / 4 000 / 9 600 / 22 400 / 35 200) → +1★, retour au niveau 1.
-- XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`) ; l'XP en trop au niveau max est perdue.
+- Évolution ✓ (SW actuel, refonte RELOADED v8.0.0 de 2023) : dans le bâtiment d'amélioration de l'île, sans condition de niveau ;
+  nourriture d'autant ou moins d'étoiles, comptée en points (1★ = 1, 2★ = 2, 3★ = 6, 4★ = 24, 5★ = 120 ; il faut N × points(N★) :
+  1 / 4 / 18 / 96 / 600) → +1★, le niveau est gardé. Kamas : 1 600 / 4 000 / 9 600 / 22 400 / 35 200 (⚠ barème d'avant RELOADED,
+  SW calcule désormais le coût d'après la nourriture). Un monstre de la même famille donné en nourriture monte aussi un sort (à faire).
+- Nourrir pour l'XP (SW) : jusqu'à 5 monstres d'un coup, ~20 % de chances d'avoir ×1,5 (⚠ XP par monstre à vérifier, RELOADED l'a changée).
+- XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`, ⚠ d'avant RELOADED) ; l'XP en trop au niveau max est perdue.
 - Stats : les fiches donnent les stats 6★ niveau 40 ; PV, Attaque et Défense suivent le niveau et les étoiles (⚠ courbe provisoire),
   les autres stats sont fixes. Un monstre naturellement 1★ reste 15 % moins fort qu'un 3★ une fois monté 6★.
 - Départ : Piou Vert (leader), Kwak de Flamme, Piou Bleu, Piou Rouge, niveau 1, et 5 000 kamas.

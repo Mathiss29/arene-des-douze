@@ -19,8 +19,19 @@ export const XP_NIVEAU: Record<Etoiles, readonly number[]> = {
   6: [1150, 1290, 1447, 1624, 1823, 2044, 2294, 2574, 2888, 3240, 3635, 4079, 4576, 5135, 5762, 6464, 7252, 8138, 9214, 10431, 11811, 13371, 15140, 17296, 19758, 22572, 25786, 29458, 33954, 39134, 45107, 51990, 59924, 69068, 76085, 83816, 92332, 101712, 112046],
 };
 
-/** ✓ Coût en kamas (le mana de SW) pour passer à l'étoile suivante. */
+/**
+ * ⚠ Coût en kamas (le mana de SW) pour passer à l'étoile suivante : barème d'avant RELOADED.
+ * Depuis la v8.0.0 (2023), SW calcule le coût d'après les étoiles de la nourriture ; montants non trouvés.
+ */
 export const COUT_EVOLUTION: Record<1 | 2 | 3 | 4 | 5, number> = { 1: 1600, 2: 4000, 3: 9600, 4: 22400, 5: 35200 };
+
+/**
+ * ✓ Évolution façon SW depuis RELOADED (v8.0.0, 2023) : plus besoin du niveau max, le niveau ne repart pas à 1,
+ * et la nourriture peut avoir autant ou moins d'étoiles. Chaque monstre donné vaut des points selon ses étoiles ;
+ * il en faut autant que N monstres N★ (1★ : 1 point ; 2★ : 4 ; 3★ : 18 ; 4★ : 96 ; 5★ : 600).
+ */
+export const POINTS_NOURRITURE: Record<Etoiles, number> = { 1: 1, 2: 2, 3: 6, 4: 24, 5: 120, 6: 720 };
+export const pointsRequis = (e: 1 | 2 | 3 | 4 | 5) => e * POINTS_NOURRITURE[e];
 
 /**
  * ⚠ Croissance des stats. Les fiches donnent les stats 6★ niveau 40 (comme les pages de monstres SW).
