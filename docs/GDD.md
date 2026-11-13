@@ -45,6 +45,15 @@
 - Stats avant → après au même niveau ; coût en kamas sur le bouton ; étoiles qui s'allument une à une puis éclair ;
   confirmation seulement si la nourriture compte un 3★ ou plus.
 
+### Île (maquette « Île : » 1A 2A 3A 4A 5A 6C 7A 8A 9B 10B, 13 nov. 2026)
+- Écran d'accueil : Incarnam, l'île flottante de Dofus, comme l'île de SW. On la fait glisser et on zoome.
+- Bâtiments placés librement par le joueur (mode « Déplacer »). Au départ, seulement ceux qui servent déjà :
+  Cercle d'invocation, Cercle d'amélioration, Zaap, Boutique, Mine de kamas.
+- Mine de kamas : produit avec le temps, on touche la bulle pour récolter (comme le mana de SW).
+- Combats : bouton « Combattre » en bas à droite et le Zaap (les deux ouvrent la carte).
+- Barre du bas : Monstres · Sac · Boutique · Combattre. Ambiance coucher de soleil.
+- Toute la collection se promène sur l'île (8 monstres au plus).
+
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
