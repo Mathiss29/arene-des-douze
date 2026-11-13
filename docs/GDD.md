@@ -67,8 +67,11 @@
 - Nourrir pour l'XP (SW) : jusqu'à 5 monstres d'un coup, ~20 % de chances d'avoir ×1,5 (⚠ XP par monstre à vérifier, RELOADED l'a changée).
 - XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`, ⚠ d'avant RELOADED) ; l'XP en trop au niveau max est perdue.
 - Stats : les fiches donnent les stats 6★ niveau 40 ; PV, Attaque et Défense suivent le niveau et les étoiles (⚠ courbe provisoire),
-  les autres stats sont fixes ✓. Choix du jeu (pas une règle SW) : un monstre naturellement 1★ reste 15 % moins fort qu'un 3★ une fois 6★
-  (dans SW, chaque monstre a ses propres stats de base, plus hautes pour les étoiles naturelles élevées).
+  les autres stats sont fixes ✓.
+- Stats de base comme SW ✓ : chaque monstre a les siennes, mais PV/15 + Attaque + Défense (6★ niv. 40, éveillé) est le même pour
+  tous les monstres d'une même étoile naturelle : 1★ 1 482 · 3★ 1 812 · 4★ 1 977 · 5★ 2 142 (vérifié sur le tableau des stats du wiki SW ;
+  ⚠ 2★ 1 647 déduit, les paliers étant réguliers de 165). Un 1★ naturel finit donc environ 18 % sous un 3★ naturel.
+  ⚠ Pour l'instant nos fiches suivent ce budget sans éveil ; le bonus d'éveil viendra avec les éveils.
 - Départ : Piou Vert (leader), Kwak de Flamme, Piou Bleu, Piou Rouge, niveau 1, et 5 000 kamas.
 - Éveil ✓ : avec des essences de son élément et de magie, en trois paliers (bas, moyen, haut ; 5 d'un palier → 1 du suivant au Centre de fusion) ;
   nom, apparence, stats, sort amélioré ou nouveau. Second éveil pour certains monstres (plus tard).

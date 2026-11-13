@@ -57,6 +57,14 @@ describe('éléments (fidèles à Summoners War)', () => {
 });
 
 describe('fiches de combat', () => {
+  it('comme SW : PV/15 + Attaque + Défense (6★ niv. 40) ne dépend que des étoiles naturelles', () => {
+    const budget: Record<number, number> = { 1: 1482, 2: 1647, 3: 1812, 4: 1977, 5: 2142 };
+    for (const m of MONSTRES as FicheMonstre[]) {
+      const s = (FICHES_COMBAT as Record<string, { stats: { pv: number; atq: number; def: number } }>)[m.id].stats;
+      expect(Math.abs(s.pv / 15 + s.atq + s.def - budget[m.etoiles]), m.id).toBeLessThanOrEqual(2);
+    }
+  });
+
   it('chaque monstre de l\'alpha a sa fiche, et rien de plus', () => {
     expect(Object.keys(FICHES_COMBAT).sort()).toEqual(FICHES.map((f) => f.id).sort());
   });
