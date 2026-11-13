@@ -56,6 +56,10 @@
 - Combats : bouton « Combattre » en bas à droite et le Zaap (les deux ouvrent la carte).
 - Barre du bas : Monstres · Sac · Boutique · Combattre. Ambiance coucher de soleil.
 - Toute la collection se promène sur l'île (8 monstres au plus).
+- Idées retenues (13 nov. 2026) : 1. vrais décors de Dofus 3 (images 2x) ; 2. musique (île, combat, victoire) et bouton son ;
+  3. pastilles « ! » sur les bâtiments ; 4. mine à production horaire et stockage max, améliorable (comme les bâtiments à mana de SW) ;
+  5. toucher un monstre qui se promène (animation + bulle ; appui long = fiche) ;
+  6. niveau d'invocateur et arbre de compétences (comme SW v8.1.4), plutôt après l'invocation et les stages.
 
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
