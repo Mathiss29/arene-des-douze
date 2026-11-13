@@ -15,7 +15,8 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Les atlas JSON sont copiés dans `public/assets/sprites/` ; les AVIF restent sur le R2 de Diablofus
   (en dév, relayés par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
-- Écrans : préparation d'équipe par défaut (`src/render/PreparationScene.ts`) puis combat (`CombatScene.ts`, récompenses à la fin), vitrine des planches avec `#vitrine`.
+- Écrans : préparation d'équipe par défaut (`src/render/PreparationScene.ts`) puis combat (`CombatScene.ts`, récompenses à la fin),
+  Cercle d'amélioration pour nourrir et faire évoluer (`CercleScene.ts`, bouton en haut de la préparation en attendant l'île), vitrine des planches avec `#vitrine`.
   Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement : monde de 1280 × 720,
   dessiné à la taille réelle de l'écran (`src/render/nettete.ts` : canevas ×K, caméras zoomées ×K, textes en résolution K).
   Débogage dans la console : `window.game.scene.getScene('combat')`.

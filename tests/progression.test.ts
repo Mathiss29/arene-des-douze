@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoiles } from '../src/sim/progression';
-import { pointsRequis } from '../src/sim/progression';
-import { ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
+import { pointsRequis, xpDonnee } from '../src/sim/progression';
+import { Rng } from '../src/sim/rng';
+import { apercuNourrir, nourrir, ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
 import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
 import { Combat } from '../src/sim/combat';
 import { choisirAction } from '../src/sim/ia';
@@ -76,6 +77,27 @@ describe('joueur', () => {
     for (const id of ['piou_rouge', 'piou_jaune', 'piou_violet']) { const r = ajouterMonstre(k, id); k = r.joueur; ajout.push(r.uid); }
     expect(() => evoluer(k, 1, [4, ajout[0]])).toThrow(/4 points/);
     expect(monstre(evoluer(k, 1, [4, ...ajout]), 1)).toMatchObject({ etoiles: 3, niveau });
+  });
+
+  it('nourrir : XP de la table SW, ×1,5 de temps en temps, nourriture retirée, kamas payés', () => {
+    expect(xpDonnee(1, 1)).toBe(800);
+    expect(xpDonnee(1, 15)).toBe(1210);
+    expect(xpDonnee(3, 25)).toBe(6204);
+    const j = nouveauJoueur();
+    const ap = apercuNourrir(j, [3, 4]);
+    expect(ap.xp).toBe(1600);
+    const r = nourrir(j, 1, [3, 4], new Rng(7));
+    expect(r.xp === 1600 || r.xp === 2400).toBe(true);
+    expect(r.joueur.monstres.map((m) => m.uid)).toEqual([1, 2]);
+    expect(r.joueur.equipe).toEqual([1, 2]);
+    expect(r.joueur.kamas).toBe(j.kamas - ap.kamas);
+    expect(monstre(r.joueur, 1).niveau).toBeGreaterThan(1);
+    expect(() => nourrir(j, 1, [1], new Rng(1))).toThrow();
+    // le bonus tombe environ une fois sur cinq
+    let bonus = 0;
+    for (let g = 0; g < 1000; g++) if (nourrir(j, 1, [3], new Rng(g)).bonus) bonus++;
+    expect(bonus).toBeGreaterThan(150);
+    expect(bonus).toBeLessThan(250);
   });
 
   it('points de nourriture : 1★ = 1, 2★ = 2, 3★ = 6 ; il en faut N × points(N★)', () => {

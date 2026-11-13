@@ -2,7 +2,8 @@
  * État du joueur : monstres possédés, équipe, ressources et progression. Pur et sérialisable (sauvegarde).
  * Toutes les opérations renvoient un nouvel état ou lèvent une erreur explicite ; rien n'est modifié en place.
  */
-import { COUT_EVOLUTION, NIVEAU_MAX, POINTS_NOURRITURE, XP_NIVEAU, ajouterXp, pointsRequis, type Etoiles } from './progression';
+import { CHANCE_BONUS_XP, COUT_EVOLUTION, COUT_NOURRIR, NIVEAU_MAX, NOURRITURE_MAX, POINTS_NOURRITURE, XP_NIVEAU, ajouterXp, pointsRequis, xpDonnee, type Etoiles } from './progression';
+import type { Rng } from './rng';
 import { fiche } from './fiches';
 import { ELEMENTS } from './types';
 
@@ -111,9 +112,38 @@ export function donnerXp(j: Joueur, uids: number[], gain: number): { joueur: Jou
   return { joueur: { ...j, monstres }, niveaux };
 }
 
+/** Retire des monstres sacrifiés (collection, équipe, équipes retenues). */
+function sacrifier(j: Joueur, uids: readonly number[], garder: number): Joueur {
+  const equipe = j.equipe.filter((u) => !uids.includes(u));
+  const equipesStages = Object.fromEntries(Object.entries(j.equipesStages).map(([k, v]) => [k, v.filter((u) => !uids.includes(u))]));
+  return { ...j, monstres: j.monstres.filter((x) => !uids.includes(x.uid)), equipe: equipe.length ? equipe : [garder], equipesStages };
+}
+
+/** XP et kamas qu'apporterait cette nourriture (sans le bonus aléatoire). */
+export function apercuNourrir(j: Joueur, uids: readonly number[]) {
+  const ms = uids.map((u) => monstre(j, u));
+  return { xp: ms.reduce((s, m) => s + xpDonnee(m.etoiles as Etoiles, m.niveau), 0), kamas: ms.reduce((s, m) => s + COUT_NOURRIR[m.etoiles as Etoiles], 0) };
+}
+
 /**
- * ✓ Évolution façon SW : le monstre doit être au niveau max ; on sacrifie autant de monstres de même étoile que
- * son nombre d'étoiles, et on paie des kamas. Il gagne une étoile et repart au niveau 1.
+ * ✓ Nourrir au Cercle d'amélioration (SW) : jusqu'à 5 monstres sacrifiés donnent leur XP ; ~20 % de chances de ×1,5.
+ * Le hasard passe par le Rng (combat et serveur déterministes).
+ */
+export function nourrir(j: Joueur, uid: number, nourriture: number[], rng: Rng): { joueur: Joueur; xp: number; bonus: boolean; niveaux: number } {
+  monstre(j, uid); // vérifie qu'il existe
+  if (!nourriture.length || nourriture.length > NOURRITURE_MAX) throw new Error(`De 1 à ${NOURRITURE_MAX} monstres`);
+  if (new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
+  const { xp: base, kamas } = apercuNourrir(j, nourriture);
+  if (j.kamas < kamas) throw new Error(`Il faut ${kamas} kamas`);
+  const bonus = rng.suivant() < CHANCE_BONUS_XP;
+  const xp = bonus ? Math.round(base * 1.5) : base;
+  const r = donnerXp({ ...j, kamas: j.kamas - kamas }, [uid], xp);
+  return { joueur: sacrifier(r.joueur, nourriture, uid), xp, bonus, niveaux: r.niveaux[uid] ?? 0 };
+}
+
+/**
+ * ✓ Évolution façon SW actuel (RELOADED) : pas de condition de niveau ; la nourriture (autant ou moins d'étoiles)
+ * apporte des points ; on paie des kamas ; le monstre gagne une étoile et garde son niveau.
  */
 export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
   const m = monstre(j, uid);
@@ -129,9 +159,7 @@ export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
   const etoiles = (e + 1) as Etoiles;
   const restants = j.monstres.filter((x) => !nourriture.includes(x.uid)).map((x) =>
     x.uid === uid ? { ...x, etoiles, xp: Math.min(x.niveau >= NIVEAU_MAX[e] ? 0 : x.xp, XP_NIVEAU[etoiles][x.niveau - 1] - 1) } : x);
-  const equipe = j.equipe.filter((u) => !nourriture.includes(u));
-  const equipesStages = Object.fromEntries(Object.entries(j.equipesStages).map(([k, v]) => [k, v.filter((u) => !nourriture.includes(u))]));
-  return { ...j, kamas: j.kamas - cout, monstres: restants, equipe: equipe.length ? equipe : [uid], equipesStages };
+  return sacrifier({ ...j, kamas: j.kamas - cout, monstres: restants }, nourriture, uid);
 }
 
 /** Relit une sauvegarde : renvoie un joueur valide, ou null si elle est illisible (on repart alors d'un joueur neuf). */

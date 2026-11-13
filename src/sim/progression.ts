@@ -63,3 +63,22 @@ export function ajouterXp(etoiles: Etoiles, niveau: number, xp: number, gain: nu
   }
   return { niveau: n, xp: n >= max ? 0 : x };
 }
+
+/**
+ * ✓ XP donnée par un monstre sacrifié au Cercle d'amélioration (wiki SW, Power-Up Circle) : niveau 1 et niveau max
+ * pour chaque étoile ; ⚠ entre les deux on interpole, et RELOADED a pu changer ces valeurs.
+ */
+export const XP_NOURRITURE: Record<Etoiles, [number, number]> = {
+  1: [800, 1210], 2: [1760, 3086], 3: [3200, 6204], 4: [6724, 13851], 5: [16000, 43708], 6: [44001, 139356],
+};
+export function xpDonnee(etoiles: Etoiles, niveau: number): number {
+  const [a, b] = XP_NOURRITURE[etoiles];
+  const max = NIVEAU_MAX[etoiles];
+  return Math.round(a + ((b - a) * (Math.min(niveau, max) - 1)) / (max - 1));
+}
+/** ✓ SW : environ 20 % de chances de recevoir 1,5 fois l'XP. */
+export const CHANCE_BONUS_XP = 0.2;
+/** ⚠ Kamas par monstre donné (SW : le coût dépend des étoiles de la nourriture ; montants non trouvés). */
+export const COUT_NOURRIR: Record<Etoiles, number> = { 1: 100, 2: 300, 3: 900, 4: 2700, 5: 8100, 6: 24300 };
+/** SW : jusqu'à 5 monstres donnés d'un coup. */
+export const NOURRITURE_MAX = 5;

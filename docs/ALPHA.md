@@ -29,7 +29,8 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
   butin des stages (`stages.ts`), sauvegarde locale, XP et montées de niveau après chaque victoire.
   Écrans de préparation (`PreparationScene.ts` : tri, filtre, fiche, équipe retenue par stage, monstres prêts à évoluer)
   et de récompenses (fin de `CombatScene.ts`) faits d'après la maquette « Écrans : ».
-  Reste : écran d'évolution (choix de la nourriture) et écran de collection hors combat.
+  Cercle d'amélioration (`CercleScene.ts`) : nourrir et faire évoluer, règles SW actuelles (RELOADED).
+  Reste : l'île (accueil avec ses bâtiments), écran de collection hors combat, montée des sorts par la famille.
 - [ ] **6. Histoire** — 7 stages enchaînés avec récompenses.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
 - [ ] **8. Invocation** — les pierres d'âme donnent des monstres.

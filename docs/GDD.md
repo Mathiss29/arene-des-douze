@@ -37,6 +37,14 @@
 - Récompenses : monstres sur leurs socles avec barres d'XP qui se remplissent un par un, « NIVEAU SUPÉRIEUR ! ».
 - Butin en cases avec icônes. Boutons : Préparation · Rejouer · Stage suivant (pas de Répéter pour l'instant).
 
+### Cercle d'amélioration (maquette « Évolution : » 1A 2A 3A 4A 5A 6A 7A 8A 9A, 13 nov. 2026)
+- Bâtiment de l'île (comme le Power-Up Circle de SW) nommé « Cercle d'amélioration », deux onglets : Nourrir (XP) et Évoluer.
+  En attendant l'île, on y entre depuis la préparation.
+- Monstre choisi au centre, 5 cases de nourriture en arc au-dessus, collection en bas : on touche un monstre pour le donner.
+- Cadenas : les monstres de l'équipe ; les 3★ et plus quand on nourrit (gardés pour l'évolution).
+- Stats avant → après au même niveau ; coût en kamas sur le bouton ; étoiles qui s'allument une à une puis éclair ;
+  confirmation seulement si la nourriture compte un 3★ ou plus.
+
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
