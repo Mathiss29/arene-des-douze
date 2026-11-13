@@ -60,6 +60,9 @@
   3. pastilles « ! » sur les bâtiments ; 4. mine à production horaire et stockage max, améliorable (comme les bâtiments à mana de SW) ;
   5. toucher un monstre qui se promène (animation + bulle ; appui long = fiche) ;
   6. niveau d'invocateur et arbre de compétences (comme SW v8.1.4), plutôt après l'invocation et les stages.
+- Aussi retenu : 7. guide des débutants (Ganymède d'Incarnam, comme Ellia et la Voie de l'invocateur de SW) ; 8. missions quotidiennes ;
+  9. boutique qui se renouvelle chaque heure (Boutique magique de SW) ; 10. un vœu par jour au Temple des Douze (Temple des souhaits) ;
+  11. récompenses de connexion. Plus tard : 12. agrandir l'île et la décorer. ⚠ Chaque mécanique sera vérifiée sur SW actuel avant d'être codée.
 
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
