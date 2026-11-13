@@ -9,7 +9,9 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Le combat doit rester déterministe : même graine + mêmes choix = même résultat (le serveur rejouera les combats PvP).
 - L'affichage (`src/render/`) lit l'état de la sim, il ne modifie pas la partie.
 - Le contenu (monstres, sorts, stages) est dans `src/data/*.json` ; l'apparence (planche, échelle, attaques) dans `src/render/looks.ts`.
-- Fidélité à Summoners War : en cas de doute sur une mécanique (jauge d'attaque, formules, runes, invocation), vérifier sur une source SW avant de l'inventer.
+- Fidélité à Summoners War **dans sa version actuelle** : en cas de doute sur une mécanique (jauge d'attaque, formules, runes, invocation),
+  vérifier sur une source SW avant de l'inventer, et vérifier qu'elle n'a pas changé depuis (RELOADED 2023 : évolution, runes sans échec ;
+  v8.1.4 : compétences d'invocateur à la place des bâtiments de gloire). Le GDD marque ✓ ce qui est vérifié et ⚠ ce qui ne l'est pas.
   Éléments : Feu > Air > Eau > Feu, Bonta ⇄ Brâkmar (Lumière/Ténèbres). Types : Attaque, Défense, PV, Soutien.
 - Planches de monstres : celles de Diablofus (dépôt `Mathiss29/dofus-diablo`, `tools/extraction/monster_planche.py`).
   Les atlas JSON sont copiés dans `public/assets/sprites/` ; les AVIF restent sur le R2 de Diablofus

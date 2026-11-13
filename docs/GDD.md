@@ -16,9 +16,12 @@
 - Dégâts : Attaque × multiplicateur × 1000 / (1140 + 3,5 × Défense de la cible).
 - Critique : 15 % de taux et 50 % de dégâts critiques au départ.
 - Éléments : Feu > Air > Eau > Feu ; Bonta ⇄ Brâkmar, neutres face aux trois autres.
-- Avantage d'élément : +15 % de taux critique ; en désavantage, coups « effleurés » (moins de dégâts, aucun malus posé). ⏳ Chiffres exacts des coups effleurés et écrasants.
+- Avantage d'élément ✓ : +15 % de taux critique et 35 % de chances de coup écrasant (+30 % de dégâts) ; désavantage ✓ : −15 % de taux
+  critique et 50 % de chances de coup effleuré (−30 % de dégâts, aucun malus posé, pas de baisse de jauge). Ordre : effleuré, critique, écrasant.
+- Variation des dégâts ✓ : ±2,5 % (sauf dégâts fixes).
 - Malus : chance de résister = max(15 %, Résistance − Précision) ✓. Un coup effleuré ne pose aucun malus ✓.
-- Bonus/malus (valeurs SW usuelles, ⚠ à confirmer) : Attaque +50 % / −50 %, Défense +70 % / −70 %, Vitesse +30 % / −30 %, taux critique +30 %, dégâts continus 5 % des PV max par pile. Toutes les constantes sont dans `src/sim/regles.ts`.
+- Bonus/malus : Attaque +50 % / −50 % ✓, Vitesse +30 % ✓, taux critique +30 % ✓, dégâts continus 5 % des PV max par pile ✓ ;
+  Défense +70 % / −70 % et Lenteur −30 % ⚠ (valeurs usuelles, non confirmées par une source). Toutes les constantes sont dans `src/sim/regles.ts`.
 - Sorts : 2 à 4 par monstre, temps de recharge, passifs ; skill de leader pour certains monstres (un seul actif par équipe).
 - Moteur déterministe, partagé entre le jeu et le serveur.
 
@@ -56,7 +59,7 @@
 
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
-- Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
+- Étoiles ✓ : 1 à 5★ à l'invocation, 6★ maximum. Niveau max ✓ : 15 / 20 / 25 / 30 / 35 / 40.
 - Évolution ✓ (SW actuel, refonte RELOADED v8.0.0 de 2023) : dans le bâtiment d'amélioration de l'île, sans condition de niveau ;
   nourriture d'autant ou moins d'étoiles, comptée en points (1★ = 1, 2★ = 2, 3★ = 6, 4★ = 24, 5★ = 120 ; il faut N × points(N★) :
   1 / 4 / 18 / 96 / 600) → +1★, le niveau est gardé. Kamas : 1 600 / 4 000 / 9 600 / 22 400 / 35 200 (⚠ barème d'avant RELOADED,
@@ -64,9 +67,12 @@
 - Nourrir pour l'XP (SW) : jusqu'à 5 monstres d'un coup, ~20 % de chances d'avoir ×1,5 (⚠ XP par monstre à vérifier, RELOADED l'a changée).
 - XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`, ⚠ d'avant RELOADED) ; l'XP en trop au niveau max est perdue.
 - Stats : les fiches donnent les stats 6★ niveau 40 ; PV, Attaque et Défense suivent le niveau et les étoiles (⚠ courbe provisoire),
-  les autres stats sont fixes. Un monstre naturellement 1★ reste 15 % moins fort qu'un 3★ une fois monté 6★.
+  les autres stats sont fixes ✓. Choix du jeu (pas une règle SW) : un monstre naturellement 1★ reste 15 % moins fort qu'un 3★ une fois 6★
+  (dans SW, chaque monstre a ses propres stats de base, plus hautes pour les étoiles naturelles élevées).
 - Départ : Piou Vert (leader), Kwak de Flamme, Piou Bleu, Piou Rouge, niveau 1, et 5 000 kamas.
-- Éveil : avec des essences (nom, apparence, stats, sort amélioré). Amélioration des sorts : doublon ou objet dédié.
+- Éveil ✓ : avec des essences de son élément et de magie, en trois paliers (bas, moyen, haut ; 5 d'un palier → 1 du suivant au Centre de fusion) ;
+  nom, apparence, stats, sort amélioré ou nouveau. Second éveil pour certains monstres (plus tard).
+- Montée des sorts ✓ : un monstre de la même famille donné en nourriture, ou un Diablotin (le Devilmon de SW).
 
 ### Liste de lancement (35)
 | Famille | Feu | Air | Eau | Bonta | Brâkmar |
@@ -100,34 +106,44 @@ Bouftou Royal +44 % défense (Donjons) ; Dopeul Iop +33 % taux critique (Donjons
 ## 4. Invocation
 | Objet | Équivalent SW | Résultat |
 |---|---|---|
-| Pierre d'âme | Parchemin inconnu | 1-3★ |
-| Pierre d'âme parfaite | Parchemin mystique | 3-5★ (≈ 91,5 % / 8 % / 0,5 %) |
-| Pierre élémentaire | Parchemin d'élément | 3-5★ d'un seul élément |
-| Pierre Bonta/Brâkmar | Parchemin Lumière & Ténèbres | Monstres Bonta ou Brâkmar |
-| Fragments d'âme | Pièces d'invocation | Monstre précis |
+| Pierre d'âme | Parchemin inconnu | 1-3★ Feu/Air/Eau (≈ 74,1 % / 24,6 % / 1,3 %) |
+| Pierre d'âme parfaite | Parchemin mystique | 3-5★ Feu/Air/Eau (91,5 % / 8 % / 0,5 %) |
+| Pierre élémentaire | Parchemin d'élément | 3-5★ d'un seul élément (mêmes chances) |
+| Pierre Bonta/Brâkmar | Parchemin Lumière & Ténèbres | 3-5★ Bonta ou Brâkmar (93,65 % / 6 % / 0,35 %) |
+| Pierre légendaire | Parchemin légendaire | 4-5★ (93,5 % / 6,5 %) |
+| Fragments d'âme | Pièces d'invocation | Monstre précis (SW : 20 pièces pour un 2★, 40 pour un 3★, 50 pour un 4★) |
+
+✓ Chances vérifiées (tableau de référence de la communauté SW ; celles du parchemin inconnu sont une estimation). Bonta et Brâkmar
+ne sortent que de leur pierre (et des pierres légendaires « tous éléments »).
 
 ## 5. Runes
 - 6 emplacements : 1, 3 et 5 à stat principale fixe (Attaque, Défense, PV fixes) ; 2, 4 et 6 variables ; seul le 2 peut avoir la vitesse.
 - Rareté : Commune (0 sous-stat) à Légendaire (4).
-- Forgemagie +0 à +15 ; sous-stat ajoutée ou améliorée à +3, +6, +9 et +12 ; réussite décroissante jusqu'à 5 % pour +14 → +15.
+- Forgemagie +0 à +15 ; sous-stat ajoutée ou améliorée à +3, +6, +9 et +12. ✓ Depuis RELOADED, plus d'échec : la montée est instantanée
+  (+3/+6/+9/+12/+15 au choix) et coûte un montant fixe selon le grade de la rune.
 - Sets (dieux du Monde des Douze) : Ecaflip (Violent), Xélor (Swift), Sadida (Despair), Iop (Rage), Sram (Fatal), Eniripsa (Vampire),
   Sacrieur (Revenge), Féca (Shield), Crâ (Focus), Pandawa (Endure), Osamodas (Fight), Enutrof (spécifique au jeu).
+  (SW compte d'autres sets : Énergie, Garde, Lame, Némésis, Volonté, Destruction, Détermination, Amélioration, Précision, Tolérance… à placer plus tard.)
 
 ## 6. Économie
-Kamas, Énergie, Pierres d'âme, Ogrines (gagnées en jouant uniquement), Essences, Jetons de Kolizéum. ⏳ Montants.
+Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, gagnées en jouant uniquement), Essences, Jetons de Kolizéum. ⏳ Montants.
+✓ Dans SW, l'énergie sert aux combats d'histoire, aux donjons, à la tour et aux failles ; l'Arène a ses propres invitations.
+⏳ Garder l'énergie ou non (jeu gratuit sans achat).
 
 ## 7. Modes de jeu
-- Histoire : zones du Monde des Douze en Normal, Difficile, Enfer.
+- Histoire : zones du Monde des Douze en Normal, Difficile, Enfer ✓ ; 7 stages par zone (SW en compte une vingtaine aujourd'hui).
 - Donjons : Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
 - Tour des Dimensions : 100 étages.
-- Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues.
+- Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues. Plus tard : Kolizéum en direct, comme l'Arène mondiale de SW
+  (4 monstres, choix alternés).
+- Niveau d'invocateur et compétences d'invocateur ✓ (SW v8.1.4) : points gagnés en montant de niveau, à dépenser dans des bonus.
 
 ## 8. Technique
 TypeScript, Vite, Phaser 3.80.1, vitest (même architecture que Diablofus : `sim/` pur, `render/` qui lit, `data/` en JSON).
 Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus) pour la sauvegarde et la validation du PvP.
 
 ## 9. Décisions ouvertes ⏳
-1. Chances exactes des coups écrasants et effleurés (50 % provisoire) et leurs effets sur les dégâts (±30 % provisoire).
+1. Défense ±70 % et Lenteur −30 % à confirmer ; table d'XP et coûts d'après RELOADED non publiés.
 2. Fiches des 35 monstres (stats, sorts, éveils).
 3. Apparence Bonta/Brâkmar des Kwaks et Kwakères.
 4. Montants de l'économie.
