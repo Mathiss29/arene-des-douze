@@ -141,8 +141,10 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 - ✓ Résistance : chance de résister = max(15 %, RÉS − PRÉ).
 - ✓ Niveaux max 15 / 20 / 25 / 30 / 35 / 40 (toujours 6★ niv. 40 en 2026).
 - ✓ Évolution RELOADED (v8.0.0) : sans niveau max, niveau gardé, nourriture en points.
-- ✓ Île : le Summonhenge est là dès le départ ; les bâtiments à mana produisent à l'heure avec un stockage max (ex. 660/h, 4 000 max) ;
-  des bâtiments de gloire augmentent la production (+5 %/niveau) et le stockage.
+- ✓ Île : le Summonhenge est là dès le départ ; les bâtiments à mana produisent à l'heure avec un stockage max (ex. 660/h, 4 000 max).
+- ✓ Plus de bonus par les bâtiments de gloire ni les drapeaux de guilde depuis la v8.1.4 (nov. 2023) : ce sont des compétences
+  d'invocateur (Tour de l'invocateur > Compétences). 5 points par niveau d'invocateur du niv. 21 au niv. 100, 1 point par amélioration,
+  400 points en tout. Les anciens bâtiments de gloire ne sont plus que des décorations achetées en mana.
 - ✓ Bonus/malus : attaque +50 %, critique +30 %, vitesse +30 %, attaque −50 %, dégâts continus 5 % des PV max.
 - ✓ Cercle d'amélioration : bâtiment de départ, gratuit ; jusqu'à 5 monstres d'un coup ; 20 % de chances de ×1,5 d'XP ;
   coût en mana selon les étoiles de la nourriture (montants non publiés : nos kamas restent provisoires).
