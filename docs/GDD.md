@@ -29,6 +29,14 @@
 - Arène : la salle de la zone ou du donjon où l'on combat (arènes de Diablofus).
 - Téléphone : paysage uniquement.
 
+### Préparation et récompenses (maquette « Écrans : » 1B 2B 3B 4A 5A 6A 7A 8A 9A 10A, 13 nov. 2026)
+- Préparation en deux panneaux : collection à gauche, ennemis de la vague et équipe à droite.
+- Ennemis en blocs : portrait, nom, niveau, couleur d'élément. Pas de bilan d'éléments (comme SW).
+- Collection en cases : portrait, étoiles, niveau, pastille d'élément.
+- Leader = premier monstre de l'équipe (SW). Bouton Combattre en bas à droite.
+- Récompenses : monstres sur leurs socles avec barres d'XP qui se remplissent un par un, « NIVEAU SUPÉRIEUR ! ».
+- Butin en cases avec icônes. Boutons : Préparation · Rejouer · Stage suivant (pas de Répéter pour l'instant).
+
 ## 3. Monstres
 - Types : Attaque, Défense, PV, Soutien.
 - Étoiles : 1 à 5★ à l'invocation, 6★ maximum. Niveau max : 15 / 20 / 25 / 30 / 35 / 40.
