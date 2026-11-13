@@ -1,15 +1,15 @@
 [
-  { "id": "piou_rouge", "nom": "Piou Rouge", "famille": "piou", "element": "feu", "etoiles": 1, "type": "attaque" },
-  { "id": "piou_vert", "nom": "Piou Vert", "famille": "piou", "element": "air", "etoiles": 1, "type": "soutien" },
-  { "id": "piou_bleu", "nom": "Piou Bleu", "famille": "piou", "element": "eau", "etoiles": 1, "type": "soutien" },
-  { "id": "piou_jaune", "nom": "Piou Jaune", "famille": "piou", "element": "bonta", "etoiles": 1, "type": "pv" },
-  { "id": "piou_violet", "nom": "Piou Violet", "famille": "piou", "element": "brakmar", "etoiles": 1, "type": "attaque" },
-  { "id": "scarafeuille_rouge", "nom": "Scarafeuille Rouge", "famille": "scarafeuille", "element": "feu", "etoiles": 3, "type": "soutien" },
-  { "id": "scarafeuille_vert", "nom": "Scarafeuille Vert", "famille": "scarafeuille", "element": "air", "etoiles": 3, "type": "defense" },
-  { "id": "scarafeuille_bleu", "nom": "Scarafeuille Bleu", "famille": "scarafeuille", "element": "eau", "etoiles": 3, "type": "soutien" },
-  { "id": "scarafeuille_blanc", "nom": "Scarafeuille Blanc", "famille": "scarafeuille", "element": "bonta", "etoiles": 3, "type": "pv" },
-  { "id": "scarafeuille_noir", "nom": "Scarafeuille Noir", "famille": "scarafeuille", "element": "brakmar", "etoiles": 3, "type": "attaque" },
-  { "id": "kwak_de_flamme", "nom": "Kwak de Flamme", "famille": "kwak", "element": "feu", "etoiles": 3, "type": "attaque" },
-  { "id": "kwak_de_vent", "nom": "Kwak de Vent", "famille": "kwak", "element": "air", "etoiles": 3, "type": "attaque" },
-  { "id": "kwak_de_glace", "nom": "Kwak de Glace", "famille": "kwak", "element": "eau", "etoiles": 3, "type": "soutien" }
+  {"id": "piou_rouge", "nom": "Piou Rouge", "famille": "piou", "element": "feu", "etoiles": 1, "type": "attaque", "nomEveil": "Braisillon"},
+  {"id": "piou_vert", "nom": "Piou Vert", "famille": "piou", "element": "air", "etoiles": 1, "type": "soutien", "nomEveil": "Zéphyrin"},
+  {"id": "piou_bleu", "nom": "Piou Bleu", "famille": "piou", "element": "eau", "etoiles": 1, "type": "soutien", "nomEveil": "Ploufette"},
+  {"id": "piou_jaune", "nom": "Piou Jaune", "famille": "piou", "element": "bonta", "etoiles": 1, "type": "pv", "nomEveil": "Soleillou"},
+  {"id": "piou_violet", "nom": "Piou Violet", "famille": "piou", "element": "brakmar", "etoiles": 1, "type": "attaque", "nomEveil": "Ombrelin"},
+  {"id": "scarafeuille_rouge", "nom": "Scarafeuille Rouge", "famille": "scarafeuille", "element": "feu", "etoiles": 3, "type": "soutien", "nomEveil": "Automnelle"},
+  {"id": "scarafeuille_vert", "nom": "Scarafeuille Vert", "famille": "scarafeuille", "element": "air", "etoiles": 3, "type": "defense", "nomEveil": "Chlorofil"},
+  {"id": "scarafeuille_bleu", "nom": "Scarafeuille Bleu", "famille": "scarafeuille", "element": "eau", "etoiles": 3, "type": "soutien", "nomEveil": "Ondine"},
+  {"id": "scarafeuille_blanc", "nom": "Scarafeuille Blanc", "famille": "scarafeuille", "element": "bonta", "etoiles": 3, "type": "pv", "nomEveil": "Lumifeuille"},
+  {"id": "scarafeuille_noir", "nom": "Scarafeuille Noir", "famille": "scarafeuille", "element": "brakmar", "etoiles": 3, "type": "attaque", "nomEveil": "Sylvombre"},
+  {"id": "kwak_de_flamme", "nom": "Kwak de Flamme", "famille": "kwak", "element": "feu", "etoiles": 3, "type": "attaque", "nomEveil": "Flambard"},
+  {"id": "kwak_de_vent", "nom": "Kwak de Vent", "famille": "kwak", "element": "air", "etoiles": 3, "type": "attaque", "nomEveil": "Bourrasquin"},
+  {"id": "kwak_de_glace", "nom": "Kwak de Glace", "famille": "kwak", "element": "eau", "etoiles": 3, "type": "soutien", "nomEveil": "Frimas"}
 ]

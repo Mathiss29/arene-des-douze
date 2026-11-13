@@ -58,6 +58,17 @@ Kwak de Vent +19 % taux critique (Donjons) ; Bouftou Nuageux +33 % PV ; Boufton 
 Kwakère de Flamme +30 % attaque des monstres Feu ; Kwakwa +44 % attaque (Arène) ; Wa Wabbit +24 % vitesse ;
 Bouftou Royal +44 % défense (Donjons) ; Dopeul Iop +33 % taux critique (Donjons) ; Dopeul Crâ +41 % précision.
 
+### Éveils (maquette « Éveils : » 1B 2B 3D 4B 5A 6B 7B 8A 9B 10A, 13 nov. 2026)
+- Le monstre garde sa planche (pas de forme adulte : les Kwakères et les Bouftous restent des familles à part).
+- Aura permanente des éveillés, en combat comme dans la collection : particules d'élément + halo lumineux, intensité normale
+  (braises pour le Feu, bulles et ondes pour l'Eau, feuilles en tourbillon pour l'Air, rayons dorés pour Bonta, fumée violette pour Brâkmar).
+- Éveillés 12 % plus grands, couleurs plus vives.
+- Moment de l'éveil : l'énergie converge sur le monstre, il blanchit, éclair, ondes de choc et gerbe d'étincelles.
+- Nom : le nom éveillé, avec le monstre d'origine en dessous (« Ondine · Scarafeuille Bleu »).
+- Éléments manquants : recoloration (Kwaks Bonta et Brâkmar depuis le Kwak de Terre).
+- Effets faits maison (`src/render/effets.ts`), pas les effets officiels.
+- ⏳ Règles de l'éveil (essences, bonus de stats, sort amélioré) à vérifier sur SW puis à coder.
+
 ## 4. Invocation
 | Objet | Équivalent SW | Résultat |
 |---|---|---|

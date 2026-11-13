@@ -14,6 +14,8 @@ export interface FicheMonstre {
   /** Étoiles à l'invocation (1 à 5). */
   etoiles: 1 | 2 | 3 | 4 | 5;
   type: TypeMonstre;
+  /** Nom une fois éveillé (unique par élément, comme dans SW). */
+  nomEveil: string;
 }
 
 export const ELEMENTS: readonly Element[] = ['feu', 'air', 'eau', 'bonta', 'brakmar'];

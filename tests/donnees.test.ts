@@ -26,7 +26,9 @@ describe('monstres de l\'alpha', () => {
       expect(['attaque', 'defense', 'pv', 'soutien']).toContain(f.type);
       expect(f.etoiles).toBeGreaterThanOrEqual(1);
       expect(f.etoiles).toBeLessThanOrEqual(5);
+      expect(f.nomEveil, `${f.id} sans nom éveillé`).toBeTruthy();
     }
+    expect(new Set(FICHES.map((f) => f.nomEveil)).size).toBe(FICHES.length);
   });
 
   it.each(FICHES.map((f) => [f.id]))('%s a une planche avec repos, coup reçu, mort et ses attaques', (id) => {
