@@ -143,6 +143,9 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 - ✓ Évolution RELOADED (v8.0.0) : sans niveau max, niveau gardé, nourriture en points.
 - ✓ Île : le Summonhenge est là dès le départ ; les bâtiments à mana produisent à l'heure avec un stockage max (ex. 660/h, 4 000 max) ;
   des bâtiments de gloire augmentent la production (+5 %/niveau) et le stockage.
-- ⚠ À confirmer : valeurs des bonus/malus (ATQ ±50 %, DÉF ±70 %, VIT ±30 %, poison 5 %), table d'XP après RELOADED,
-  coûts en mana de l'évolution et du power-up, XP donnée par la nourriture.
+- ✓ Bonus/malus : attaque +50 %, critique +30 %, vitesse +30 %, attaque −50 %, dégâts continus 5 % des PV max.
+- ✓ Cercle d'amélioration : bâtiment de départ, gratuit ; jusqu'à 5 monstres d'un coup ; 20 % de chances de ×1,5 d'XP ;
+  coût en mana selon les étoiles de la nourriture (montants non publiés : nos kamas restent provisoires).
+- ⚠ Toujours à confirmer : défense ±70 %, lenteur −30 %, la nouvelle table d'XP de RELOADED (Com2uS ne l'a pas publiée ;
+  on garde l'ancienne, identique au tableau de référence), coûts exacts et XP de la nourriture après RELOADED.
 

@@ -28,7 +28,10 @@ export const REGLES = {
   variation: 0.025,
   /** ✓ Chance de résister à un malus : max(15 %, Résistance − Précision). */
   resistanceMin: 15,
-  /** ⚠ Valeurs SW usuelles des bonus et malus (page « Buffs » du wiki non lue : à confirmer). */
+  /**
+   * Bonus et malus : ✓ attaque +50 %, critique +30 %, vitesse +30 %, attaque −50 % ;
+   * ⚠ défense +70 % / −70 % et lenteur −30 % (valeurs usuelles, une vieille source donne +50 % pour la défense).
+   */
   atqHausse: 0.5,
   defHausse: 0.7,
   vitHausse: 0.3,
@@ -36,7 +39,7 @@ export const REGLES = {
   atqBaisse: 0.5,
   defBaisse: 0.7,
   lenteur: 0.3,
-  /** ⚠ Dégâts continus : 5 % des PV max par pile, au début du tour de la victime. */
+  /** ✓ Dégâts continus : 5 % des PV max par pile, au début du tour de la victime (⚠ 10 piles au plus). */
   poisonParPile: 0.05,
   poisonPilesMax: 10,
   /** Garde-fou : au-delà, le combat est déclaré nul. */
