@@ -15,7 +15,8 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Les atlas JSON sont copiés dans `public/assets/sprites/` ; les AVIF restent sur le R2 de Diablofus
   (en dév, relayés par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
-- Écrans : combat d'essai par défaut, vitrine des planches avec `#vitrine`. Paysage uniquement, 1280 × 720 mis à l'échelle.
+- Écrans : préparation d'équipe par défaut (`src/render/PreparationScene.ts`) puis combat (`CombatScene.ts`, récompenses à la fin), vitrine des planches avec `#vitrine`.
+  Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement, 1280 × 720 mis à l'échelle.
   Débogage dans la console : `window.game.scene.getScene('combat')`.
 - État du joueur : `src/sim/joueur.ts` (pur) ; sauvegarde locale sous la clé `arene-des-douze:joueur` (`src/render/sauvegarde.ts`).
   Stages et butin : `src/data/stages.json`, `src/sim/stages.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.

@@ -3,13 +3,15 @@ import { Combat, type Evenement, type Unite } from '../sim/combat';
 import { choisirAction } from '../sim/ia';
 import { monstreCombat } from '../sim/fiches';
 import { monstre, type Joueur } from '../sim/joueur';
-import { appliquerVictoire, equipeEnnemie, equipeJoueur, stage, tirerButin, type Stage } from '../sim/stages';
+import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin, type Stage } from '../sim/stages';
 import { charger, sauver } from './sauvegarde';
-import { NIVEAU_MAX, XP_NIVEAU } from '../sim/progression';
+import { NIVEAU_MAX, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { avantage, estBonus, type Element, type Sort, type TypeEffet } from '../sim/types';
 import { LOOKS } from './looks';
-import { atlasPlanche, distant, dossierPlanches } from './assetUrl';
+import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
+import { preparerTextures } from './effets';
+import { bouton, chargerUi, monstreEnPied, panneau, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -34,8 +36,8 @@ const COURT_EFFET: Record<TypeEffet, string> = {
   atq_baisse: 'ATQ↓', def_baisse: 'DÉF↓', lenteur: 'VIT↓', etourdi: 'ÉTO', poison: 'POI',
 };
 
-/** Stage joué tant que la carte de l'histoire n'existe pas. */
-const STAGE = 'astrub-1';
+/** Stage joué par défaut (tant que la carte de l'histoire n'existe pas). */
+const STAGE = LISTE_STAGES[0].id;
 /** Pieds des monstres : alliés en bas à gauche, ennemis en haut à droite. */
 const PLACES = {
   // Formation en losange, sans chevauchement : le leader devant, les plus petits sur les côtés
@@ -89,8 +91,14 @@ export class CombatScene extends Phaser.Scene {
   private boutonAuto!: Phaser.GameObjects.Text;
   private boutonRapide!: Phaser.GameObjects.Text;
 
+  private stageId = STAGE;
+
   constructor() {
     super('combat');
+  }
+
+  init(data: { stage?: string }) {
+    if (data?.stage) this.stageId = data.stage;
   }
 
   preload() {
@@ -99,14 +107,12 @@ export class CombatScene extends Phaser.Scene {
     this.load.on('loaderror', (f: Phaser.Loader.File) => console.error('Fichier introuvable :', f.key, f.url));
     this.load.once('complete', () => barre.destroy());
     this.joueur = charger();
-    this.stage = stage(STAGE);
-    this.load.image(`arene:${this.stage.arene}`, distant(this.stage.arene));
+    this.stage = stage(this.stageId);
+    if (!this.textures.exists(`arene:${this.stage.arene}`)) this.load.image(`arene:${this.stage.arene}`, distant(this.stage.arene));
     const ids = [...this.joueur.equipe.map((u) => monstre(this.joueur, u).id), ...this.stage.ennemis.map((e) => e.id)];
+    chargerUi(this, ids);
     for (const id of ids) {
-      const look = LOOKS[id];
-      if (!this.textures.exists(look.atlas)) this.load.multiatlas(look.atlas, atlasPlanche(look.atlas), dossierPlanches);
-      this.load.json(`${look.atlas}:meta`, atlasPlanche(look.atlas));
-      for (const s of monstreCombat(id).sorts) if (s.icone) this.load.image(`sort_${s.icone}`, `assets/ui/sorts/sort_${s.icone}.png`);
+      for (const s of monstreCombat(id).sorts) if (s.icone && !this.textures.exists(`sort_${s.icone}`)) this.load.image(`sort_${s.icone}`, `assets/ui/sorts/sort_${s.icone}.png`);
     }
   }
 
@@ -639,51 +645,128 @@ export class CombatScene extends Phaser.Scene {
     this.boutonRapide.setText(`×${this.vitesseJeu}`).setBackgroundColor(vite ? '#c9a24a' : 'rgba(10,20,15,0.8)').setColor(vite ? '#1d1405' : '#ffffff');
   }
 
-  /** Fin du combat. En cas de victoire : butin, XP et montées de niveau, puis sauvegarde (écran provisoire en attendant la maquette). */
+  /**
+   * Fin du combat (maquette « Écrans : » 7A 8A 9A 10A) : bannière, monstres sur leurs socles avec leurs barres d'XP
+   * qui se remplissent l'une après l'autre, butin en cases, puis Préparation · Rejouer · Stage suivant.
+   */
   private afficherFin(vainqueur: 'A' | 'B' | null) {
     this.majSorts();
     for (const slot of this.frise) { slot.cadre.clear(); slot.portrait.setVisible(false); }
     this.reticule.clear();
     this.flecheCible.setVisible(false);
+    preparerTextures(this);
+    texturePierreAme(this);
+    // On ne garde que l'arène (premier objet) derrière l'écran de fin
+    this.children.list.slice(1).forEach((o) => (o as unknown as Phaser.GameObjects.Components.Visible).setVisible?.(false));
     const D = 4000;
-    this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.62).setDepth(D).setInteractive();
-    const titre = vainqueur === 'A' ? 'Victoire !' : vainqueur === 'B' ? 'Défaite…' : 'Match nul';
-    this.add.text(W / 2, 120, titre, { fontFamily: POLICE_CHIFFRES, fontSize: '60px', color: vainqueur === 'A' ? '#ffd23f' : '#ff8a7a' })
-      .setOrigin(0.5).setStroke('#2a1600', 8).setDepth(D + 1);
+    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.78).setDepth(D).setInteractive();
+    const t = (x: number, y: number, s: string, taille = 14, couleur = '#e9efe6', gras = false, ox = 0.5, oy = 0) => texte(this, x, y, s, taille, couleur, gras, ox, oy).setDepth(D + 3);
 
-    let y = 200;
-    if (vainqueur === 'A') {
-      const avant = this.joueur;
+    const victoire = vainqueur === 'A';
+    const ban = this.add.image(W / 2, 92, 'background_levelup_banner').setDisplaySize(560, 127).setDepth(D + 1);
+    if (!victoire) ban.setTint(0x8a8a8a);
+    this.add.text(W / 2, 80, victoire ? 'Victoire !' : vainqueur === 'B' ? 'Défaite…' : 'Match nul', { fontFamily: POLICE_CHIFFRES, fontSize: '50px', color: victoire ? '#ffffff' : '#ffd7cf' })
+      .setOrigin(0.5).setStroke(victoire ? '#5a2a00' : '#3a1010', 8).setDepth(D + 2);
+    this.tweens.add({ targets: ban, scaleX: { from: ban.scaleX * 0.6, to: ban.scaleX }, duration: 350, ease: 'Back.easeOut' });
+
+    const avant = this.joueur;
+    const xs = [250, 470, 690, 910].slice(0, avant.equipe.length);
+    const decal = (4 - xs.length) * 110;
+    let apres = avant;
+    let butinAffiche: { cle: string; n: string; label: string }[] = [];
+    if (victoire) {
       const butin = tirerButin(avant, this.stage, this.graine);
-      const { joueur, niveaux } = appliquerVictoire(avant, this.stage, butin);
-      this.joueur = joueur;
-      sauver(joueur);
-
-      const ligne = (texte: string, couleur = '#e9efe6', taille = 17) => {
-        this.add.text(W / 2, y, texte, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: couleur }).setOrigin(0.5, 0).setDepth(D + 1);
-        y += taille + 14;
-      };
-      ligne(`+${fmt(butin.kamas)} kamas   ·   ${butin.pierresAme ? `+${butin.pierresAme} pierre${butin.pierresAme > 1 ? 's' : ''} d'âme` : 'pas de pierre d\'âme'}`, '#ffe08a', 19);
-      if (butin.premiere) ligne('Première victoire sur ce stage : une pierre d\'âme offerte', '#8ff0d8', 14);
-      y += 8;
-      for (const uid of avant.equipe) {
-        const a = monstre(avant, uid), b = monstre(joueur, uid);
-        const nom = this.combat.unites.find((u) => u.camp === 'A' && u.monstre.id === a.id)?.monstre.nom ?? a.id;
-        const max = b.niveau >= NIVEAU_MAX[b.etoiles];
-        const suite = max ? ' (max)' : `  (${fmt(b.xp)} / ${fmt(XP_NIVEAU[b.etoiles][b.niveau - 1])} XP)`;
-        const gain = niveaux[uid] ? `Niv. ${a.niveau} → ${b.niveau} ▲${suite}` : `Niv. ${b.niveau}${suite}`;
-        ligne(`${nom}   +${fmt(butin.xp)} XP   ${gain}`, niveaux[uid] ? '#7ee07a' : '#e9efe6', 16);
-      }
-    } else {
-      this.add.text(W / 2, y, 'Monte le niveau de tes monstres ou change d\'équipe, puis réessaie.', { fontFamily: POLICE, fontSize: '16px', color: '#cfdccf' })
-        .setOrigin(0.5, 0).setDepth(D + 1);
-      y += 40;
+      apres = appliquerVictoire(avant, this.stage, butin).joueur;
+      this.joueur = apres;
+      sauver(apres);
+      butinAffiche = [{ cle: 'kamas_tas', n: `+${fmt(butin.kamas)}`, label: 'kamas' }];
+      if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (première victoire)' : ''}` });
     }
-    this.add.text(W / 2, Math.max(y + 30, 470), 'Rejouer', {
-      fontFamily: POLICE, fontSize: '20px', fontStyle: '600', color: '#1d1405', backgroundColor: '#e3b54c', padding: { x: 22, y: 10 },
-    }).setOrigin(0.5).setDepth(D + 1).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.restart());
-    this.add.text(W / 2, Math.max(y + 30, 470) + 50, `${this.combat.tour} tours`, { fontFamily: POLICE, fontSize: '13px', color: '#93a89b' }).setOrigin(0.5).setDepth(D + 1);
+
+    // Monstres sur leurs socles, barres d'XP
+    const barres: ((v: number) => void)[] = [];
+    avant.equipe.forEach((uid, i) => {
+      const a = monstre(avant, uid), b = monstre(apres, uid);
+      const x = xs[i] + decal, y = 360;
+      const ko = !this.combat.unites.find((u) => u.camp === 'A' && u.place === i)?.vivant;
+      this.add.ellipse(x, y, 130, 40, i === 0 ? 0xffcf4a : 0x000000, i === 0 ? 0.25 : 0.45).setStrokeStyle(i === 0 ? 3 : 0, 0xffcf4a).setDepth(D + 1);
+      const sp = monstreEnPied(this, a.id, x, y, 1.15).setDepth(D + 2);
+      if (ko && !victoire) sp.setTint(0x666666);
+      const nom = this.combat.unites.find((u) => u.camp === 'A' && u.monstre.id === a.id)?.monstre.nom ?? a.id;
+      t(x, y + 24, `${i === 0 ? '♛ ' : ''}${nom}`, 14, '#ffffff', true);
+      const niv = t(x, y + 44, `Niv. ${a.niveau}${victoire ? ` · +${fmt(XP_GAIN(this.stage))} XP` : ''}`, 12, '#cfdccf');
+      const gr = this.add.graphics().setDepth(D + 3);
+      barres.push(this.barreXp(gr, niv, a, b, x - 80, y + 66, 160, x, y - 120, D));
+    });
+    barres.forEach((maj, i) => {
+      if (!victoire) { maj(0); return; }
+      const o = { v: 0 };
+      maj(0);
+      this.tweens.add({ targets: o, v: 1, duration: 1100, delay: 500 + i * 1250, ease: 'Sine.easeInOut', onUpdate: () => maj(o.v), onComplete: () => maj(1) });
+    });
+
+    // Butin
+    const yb = 520;
+    panneau(this, 250, yb - 14, 780, 82, D + 1);
+    if (victoire) {
+      t(270, yb - 4, 'BUTIN', 11, '#e3b54c', true, 0);
+      butinAffiche.forEach((o, k) => {
+        const x = 420 + k * 240;
+        this.add.image(x, yb + 30, 'slot_dark_background_full').setDisplaySize(60, 60).setDepth(D + 2);
+        this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
+        t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);
+        t(x + 40, yb + 40, o.label, 12, '#cfdccf', false, 0);
+      });
+    } else {
+      t(W / 2, yb + 10, 'Monte le niveau de tes monstres ou change d\'équipe, puis réessaie.', 15, '#cfdccf');
+      t(W / 2, yb + 36, `${this.combat.tour} tours`, 12, '#93a89b');
+    }
+
+    // Boutons
+    const suivant = LISTE_STAGES[LISTE_STAGES.findIndex((s) => s.id === this.stage.id) + 1];
+    const liste: [string, boolean, () => void][] = [
+      ['Préparation', false, () => this.scene.start('preparation', { stage: this.stage.id })],
+      ['↻ Rejouer', !victoire, () => this.scene.restart({ stage: this.stage.id })],
+    ];
+    if (victoire) liste.push([suivant ? 'Stage suivant ▸' : 'Bientôt la suite', true, () => suivant && this.scene.start('preparation', { stage: suivant.id })]);
+    const largeurs = liste.map(([, vert]) => (vert ? 200 : 150));
+    let x = W / 2 - (largeurs.reduce((s, w) => s + w, 0) + (liste.length - 1) * 14) / 2;
+    liste.forEach(([libelle, vert, action], i) => {
+      const w = largeurs[i];
+      const b = bouton(this, x + w / 2, 660, w, 46, libelle, vert, action, D + 2);
+      if (libelle === 'Bientôt la suite') b.griser();
+      x += w + 14;
+    });
+  }
+
+  /** Barre d'XP de a (avant) vers b (après) : v de 0 à 1 ; annonce « NIVEAU SUPÉRIEUR ! » à chaque passage, « MAX » au niveau max. */
+  private barreXp(gr: Phaser.GameObjects.Graphics, niv: Phaser.GameObjects.Text, a: { etoiles: number; niveau: number; xp: number }, b: { niveau: number; xp: number }, x: number, y: number, w: number, ax: number, ay: number, D: number) {
+    const e = a.etoiles as Etoiles;
+    const max = NIVEAU_MAX[e];
+    const position = (n: number, xp: number) => (n >= max ? max : n + xp / XP_NIVEAU[e][n - 1]);
+    const debut = position(a.niveau, a.xp), fin = position(b.niveau, b.xp);
+    let annonce = a.niveau;
+    const suite = niv.text.replace(/^Niv\. \d+/, '');
+    return (v: number) => {
+      const p = debut + (fin - debut) * v;
+      const n = Math.min(max, Math.floor(p));
+      const part = n >= max ? 1 : p - n;
+      gr.clear().fillStyle(0x000000, 0.65).fillRoundedRect(x - 1, y - 1, w + 2, 12, 5)
+        .fillStyle(n >= max ? 0xffcf4a : 0x3d8cff).fillRoundedRect(x, y, Math.max(2, w * part), 10, 4);
+      niv.setText(`${n >= max ? 'Niv. MAX' : `Niv. ${n}`}${suite}`);
+      if (n > a.niveau) niv.setColor(n >= max ? '#ffcf4a' : '#7ee07a');
+      if (n > annonce) {
+        annonce = n;
+        const txt = this.add.text(ax, ay, n >= max ? 'NIVEAU MAX !' : 'NIVEAU SUPÉRIEUR !', { fontFamily: POLICE_CHIFFRES, fontSize: '17px', color: n >= max ? '#ffcf4a' : '#7ee07a' })
+          .setOrigin(0.5).setStroke('#10380e', 5).setDepth(D + 4);
+        this.tweens.add({ targets: txt, y: ay - 18, scale: { from: 0.4, to: 1 }, duration: 380, ease: 'Back.easeOut' });
+        this.tweens.add({ targets: txt, alpha: 0, delay: 1300, duration: 400, onComplete: () => txt.destroy() });
+        this.add.particles(ax, ay + 40, 'fx:etincelle', { speed: { min: 60, max: 180 }, lifespan: 700, scale: { start: 0.5, end: 0 }, tint: [0xb6ffb0, 0xffffff], blendMode: 'ADD', emitting: false })
+          .setDepth(D + 4).explode(24);
+      }
+    };
   }
 }
 
+const XP_GAIN = (s: Stage) => s.recompenses.xp;
 const fmt = (n: number) => n.toLocaleString('fr-FR');

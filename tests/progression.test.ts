@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoiles } from '../src/sim/progression';
-import { ajouterMonstre, definirEquipe, donnerXp, evoluer, lireSauvegarde, nouveauJoueur, monstre } from '../src/sim/joueur';
+import { ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
 import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
 import { Combat } from '../src/sim/combat';
 import { choisirAction } from '../src/sim/ia';
@@ -68,6 +68,32 @@ describe('joueur', () => {
     expect(apres.monstres.some((m) => m.uid === 3)).toBe(false);
     expect(apres.equipe).not.toContain(3);
     expect(apres.kamas).toBe(j.kamas - 1600);
+  });
+
+  it('retient l\'équipe de chaque stage, sans les monstres disparus', () => {
+    let j = nouveauJoueur();
+    expect(equipePourStage(j, 'astrub-1')).toEqual([1, 2, 3, 4]);
+    j = definirEquipe(j, [3, 1], 'astrub-1');
+    j = definirEquipe(j, [2], 'astrub-2');
+    expect(equipePourStage(j, 'astrub-1')).toEqual([3, 1]);
+    j = evoluer(donnerXp(j, [1], 99999).joueur, 1, [3]);
+    expect(equipePourStage(j, 'astrub-1')).toEqual([1]);
+    expect(equipePourStage(lireSauvegarde(JSON.parse(JSON.stringify(j)))!, 'astrub-2')).toEqual([2]);
+  });
+
+  it('repère les monstres prêts à évoluer', () => {
+    let j = nouveauJoueur();
+    expect(peutEvoluer(j, 1)).toBe(false);
+    j = donnerXp(j, [1], 99999).joueur;
+    expect(peutEvoluer(j, 1)).toBe(true); // Pious 1★ en nourriture, 5000 kamas
+    expect(peutEvoluer({ ...j, kamas: 100 }, 1)).toBe(false);
+  });
+
+  it('trie la collection par étoiles, niveau ou élément', () => {
+    const j = donnerXp(nouveauJoueur(), [3], 2000).joueur;
+    expect(trierMonstres(j.monstres, 'etoiles')[0].id).toBe('kwak_de_flamme');
+    expect(trierMonstres(j.monstres, 'niveau')[0].id).toBe('piou_bleu');
+    expect(trierMonstres(j.monstres, 'element').map((m) => m.id)).toEqual(['kwak_de_flamme', 'piou_rouge', 'piou_vert', 'piou_bleu']);
   });
 
   it('ajoute un monstre avec un nouvel identifiant', () => {

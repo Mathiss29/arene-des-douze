@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { CombatScene } from './render/CombatScene';
+import { PreparationScene } from './render/PreparationScene';
 import { VitrineScene } from './render/VitrineScene';
 import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
@@ -7,11 +8,11 @@ import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
 // Polices de Dofus 3 (Lexend pour l'interface, Rowdies pour les chiffres), chargées avant le premier texte
 await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f) => document.fonts.load(f).catch(() => undefined)));
 
-// #vitrine : vitrine des planches ; #maquette-<nom> : maquette jouable avec son panneau de questions ; sinon le combat
+// #vitrine : vitrine des planches ; #maquette-<nom> : maquette jouable avec son panneau de questions ; sinon la préparation d'équipe
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };
 const maquette = MAQUETTES[location.hash];
 if (maquette) document.getElementById('jeu')!.style.width = 'calc(100% - min(380px, 42vw))';
-const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, CombatScene] : [CombatScene, VitrineScene];
+const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, PreparationScene, CombatScene] : [PreparationScene, CombatScene, VitrineScene];
 
 const jeu = new Phaser.Game({
   type: Phaser.AUTO,
