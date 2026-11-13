@@ -8,7 +8,7 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { charger, sauver } from './sauvegarde';
-import { bouton, chargerUi, COULEUR, fmt, H, hex, monstreEnPied, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
+import { bouton, caseSombre, chargerUi, COULEUR, fmt, H, hex, monstreEnPied, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
 
 /**
  * Préparation d'équipe (maquette « Écrans : » 1B 2B 3B 4A 5A 6A) : collection à gauche, ennemis et équipe à droite.
@@ -195,7 +195,9 @@ export class PreparationScene extends Phaser.Scene {
 
   private caseMonstre(m: MonstrePossede, x: number, y: number) {
     const pris = this.equipe.includes(m.uid);
-    const fond = this.g(this.add.image(x, y, 'slot_dark_background_full').setDisplaySize(78, 78).setDepth(1000));
+    const c = caseSombre(this, x, y, 78);
+    this.g(c.g);
+    const fond = this.g(c.zone);
     const p = this.portrait(m.id, x, y, 74, false);
     this.g(this.add.circle(x + 29, y - 29, 6, COULEUR[fiche(m.id).element]).setStrokeStyle(1.5, 0x000000).setDepth(1002));
     this.t(x - 35, y - 39, this.etoiles(m.etoiles), 10, '#ffcf4a', false, 0).setDepth(1003);

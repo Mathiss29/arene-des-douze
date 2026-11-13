@@ -24,7 +24,7 @@ const NOM_ZONE: Record<string, string> = { general: 'général', arene: 'Arène'
 export const texteLeader = (l: Leader) => `+${l.valeur} % de ${NOM_STAT[l.stat]} (${NOM_ZONE[l.zone] ?? l.zone})`;
 export const nomStat = (s: keyof Stats) => NOM_STAT[s];
 
-const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'slot_dark_background_full', 'btn_green_normal', 'btn_green_over'];
+const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over'];
 
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
@@ -67,6 +67,17 @@ export function bouton(scene: Phaser.Scene, x: number, y: number, w: number, h: 
   if (fond instanceof Phaser.GameObjects.NineSlice) fond.on('pointerover', () => fond.setTexture('btn_green_over')).on('pointerout', () => fond.setTexture('btn_green_normal'));
   else fond.on('pointerover', () => fond.setFillStyle(0x34483e)).on('pointerout', () => fond.setFillStyle(0x2a3a32));
   return { fond, t, griser() { fond.disableInteractive().setAlpha(0.45); t.setAlpha(0.6); } };
+}
+
+/** Case sombre (monstre, objet du butin), dessinée en vectoriel pour rester nette à toutes les tailles. */
+export function caseSombre(scene: Phaser.Scene, x: number, y: number, taille: number, profondeur = 1000) {
+  const r = Math.round(taille * 0.12), d = taille / 2;
+  const g = scene.add.graphics().setDepth(profondeur)
+    .fillStyle(0x0b1210, 1).fillRoundedRect(x - d, y - d, taille, taille, r)
+    .fillStyle(0x1c2823, 1).fillRoundedRect(x - d + 3, y - d + 3, taille - 6, taille - 6, r - 2)
+    .lineStyle(2, 0x4e5e52, 1).strokeRoundedRect(x - d + 1, y - d + 1, taille - 2, taille - 2, r);
+  const zone = scene.add.zone(x, y, taille, taille).setDepth(profondeur);
+  return { g, zone };
 }
 
 /** Monstre en pied, pieds en (x, y), animation de repos. */

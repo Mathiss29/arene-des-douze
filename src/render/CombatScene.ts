@@ -11,7 +11,7 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, chargerUi, monstreEnPied, panneau, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, chargerUi, monstreEnPied, panneau, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -712,7 +712,7 @@ export class CombatScene extends Phaser.Scene {
       t(270, yb - 4, 'BUTIN', 11, '#e3b54c', true, 0);
       butinAffiche.forEach((o, k) => {
         const x = 420 + k * 240;
-        this.add.image(x, yb + 30, 'slot_dark_background_full').setDisplaySize(60, 60).setDepth(D + 2);
+        caseSombre(this, x, yb + 30, 60, D + 2);
         this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
         t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);
         t(x + 40, yb + 40, o.label, 12, '#cfdccf', false, 0);
