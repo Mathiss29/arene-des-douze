@@ -20,4 +20,7 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
 - État du joueur : `src/sim/joueur.ts` (pur) ; sauvegarde locale sous la clé `arene-des-douze:joueur` (`src/render/sauvegarde.ts`).
   Stages et butin : `src/data/stages.json`, `src/sim/stages.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.
 - Fiches de combat (stats 6★ niveau 40, sorts, leader) dans `src/data/fiches.json` ; l'animation jouée par chaque sort dans `looks.ts` (`animSorts`).
+- Maquettes jouables dans le jeu : adresse `#maquette-<nom>` (ex. `#maquette-eveils`), scène dans `src/render/maquettes/`,
+  panneau de questions numérotées à options A/B/C (`panneau.ts`) ; la réponse s'écrit « Nom : 1A 2B… » comme dans Diablofus.
+- Effets officiels de Dofus 3 (`src/render/fx.ts`) : atlas dans `public/assets/fx`, images sur le R2 (`fx/fx_<id>.webp`), définitions dans `src/data/fx.json`.
 - Le site est publié sur GitHub Pages (`.github/workflows/deploiement.yml`), seule origine autorisée en CORS par le R2 avec diablofus.com.

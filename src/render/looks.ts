@@ -29,4 +29,10 @@ export const LOOKS: Record<string, Look> = {
   kwak_de_flamme: { atlas: 'kwak_de_flamme', ...KWAK },
   kwak_de_vent: { atlas: 'kwak_de_vent', ...KWAK },
   kwak_de_glace: { atlas: 'kwak_de_glace', ...KWAK },
+  // Base des recolorations Bonta et Brâkmar des Kwaks (maquette « Éveils : »)
+  kwak_de_terre: { atlas: 'kwak_de_terre', ...KWAK },
+  // Formes adultes (éveils, maquette « Éveils : »)
+  kwakere_de_flamme: { atlas: 'kwakere_de_flamme', echelle: 1.09, attaques: { 0: 13 / 32, 1: 6 / 40, 2: 6 / 40 }, animSorts: [0, 1, 2] },
+  boufton_noir: { atlas: 'boufton_noir', echelle: 0.55, attaques: { 0: 9 / 32, 1: 8 / 17, 2: 39 / 78 }, animSorts: [0, 1, 2] },
+  bouftou_noir: { atlas: 'bouftou_noir', echelle: 0.55, attaques: { 0: 9 / 32, 1: 10 / 22, 2: 5 / 27 }, animSorts: [0, 1, 2] },
 };
