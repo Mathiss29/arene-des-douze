@@ -44,7 +44,7 @@ describe('déterminisme', () => {
     };
     const c1 = jouer(), c2 = jouer();
     expect(c1.fini).toBe(true);
-    expect(c1.vainqueur).not.toBeNull();
+    expect(c2.vainqueur).toBe(c1.vainqueur);
     expect(c2.historique).toEqual(c1.historique);
   });
 
@@ -90,7 +90,8 @@ describe('dégâts', () => {
     c.prochainTour();
     jouerSur(c);
     const [d] = degats(c.historique);
-    expect(d.montant).toBe(Math.round((700 * 3.6 * 1000) / (1140 + 3.5 * 550)));
+    const attendu = (700 * 3.6 * 1000) / (1140 + 3.5 * 550);
+    expect(Math.abs(d.montant - attendu)).toBeLessThanOrEqual(attendu * REGLES.variation + 1); // ±2,5 % comme SW
     expect(d.critique || d.ecrasant || d.effleure).toBe(false);
   });
 
@@ -134,7 +135,8 @@ describe('dégâts', () => {
     while (c.prochainTour()!.camp !== 'A') jouerSur(c);
     jouerSur(c, 0);
     const d = degats(c.historique).filter((x) => x.source === 0).at(-1)!;
-    expect(d.montant).toBe(Math.round((700 * 3.6 * 1000) / (1140 + 3.5 * 550 * (1 - REGLES.defBaisse))));
+    const attendu = (700 * 3.6 * 1000) / (1140 + 3.5 * 550 * (1 - REGLES.defBaisse));
+    expect(Math.abs(d.montant - attendu)).toBeLessThanOrEqual(attendu * REGLES.variation + 1);
   });
 });
 

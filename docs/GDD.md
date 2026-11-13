@@ -132,3 +132,17 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 3. Apparence Bonta/Brâkmar des Kwaks et Kwakères.
 4. Montants de l'économie.
 5. Nom définitif.
+
+## Vérification sur Summoners War actuel (13 nov. 2026)
+- ✓ Jauge : +7 % de la vitesse par tick, la jauge peut dépasser 100 %, la plus haute joue.
+- ✓ Dégâts : réduction 1000 / (1140 + 3,5 × DEF) ; variation ±2,5 % (sauf dégâts fixes).
+- ✓ Critique 15 % de base ; avantage d'élément +15 %, désavantage −15 %.
+- ✓ Coup écrasant : avantage, 35 % de chances, +30 % (corrigé, c'était 50 %). Coup effleuré : désavantage, 50 %, −30 %, aucun malus posé.
+- ✓ Résistance : chance de résister = max(15 %, RÉS − PRÉ).
+- ✓ Niveaux max 15 / 20 / 25 / 30 / 35 / 40 (toujours 6★ niv. 40 en 2026).
+- ✓ Évolution RELOADED (v8.0.0) : sans niveau max, niveau gardé, nourriture en points.
+- ✓ Île : le Summonhenge est là dès le départ ; les bâtiments à mana produisent à l'heure avec un stockage max (ex. 660/h, 4 000 max) ;
+  des bâtiments de gloire augmentent la production (+5 %/niveau) et le stockage.
+- ⚠ À confirmer : valeurs des bonus/malus (ATQ ±50 %, DÉF ±70 %, VIT ±30 %, poison 5 %), table d'XP après RELOADED,
+  coûts en mana de l'évolution et du power-up, XP donnée par la nourriture.
+

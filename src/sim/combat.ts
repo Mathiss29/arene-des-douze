@@ -272,8 +272,8 @@ export class Combat {
     for (const [k, coef] of Object.entries(sort.mult ?? {})) brut += stat[k as keyof typeof stat] * (coef ?? 0);
 
     const effleure = av < 0 && this.rng.chance(REGLES.effleureChance);
-    const tc = u.stats.tc + (this.a(u, 'tc_hausse') ? REGLES.tcHausse : 0) + (av > 0 ? REGLES.tcAvantage : 0);
-    const critique = !effleure && this.rng.chance(Math.min(100, tc));
+    const tc = u.stats.tc + (this.a(u, 'tc_hausse') ? REGLES.tcHausse : 0) + (av > 0 ? REGLES.tcAvantage : 0) - (av < 0 ? REGLES.tcDesavantage : 0);
+    const critique = !effleure && tc > 0 && this.rng.chance(Math.min(100, tc));
     const ecrasant = !effleure && !critique && av > 0 && this.rng.chance(REGLES.ecrasantChance);
 
     if (critique) brut *= 1 + u.stats.dc / 100;
@@ -281,7 +281,8 @@ export class Combat {
     if (effleure) brut *= 1 - REGLES.effleureMalus;
 
     const def = c.stats.def * (1 + (this.a(c, 'def_hausse') ? REGLES.defHausse : 0) - (this.a(c, 'def_baisse') ? REGLES.defBaisse : 0));
-    const montant = Math.max(1, Math.round((brut * REGLES.defA) / (REGLES.defB + REGLES.defC * def)));
+    const variation = 1 + (this.rng.suivant() * 2 - 1) * REGLES.variation;
+    const montant = Math.max(1, Math.round((brut * variation * REGLES.defA) / (REGLES.defB + REGLES.defC * def)));
     this.infliger(c, montant, u.uid, { critique, ecrasant, effleure });
     return { montant, critique, ecrasant, effleure };
   }

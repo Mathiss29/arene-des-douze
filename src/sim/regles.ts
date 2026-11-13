@@ -12,17 +12,23 @@ export const REGLES = {
   /** ✓ Taux critique et dégâts critiques de base (stats des fiches). */
   tcBase: 15,
   dcBase: 50,
-  /** ✓ L'avantage d'élément donne +15 % de taux critique. */
+  /** ✓ L'avantage d'élément donne +15 % de taux critique, le désavantage −15 % (ordre des tests : effleuré, critique, écrasant). */
   tcAvantage: 15,
-  /** ⚠ Coup écrasant (avantage, coup non critique) : chance et bonus de dégâts. */
-  ecrasantChance: 50,
+  tcDesavantage: 15,
+  /** ✓ Coup écrasant (avantage, coup non critique) : 35 % de chances, +30 % de dégâts. */
+  ecrasantChance: 35,
   ecrasantBonus: 0.3,
-  /** ⚠ Coup effleuré (désavantage) : chance et malus de dégâts. Un coup effleuré n'est jamais critique et ne pose aucun malus (✓). */
+  /**
+   * ✓ Coup effleuré (désavantage) : 50 % de chances, −30 % de dégâts ; jamais critique, ne pose aucun malus ni baisse de jauge.
+   * ⚠ Une source ajoute « −16 % de plus en désavantage » sans préciser le calcul : non appliqué.
+   */
   effleureChance: 50,
   effleureMalus: 0.3,
+  /** ✓ Les dégâts varient d'environ ±2,5 % (sauf dégâts fixes). */
+  variation: 0.025,
   /** ✓ Chance de résister à un malus : max(15 %, Résistance − Précision). */
   resistanceMin: 15,
-  /** ⚠ Valeurs SW usuelles des bonus et malus. */
+  /** ⚠ Valeurs SW usuelles des bonus et malus (page « Buffs » du wiki non lue : à confirmer). */
   atqHausse: 0.5,
   defHausse: 0.7,
   vitHausse: 0.3,
