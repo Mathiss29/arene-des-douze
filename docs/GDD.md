@@ -144,7 +144,16 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
 | Fragments d'âme | Pièces d'invocation | Monstre précis (SW : 20 pièces pour un 2★, 40 pour un 3★, 50 pour un 4★) |
 
 ✓ Chances vérifiées (tableau de référence de la communauté SW ; celles du parchemin inconnu sont une estimation). Bonta et Brâkmar
-ne sortent que de leur pierre (et des pierres légendaires « tous éléments »).
+ne sortent que de leur pierre ✓ (le parchemin légendaire de SW exclut Lumière et Ténèbres ✓). ⚠ Pierre élémentaire : un guide dit
+que SW y donne un peu plus de 5★ que le mystique, un autre les mêmes chances : à vérifier.
+
+Maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A (14 nov. 2026) :
+- Écran : cercle au centre, pierres en colonne à gauche ; animation longue comme SW (la pierre tombe dans le cercle, lumière bleue,
+  violette ou dorée selon les étoiles, bouton « Passer ») ; le monstre en grand, étoiles qui s'allument une à une, « Nouveau ! ».
+- Invoquer ×10 ✓ (SW depuis la v6.6.3). Coût comme SW ✓ : 300 kamas (pierre d'âme), 10 000 kamas (les autres).
+- 0.1 : toutes les pierres (âme, parfaite, élémentaires, Bonta/Brâkmar, légendaire). Fragments d'âme : plus tard.
+- Pierres parfaites : premiers passages des niveaux du donjon, fins de zone en Difficile/Enfer, vœu du Temple.
+- Premier 5★ : un 5★ au choix offert en finissant Astrub en Enfer (dernier palier du chemin de l'invocateur).
 
 ## 5. Runes
 - 6 emplacements : 1, 3 et 5 à stat principale fixe (Attaque, Défense, PV fixes) ; 2, 4 et 6 variables ; seul le 2 peut avoir la vitesse.
