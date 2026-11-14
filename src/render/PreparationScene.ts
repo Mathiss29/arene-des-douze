@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import { monstreCombat, fiche } from '../sim/fiches';
 import { auNiveauMax, definirEquipe, equipePourStage, monstre, peutEvoluer, TAILLE_EQUIPE, trierMonstres, type Joueur, type MonstrePossede, type Tri } from '../sim/joueur';
 import { NIVEAU_MAX, pointsRequis, type Etoiles } from '../sim/progression';
-import { LISTE_STAGES, stage, type Stage } from '../sim/stages';
+import { DIFFICULTES, LISTE_STAGES, stage, zone, type Stage } from '../sim/stages';
+import { lancerCombat } from './lancement';
 import { ELEMENTS, type Element, type Stats } from '../sim/types';
 import { LOOKS } from './looks';
 import { distant } from './assetUrl';
@@ -126,7 +127,13 @@ export class PreparationScene extends Phaser.Scene {
     if (!this.equipe.length) return;
     this.joueur = definirEquipe(this.joueur, this.equipe, this.stage.id);
     sauver(this.joueur);
-    this.scene.start('combat', { stage: this.stage.id });
+    if (!lancerCombat(this, this.stage.id)) this.avis(`Pas assez d'énergie : il en faut ${this.stage.cout}. Elle revient d'elle-même, 1 toutes les 5 minutes.`);
+  }
+
+  private avis(msg: string) {
+    const tx = this.add.text(W / 2, H - 130, msg, { fontFamily: 'Lexend, sans-serif', fontSize: '15px', color: '#ffffff', backgroundColor: 'rgba(12,20,16,0.95)', padding: { x: 16, y: 10 }, wordWrap: { width: 560 }, align: 'center' })
+      .setOrigin(0.5).setDepth(6000);
+    this.tweens.add({ targets: tx, alpha: 0, delay: 2600, duration: 500, onComplete: () => tx.destroy() });
   }
 
   // ───────────── écran ─────────────
@@ -136,9 +143,9 @@ export class PreparationScene extends Phaser.Scene {
     this.calque = [];
     const j = this.joueur;
 
-    const ret = this.t(16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('ile'));
-    this.t(ret.x + ret.width + 10, 14, `Astrub · ${this.stage.nom} · Normal`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    const ret = this.t(16, 14, '‹ Carte', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('zaap', { zone: this.stage.zone, dif: this.stage.dif, stage: this.stage.numero - 1 }));
+    this.t(ret.x + ret.width + 10, 14, `${zone(this.stage.zone).nom} · stage ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     this.t(W - 16, 14, `${fmt(j.kamas)} kamas  ·  ${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, 14, '#ffe08a', true, 1, 0)
       .setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
 
@@ -258,7 +265,7 @@ export class PreparationScene extends Phaser.Scene {
     this.t(658, yb, chef ? `♛ Leader : ${fiche(chef.id).nom} · ${lead ? texteLeader(lead) : 'pas de skill de leader'}` : '♛ Le premier monstre de l\'équipe est le leader.', 13, '#ffe08a', true, 0);
     if (chef) this.t(658, yb + 24, 'Le premier monstre de l\'équipe est le leader : retire-le pour changer.', 11, '#7d9184', false, 0);
 
-    const b = bouton(this, 1140, 660, 200, 54, '⚔ Combattre', true, () => this.combattre());
+    const b = bouton(this, 1140, 660, 200, 54, `⚔ Combattre  ⚡${this.stage.cout}`, true, () => this.combattre());
     this.g(b.fond); this.g(b.t);
     if (!this.equipe.length) b.griser();
   }

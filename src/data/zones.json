@@ -1,0 +1,43 @@
+[
+ {
+  "id": "astrub",
+  "nom": "Astrub",
+  "image": "astrub",
+  "runes": "Iop",
+  "stages": [
+   "astrub-1",
+   "astrub-2",
+   "astrub-3",
+   "astrub-4",
+   "astrub-5",
+   "astrub-6",
+   "astrub-7"
+  ],
+  "recompense": {
+   "id": "scarafeuille_bleu",
+   "etoiles": 3
+  },
+  "texte": "Astrub, la cité des débutants. Les Scarafeuilles ont envahi ses souterrains et leur chef, le Scarafeuille Noir, se cache au fond de son repaire. Chasse-les, et ramène-moi un Scarafeuille Bleu !"
+ },
+ {
+  "id": "madrestam",
+  "nom": "Port de Madrestam",
+  "image": "madrestam",
+  "runes": "Crâ",
+  "stages": []
+ },
+ {
+  "id": "bastion",
+  "nom": "Bastion",
+  "image": "bastion",
+  "runes": "Sadida",
+  "stages": []
+ },
+ {
+  "id": "frigost",
+  "nom": "Frigost",
+  "image": "frigost",
+  "runes": "Xélor",
+  "stages": []
+ }
+]

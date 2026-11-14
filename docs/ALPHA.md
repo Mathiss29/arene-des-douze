@@ -33,6 +33,8 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
   Île d'Incarnam (`IleScene.ts`) : écran d'accueil vivant, bâtiments, pastilles « ! », mine de kamas.
   Reste : invocation, boutique, temple, Ganymède, monstres qui se promènent, musique, écran de collection hors combat, montée des sorts par la famille.
 - [ ] **6. Histoire** — 7 stages enchaînés avec récompenses.
+  Fait : Zaap (`ZaapScene.ts`), zone d'Astrub en 7 stages × 3 difficultés (`stages.ts`, `zones.json`), énergie (`energie.ts`),
+  récompense de zone, monstres qui tombent, boss au 7ᵉ. Reste : 3 vagues par stage (une seule pour l'instant), autres zones.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
 - [ ] **8. Invocation** — les pierres d'âme donnent des monstres.
 - [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent.

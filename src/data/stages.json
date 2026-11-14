@@ -1,34 +1,227 @@
 [
-  {
-    "id": "astrub-1",
-    "nom": "Salle des Scarafeuilles",
-    "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
-    "ennemis": [
-      {
-        "id": "scarafeuille_vert",
-        "etoiles": 3,
-        "niveau": 5
-      },
-      {
-        "id": "piou_violet",
-        "etoiles": 1,
-        "niveau": 5
-      },
-      {
-        "id": "piou_rouge",
-        "etoiles": 1,
-        "niveau": 5
-      },
-      {
-        "id": "piou_jaune",
-        "etoiles": 1,
-        "niveau": 4
-      }
-    ],
-    "recompenses": {
-      "xp": 700,
-      "kamas": 350,
-      "pierreChance": 15
-    }
+ {
+  "id": "astrub-1",
+  "nom": "Salle des Scarafeuilles",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "scarafeuille_vert",
+    "etoiles": 3,
+    "niveau": 5
+   },
+   {
+    "id": "piou_violet",
+    "etoiles": 1,
+    "niveau": 5
+   },
+   {
+    "id": "piou_rouge",
+    "etoiles": 1,
+    "niveau": 5
+   },
+   {
+    "id": "piou_jaune",
+    "etoiles": 1,
+    "niveau": 4
+   }
+  ],
+  "recompenses": {
+   "xp": 700,
+   "kamas": 350,
+   "pierreChance": 15
   }
+ },
+ {
+  "id": "astrub-2",
+  "nom": "Champs d'Astrub",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "piou_jaune",
+    "etoiles": 1,
+    "niveau": 5
+   },
+   {
+    "id": "piou_bleu",
+    "etoiles": 1,
+    "niveau": 5
+   },
+   {
+    "id": "kwak_de_vent",
+    "etoiles": 3,
+    "niveau": 4
+   },
+   {
+    "id": "piou_vert",
+    "etoiles": 1,
+    "niveau": 5
+   }
+  ],
+  "recompenses": {
+   "xp": 820,
+   "kamas": 410,
+   "pierreChance": 15
+  }
+ },
+ {
+  "id": "astrub-3",
+  "nom": "Forêt d'Astrub",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "scarafeuille_rouge",
+    "etoiles": 3,
+    "niveau": 5
+   },
+   {
+    "id": "piou_vert",
+    "etoiles": 1,
+    "niveau": 6
+   },
+   {
+    "id": "piou_vert",
+    "etoiles": 1,
+    "niveau": 6
+   },
+   {
+    "id": "piou_bleu",
+    "etoiles": 1,
+    "niveau": 6
+   }
+  ],
+  "recompenses": {
+   "xp": 960,
+   "kamas": 470,
+   "pierreChance": 16
+  }
+ },
+ {
+  "id": "astrub-4",
+  "nom": "Cimetière d'Astrub",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "piou_violet",
+    "etoiles": 1,
+    "niveau": 7
+   },
+   {
+    "id": "scarafeuille_blanc",
+    "etoiles": 3,
+    "niveau": 6
+   },
+   {
+    "id": "piou_violet",
+    "etoiles": 1,
+    "niveau": 7
+   },
+   {
+    "id": "piou_jaune",
+    "etoiles": 1,
+    "niveau": 7
+   }
+  ],
+  "recompenses": {
+   "xp": 1100,
+   "kamas": 530,
+   "pierreChance": 17
+  }
+ },
+ {
+  "id": "astrub-5",
+  "nom": "Souterrains d'Astrub",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "kwak_de_glace",
+    "etoiles": 3,
+    "niveau": 7
+   },
+   {
+    "id": "piou_rouge",
+    "etoiles": 1,
+    "niveau": 8
+   },
+   {
+    "id": "piou_bleu",
+    "etoiles": 1,
+    "niveau": 8
+   },
+   {
+    "id": "piou_jaune",
+    "etoiles": 1,
+    "niveau": 8
+   }
+  ],
+  "recompenses": {
+   "xp": 1250,
+   "kamas": 590,
+   "pierreChance": 18
+  }
+ },
+ {
+  "id": "astrub-6",
+  "nom": "Carrière d'Astrub",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "kwak_de_vent",
+    "etoiles": 3,
+    "niveau": 8
+   },
+   {
+    "id": "scarafeuille_vert",
+    "etoiles": 3,
+    "niveau": 7
+   },
+   {
+    "id": "piou_rouge",
+    "etoiles": 1,
+    "niveau": 9
+   },
+   {
+    "id": "piou_violet",
+    "etoiles": 1,
+    "niveau": 9
+   }
+  ],
+  "recompenses": {
+   "xp": 1400,
+   "kamas": 650,
+   "pierreChance": 19
+  }
+ },
+ {
+  "id": "astrub-7",
+  "nom": "Repaire du Scarafeuille Noir",
+  "arene": "mondes/astrub/sol_arene_scarafeuilles.webp",
+  "ennemis": [
+   {
+    "id": "scarafeuille_noir",
+    "etoiles": 3,
+    "niveau": 10
+   },
+   {
+    "id": "piou_violet",
+    "etoiles": 1,
+    "niveau": 9
+   },
+   {
+    "id": "piou_rouge",
+    "etoiles": 1,
+    "niveau": 9
+   },
+   {
+    "id": "piou_bleu",
+    "etoiles": 1,
+    "niveau": 9
+   }
+  ],
+  "recompenses": {
+   "xp": 1600,
+   "kamas": 750,
+   "pierreChance": 25
+  },
+  "boss": 0
+ }
 ]

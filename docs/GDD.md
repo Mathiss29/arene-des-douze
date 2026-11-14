@@ -144,10 +144,26 @@ ne sortent que de leur pierre (et des pierres légendaires « tous éléments »
 ## 6. Économie
 Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, gagnées en jouant uniquement), Essences, Jetons de Kolizéum. ⏳ Montants.
 ✓ Dans SW, l'énergie sert aux combats d'histoire, aux donjons, à la tour et aux failles ; l'Arène a ses propres invitations.
-⏳ Garder l'énergie ou non (jeu gratuit sans achat).
+Énergie gardée (maquette « Zaap : » 5A).
 
 ## 7. Modes de jeu
 - Histoire : zones du Monde des Douze en Normal, Difficile, Enfer ✓ ; 7 stages par zone (SW en compte une vingtaine aujourd'hui).
+- Zaap (maquette « Zaap : » 1A 2A 3A 4A 5A 6A 7A 8A, 14 nov. 2026) : carte des combats comme SW. Zones en îles flottantes reliées
+  par un chemin, autres modes à droite (Donjons, Tour, Kolizéum, Brèche), liste des 7 stages à droite de l'image de la zone,
+  onglets de difficulté, énergie, aperçu (ennemis, butin) avant « Préparer l'équipe », récompense de zone, combat répété (plus tard).
+  ✓ La difficulté suivante s'ouvre quand la zone est finie ; la zone suivante quand la précédente est finie en Normal.
+  ✓ Énergie : +1 toutes les 5 minutes, payée au départ du combat. ⚠ Max 60 (SW : selon le niveau d'invocateur), coûts 3 / 4 / 5 (un seul guide).
+  ✓ Les stages donnent parfois un monstre (SW : ~1 à 3 %) et de l'énergie ; ⚠ nos taux : 3 % et 25 % (1 à 3).
+  ✓ Récompense la première fois qu'une zone est finie en Normal (SW : souvent un monstre) : Astrub donne un Scarafeuille Bleu ★★★.
+  ⚠ Difficile / Enfer : +1 / +2 étoiles et +10 / +20 niveaux aux ennemis, récompenses ×2 / ×3 (les nôtres).
+  Idées retenues : 1. Brèche du jour (comme la Faille dimensionnelle de SW ⚠ à vérifier sur la version actuelle), quand toutes
+  les zones sont finies en Normal ; 2. conseil d'élément dans l'aperçu ; 3. pastilles « Nouveau ! » ; 4. îles vivantes (flottement fait,
+  particules plus tard) ; 5. énergie rendue au niveau d'invocateur ⚠ (à vérifier, avec le niveau d'invocateur) ; 6. texte de Ganymède
+  à l'entrée d'une zone ; 7. set de runes par zone ✓ (SW : chaque zone donne un set, le stage décide de l'emplacement ; ⚠ actuel) ;
+  8. monstres qui tombent ; 9. bouton « Continuer » ; 10. boss plus grand avec sa barre de vie ⚠ ; 11. musique de la carte ;
+  12. brume sur les zones pas encore découvertes ; 13. premier combat guidé par Ganymède ; 14. lien avec les missions du jour.
+  Fait le 14 nov. : tout sauf 1 (la brèche attend d'autres zones), 4 (particules), 5, 11 et 14 (attendent leurs systèmes).
+  Astrub : 7 stages faciles, comme la Forêt de Garen (« très facile » ✓) ; l'équipe de départ la finit en une quinzaine de combats.
 - Donjons : Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
 - Tour des Dimensions : 100 étages.
 - Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues. Plus tard : Kolizéum en direct, comme l'Arène mondiale de SW

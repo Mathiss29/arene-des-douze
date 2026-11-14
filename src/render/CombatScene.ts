@@ -3,7 +3,9 @@ import { Combat, type Evenement, type Unite } from '../sim/combat';
 import { choisirAction } from '../sim/ia';
 import { monstreCombat } from '../sim/fiches';
 import { monstre, type Joueur } from '../sim/joueur';
-import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin, type Stage } from '../sim/stages';
+import { appliquerVictoire, cleStage, DIFFICULTES, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
+import { lancerCombat } from './lancement';
+import { fiche } from '../sim/fiches';
 import { charger, sauver } from './sauvegarde';
 import { NIVEAU_MAX, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { avantage, estBonus, type Element, type Sort, type TypeEffet } from '../sim/types';
@@ -11,7 +13,7 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, caseSombre, chargerUi, monstreEnPied, panneau, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, chargerUi, monstreEnPied, panneau, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -110,7 +112,8 @@ export class CombatScene extends Phaser.Scene {
     this.stage = stage(this.stageId);
     if (!this.textures.exists(`arene:${this.stage.arene}`)) this.load.image(`arene:${this.stage.arene}`, distant(this.stage.arene));
     const ids = [...this.joueur.equipe.map((u) => monstre(this.joueur, u).id), ...this.stage.ennemis.map((e) => e.id)];
-    chargerUi(this, ids);
+    const rec = zone(this.stage.zone).recompense;
+    chargerUi(this, rec ? [...ids, rec.id] : ids);
     for (const id of ids) {
       for (const s of monstreCombat(id).sorts) if (s.icone && !this.textures.exists(`sort_${s.icone}`)) this.load.image(`sort_${s.icone}`, `assets/ui/sorts/sort_${s.icone}.png`);
     }
@@ -150,10 +153,12 @@ export class CombatScene extends Phaser.Scene {
     const meta = (this.cache.json.get(`${look.atlas}:meta`) as { meta?: { cell?: number[]; origin?: number[] } } | undefined)?.meta;
     const [ox, oy] = origine(meta);
     const [x, y] = PLACES[u.camp][u.place];
-    const echelle = look.echelle * ZOOM;
+    // le boss du stage 7 est plus grand, avec sa barre de vie en haut (idée 10 de « Zaap : »)
+    const boss = u.camp === 'B' && this.stage.boss === u.place;
+    const echelle = look.echelle * ZOOM * (boss ? 1.35 : 1);
     const sens = u.camp === 'A' ? 1 : -1;
 
-    const socle = this.add.ellipse(x, y, 96, 30, 0x000000, 0.35).setDepth(y - 1);
+    const socle = this.add.ellipse(x, y, boss ? 130 : 96, boss ? 40 : 30, boss ? 0x5a0f08 : 0x000000, 0.35).setDepth(y - 1);
     const sprite = this.add.sprite(x, y, look.atlas).setOrigin(ox, oy).setScale(echelle * sens, echelle).setDepth(y);
     sprite.play(`${look.atlas}/AnimStatique_1`);
     const f = sprite.frame;
@@ -205,7 +210,7 @@ export class CombatScene extends Phaser.Scene {
       if (this.auto && !this.occupe && this.combat.acteur?.camp === 'A') this.jouerIA();
       this.majSorts();
     });
-    this.add.text(14, 22, `Astrub · ${this.stage.nom}`, {
+    this.add.text(14, 22, `${zone(this.stage.zone).nom} ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, {
       fontFamily: POLICE, fontSize: '13px', fontStyle: '600', color: '#ffe08a', backgroundColor: 'rgba(10,20,15,0.8)', padding: { x: 12, y: 7 },
     }).setDepth(3000);
     this.majBoutons();
@@ -484,9 +489,24 @@ export class CombatScene extends Phaser.Scene {
 
   // ───────────── mise à jour de l'affichage ─────────────
 
+  private barreBossG?: Phaser.GameObjects.Graphics;
+  private barreBossT?: Phaser.GameObjects.Text;
+  private barreBoss(u: Unite) {
+    if (!this.barreBossG?.active) {
+      this.barreBossG = this.add.graphics().setDepth(2990);
+      this.barreBossT = this.add.text(W / 2, 94, `BOSS · ${u.monstre.nom}`, { fontFamily: POLICE, fontSize: '14px', fontStyle: '600', color: '#ffd7cf' })
+        .setOrigin(0.5, 1).setShadow(0, 1, '#000', 3, false, true).setDepth(2991);
+    }
+    const l = 420, x = W / 2 - l / 2, y = 98, pv = Math.max(0, u.pv / u.stats.pv);
+    this.barreBossG.clear().fillStyle(0x000000, 0.75).fillRoundedRect(x - 2, y - 2, l + 4, 16, 5).fillStyle(0xe0503c).fillRoundedRect(x, y, l * pv, 12, 4)
+      .lineStyle(1.5, 0xe3b54c).strokeRoundedRect(x - 2, y - 2, l + 4, 16, 5);
+    this.barreBossG.setVisible(u.vivant); this.barreBossT!.setVisible(u.vivant);
+  }
+
   private majVue(vue: Vue) {
     const { u, x, y } = vue;
     const g = vue.barres.clear();
+    if (u.camp === 'B' && this.stage.boss === u.place && this.barreBossG) this.barreBoss(u);
     if (!u.vivant) {
       vue.zone.disableInteractive();
       vue.niveau.setVisible(false);
@@ -494,6 +514,8 @@ export class CombatScene extends Phaser.Scene {
       vue.socle.setStrokeStyle();
       return;
     }
+
+    if (u.camp === 'B' && this.stage.boss === u.place) this.barreBoss(u);
 
     // Élément + niveau (+ couronne du leader)
     g.fillStyle(COULEUR[u.element]).fillCircle(x - 40, y + 20, 7).lineStyle(1.5, 0x000000, 0.7).strokeCircle(x - 40, y + 20, 7);
@@ -676,11 +698,14 @@ export class CombatScene extends Phaser.Scene {
     let butinAffiche: { cle: string; n: string; label: string }[] = [];
     if (victoire) {
       const butin = tirerButin(avant, this.stage, this.graine);
-      apres = appliquerVictoire(avant, this.stage, butin).joueur;
+      apres = appliquerVictoire(avant, this.stage, butin, Date.now()).joueur;
       this.joueur = apres;
       sauver(apres);
       butinAffiche = [{ cle: 'kamas_tas', n: `+${fmt(butin.kamas)}`, label: 'kamas' }];
-      if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (première victoire)' : ''}` });
+      if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (1ʳᵉ victoire)' : ''}` });
+      if (butin.energie) butinAffiche.push({ cle: '', n: `+${butin.energie}`, label: 'énergie ⚡' });
+      if (butin.monstre) butinAffiche.push({ cle: `monstre:${butin.monstre}`, n: fiche(butin.monstre).nom, label: 'rejoint ta collection !' });
+      if (butin.zone) butinAffiche.push({ cle: `monstre:${butin.zone.id}`, n: `${fiche(butin.zone.id).nom} ${'★'.repeat(butin.zone.etoiles)}`, label: `récompense de ${zone(this.stage.zone).nom} !` });
     }
 
     // Monstres sur leurs socles, barres d'XP
@@ -710,10 +735,13 @@ export class CombatScene extends Phaser.Scene {
     panneau(this, 250, yb - 14, 780, 82, D + 1);
     if (victoire) {
       t(270, yb - 4, 'BUTIN', 11, '#e3b54c', true, 0);
+      const pas = butinAffiche.length > 3 ? 190 : 240;
       butinAffiche.forEach((o, k) => {
-        const x = 420 + k * 240;
+        const x = 360 + k * pas;
         caseSombre(this, x, yb + 30, 60, D + 2);
-        this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
+        if (o.cle.startsWith('monstre:')) portrait(this, o.cle.slice(8), x, yb + 30, 52, false, false, D + 3);
+        else if (o.cle) this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
+        else t(x, yb + 14, '⚡', 26, '#8fd3ff', true);
         t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);
         t(x + 40, yb + 40, o.label, 12, '#cfdccf', false, 0);
       });
@@ -723,13 +751,15 @@ export class CombatScene extends Phaser.Scene {
     }
 
     // Boutons
-    const suivant = LISTE_STAGES[LISTE_STAGES.findIndex((s) => s.id === this.stage.id) + 1];
+    const z = zone(this.stage.zone), n = this.stage.numero;
+    const suivant = n < 7 && stageOuvert(apres, z, n, this.stage.dif) ? cleStage(z.stages[n], this.stage.dif) : null;
     const liste: [string, boolean, () => void][] = [
+      ['Carte', false, () => this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 })],
       ['Préparation', false, () => this.scene.start('preparation', { stage: this.stage.id })],
-      ['↻ Rejouer', !victoire, () => this.scene.restart({ stage: this.stage.id })],
+      [`↻ Rejouer ⚡${this.stage.cout}`, !victoire, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 }); }],
     ];
-    if (victoire) liste.push([suivant ? 'Stage suivant ▸' : 'Bientôt la suite', true, () => suivant && this.scene.start('preparation', { stage: suivant.id })]);
-    const largeurs = liste.map(([, vert]) => (vert ? 200 : 150));
+    if (victoire) liste.push([suivant ? 'Stage suivant ▸' : n === 7 ? 'Zone finie ! ▸' : 'Bientôt la suite', true, () => suivant ? this.scene.start('preparation', { stage: suivant }) : this.scene.start('zaap', { zone: z.id })]);
+    const largeurs = liste.map(([, vert], k) => (vert ? 210 : k === 2 ? 170 : 130));
     let x = W / 2 - (largeurs.reduce((s, w) => s + w, 0) + (liste.length - 1) * 14) / 2;
     liste.forEach(([libelle, vert, action], i) => {
       const w = largeurs[i];

@@ -18,14 +18,16 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   (en dév, relayés par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
 - Écrans : île d'Incarnam par défaut (`src/render/IleScene.ts` : trois caméras ciel / île / interface, images et positions dans
-  `public/assets/ile/`, faites hors dépôt par `ile_vivante.py`), préparation d'équipe (`PreparationScene.ts`, par le Zaap ou « Combattre »)
+  `public/assets/ile/`, faites hors dépôt par `ile_vivante.py`), carte des combats (`ZaapScene.ts`, par le Zaap ou « Combattre » : zones, stages, difficultés),
+  préparation d'équipe (`PreparationScene.ts`)
   puis combat (`CombatScene.ts`, récompenses à la fin), Cercle d'amélioration (`CercleScene.ts`, bâtiment de l'île), vitrine avec `#vitrine`.
   Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).
   Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement : monde de 1280 × 720,
   dessiné à la taille réelle de l'écran (`src/render/nettete.ts` : canevas ×K, caméras zoomées ×K, textes en résolution K).
   Débogage dans la console : `window.game.scene.getScene('combat')`.
 - État du joueur : `src/sim/joueur.ts` (pur) ; sauvegarde locale sous la clé `arene-des-douze:joueur` (`src/render/sauvegarde.ts`).
-  Stages et butin : `src/data/stages.json`, `src/sim/stages.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.
+  Zones, stages, difficultés et butin : `src/data/zones.json`, `src/data/stages.json`, `src/sim/stages.ts` (clé « astrub-3@1 » = stage 3 en Difficile) ;
+  énergie : `src/sim/energie.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.
 - Fiches de combat (stats 6★ niveau 40, sorts, leader) dans `src/data/fiches.json` ; l'animation jouée par chaque sort dans `looks.ts` (`animSorts`).
 - Maquettes jouables dans le jeu : adresse `#maquette-<nom>` (ex. `#maquette-eveils`), scène dans `src/render/maquettes/`,
   panneau de questions numérotées à options A/B/C (`panneau.ts`) ; la réponse s'écrit « Nom : 1A 2B… » comme dans Diablofus.

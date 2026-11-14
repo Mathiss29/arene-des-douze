@@ -32,6 +32,12 @@ export interface Joueur {
   equipesStages: Record<string, number[]>;
   /** Mine de kamas : moment (ms) depuis lequel elle produit ; absent tant que l'île n'a pas été ouverte. */
   mine?: number;
+  /** Énergie : n unités au moment depuis (ms) ; absente = pleine. */
+  energie?: { n: number; depuis: number };
+  /** Zones dont la récompense a été donnée. */
+  recompensesZones: string[];
+  /** Ce que le joueur a déjà vu : « zone:astrub », « dif:astrub@1 », « tuto:zaap »… (pastilles « Nouveau ! », textes, tutoriel). */
+  vus: string[];
 }
 
 export const TAILLE_EQUIPE = 4;
@@ -41,7 +47,7 @@ const DEPART = ['piou_vert', 'kwak_de_flamme', 'piou_bleu', 'piou_rouge'];
 
 export function nouveauJoueur(): Joueur {
   const monstres = DEPART.map((id, i): MonstrePossede => ({ uid: i + 1, id, etoiles: fiche(id).etoiles as Etoiles, niveau: 1, xp: 0 }));
-  return { version: VERSION_SAUVEGARDE, prochainUid: monstres.length + 1, kamas: 5000, pierresAme: 0, monstres, equipe: monstres.map((m) => m.uid), stagesFinis: [], equipesStages: {} };
+  return { version: VERSION_SAUVEGARDE, prochainUid: monstres.length + 1, kamas: 5000, pierresAme: 0, monstres, equipe: monstres.map((m) => m.uid), stagesFinis: [], equipesStages: {}, recompensesZones: [], vus: [] };
 }
 
 export function monstre(j: Joueur, uid: number): MonstrePossede {
@@ -193,5 +199,8 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
         .map(([k, v]) => [k, v.filter((u) => uids.has(u)).slice(0, TAILLE_EQUIPE)]),
     ),
     ...(Number.isFinite(j.mine) ? { mine: Number(j.mine) } : {}),
+    ...(j.energie && Number.isFinite(j.energie.n) && Number.isFinite(j.energie.depuis) ? { energie: { n: Math.max(0, j.energie.n), depuis: j.energie.depuis } } : {}),
+    recompensesZones: Array.isArray(j.recompensesZones) ? j.recompensesZones.filter((s) => typeof s === 'string') : [],
+    vus: Array.isArray(j.vus) ? j.vus.filter((s) => typeof s === 'string') : [],
   };
 }

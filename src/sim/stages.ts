@@ -1,26 +1,100 @@
 import STAGES from '../data/stages.json';
+import ZONES_JSON from '../data/zones.json';
 import { monstreCombat } from './fiches';
-import { donnerXp, type Joueur } from './joueur';
-import type { Etoiles } from './progression';
+import { ajouterMonstre, donnerXp, type Joueur } from './joueur';
+import { changerEnergie, ENERGIE } from './energie';
+import { NIVEAU_MAX, type Etoiles } from './progression';
 import { Rng } from './rng';
 import type { MonstreCombat } from './types';
 
-export interface Stage {
+/**
+ * Histoire (maquette « Zaap : » 1A…8A) : des zones de 7 stages, le boss au 7ᵉ ✓, en Normal, Difficile et Enfer ✓.
+ * La difficulté suivante s'ouvre quand la zone est finie, la zone suivante quand la précédente est finie en Normal ✓.
+ * Un stage joué s'écrit « astrub-3 » (Normal), « astrub-3@1 » (Difficile) ou « astrub-3@2 » (Enfer) : c'est sa clé
+ * dans les stages finis et les équipes retenues.
+ */
+export const DIFFICULTES = ['Normal', 'Difficile', 'Enfer'] as const;
+
+interface StageBase {
   id: string;
   nom: string;
   /** Décor (fichier lourd sur le R2). */
   arene: string;
   ennemis: { id: string; etoiles: Etoiles; niveau: number }[];
   recompenses: { xp: number; kamas: number; pierreChance: number };
+  /** Place du boss parmi les ennemis (stage 7). */
+  boss?: number;
+}
+export interface Stage extends StageBase {
+  /** Clé du stage joué (id + difficulté). */
+  id: string;
+  base: string;
+  zone: string;
+  /** 1 à 7. */
+  numero: number;
+  dif: number;
+  cout: number;
+}
+export interface Zone {
+  id: string;
+  nom: string;
+  image: string;
+  /** Set de runes de la zone ⚠ (les runes ne sont pas encore là). */
+  runes: string;
+  stages: string[];
+  /** Récompense de la première fois où la zone est finie en Normal ✓ (SW). */
+  recompense?: { id: string; etoiles: Etoiles };
+  /** Ce que dit Ganymède en entrant. */
+  texte?: string;
 }
 
-export const LISTE_STAGES = STAGES as Stage[];
+const BASES = STAGES as StageBase[];
+export const ZONES = ZONES_JSON as Zone[];
+/** Les stages de base (Normal), dans l'ordre de l'histoire. */
+export const LISTE_STAGES = BASES;
 
-export function stage(id: string): Stage {
-  const s = LISTE_STAGES.find((x) => x.id === id);
-  if (!s) throw new Error(`Stage inconnu : ${id}`);
-  return s;
+export const cleStage = (id: string, dif = 0) => (dif ? `${id}@${dif}` : id);
+
+/** Stage joué, d'après sa clé : ennemis et récompenses selon la difficulté (montants ⚠, les nôtres). */
+export function stage(cle: string): Stage {
+  const [id, d] = cle.split('@');
+  const dif = d ? Number(d) : 0;
+  const b = BASES.find((x) => x.id === id);
+  const z = ZONES.find((x) => x.stages.includes(id));
+  if (!b || !z || !(dif >= 0 && dif <= 2)) throw new Error(`Stage inconnu : ${cle}`);
+  const ennemis = b.ennemis.map((e) => {
+    const etoiles = Math.min(6, e.etoiles + dif) as Etoiles;
+    return { id: e.id, etoiles, niveau: Math.min(NIVEAU_MAX[etoiles], e.niveau + 10 * dif) };
+  });
+  const r = b.recompenses;
+  return {
+    ...b, id: cle, base: id, zone: z.id, numero: z.stages.indexOf(id) + 1, dif, cout: ENERGIE.cout[dif], ennemis,
+    recompenses: { xp: r.xp * (1 + dif), kamas: r.kamas * (1 + dif), pierreChance: r.pierreChance + 5 * dif },
+  };
 }
+
+export const zone = (id: string) => ZONES.find((z) => z.id === id)!;
+const fini = (j: Joueur, id: string, dif: number) => j.stagesFinis.includes(cleStage(id, dif));
+export const zoneFinie = (j: Joueur, z: Zone, dif: number) => z.stages.length > 0 && z.stages.every((s) => fini(j, s, dif));
+export function zoneOuverte(j: Joueur, z: Zone): boolean {
+  const i = ZONES.indexOf(z);
+  return z.stages.length > 0 && (i === 0 || zoneFinie(j, ZONES[i - 1], 0));
+}
+export const difficulteOuverte = (j: Joueur, z: Zone, dif: number) => zoneOuverte(j, z) && (dif === 0 || zoneFinie(j, z, dif - 1));
+export const stageOuvert = (j: Joueur, z: Zone, n: number, dif: number) => difficulteOuverte(j, z, dif) && (n === 0 || fini(j, z.stages[n - 1], dif));
+export const stagesFinis = (j: Joueur, z: Zone, dif: number) => z.stages.filter((s) => fini(j, s, dif)).length;
+
+/** Le prochain stage pas encore gagné (bouton « Continuer »), ou null si tout est fini. */
+export function prochainStage(j: Joueur): string | null {
+  for (let dif = 0; dif < 3; dif++) for (const z of ZONES) {
+    if (!difficulteOuverte(j, z, dif)) continue;
+    const s = z.stages.find((id) => !fini(j, id, dif));
+    if (s) return cleStage(s, dif);
+  }
+  return null;
+}
+/** Brèche du jour (comme la Faille dimensionnelle de SW ⚠) : quand toutes les zones sont finies en Normal. */
+export const brecheOuverte = (j: Joueur) => ZONES.every((z) => zoneFinie(j, z, 0));
 
 export function equipeEnnemie(s: Stage): MonstreCombat[] {
   return s.ennemis.map((e) => monstreCombat(e.id, e.etoiles, e.niveau));
@@ -34,31 +108,50 @@ export function equipeJoueur(j: Joueur): MonstreCombat[] {
   });
 }
 
+/** Chances d'un monstre qui tombe (SW : quelques % par monstre ✓ ; le nôtre ⚠) et d'énergie (SW ✓ ; montants ⚠). */
+export const CHANCE_MONSTRE = 3;
+export const CHANCE_ENERGIE = 25;
+
 export interface Butin {
   xp: number;
   kamas: number;
   pierresAme: number;
   /** Première victoire sur ce stage : une pierre d'âme offerte. */
   premiere: boolean;
+  energie: number;
+  /** Un des ennemis du stage, qui rejoint la collection (étoiles naturelles, niveau 1). */
+  monstre?: string;
+  /** Récompense de la zone, la première fois qu'elle est finie en Normal. */
+  zone?: { id: string; etoiles: Etoiles };
 }
 
 /** Butin d'une victoire, tiré avec sa propre graine (déterministe, rejouable par le serveur). */
 export function tirerButin(j: Joueur, s: Stage, graine: number): Butin {
   const rng = new Rng(graine ^ 0x5eed);
   const premiere = !j.stagesFinis.includes(s.id);
-  return { xp: s.recompenses.xp, kamas: s.recompenses.kamas, pierresAme: (rng.chance(s.recompenses.pierreChance) ? 1 : 0) + (premiere ? 1 : 0), premiere };
+  const b: Butin = {
+    xp: s.recompenses.xp, kamas: s.recompenses.kamas,
+    pierresAme: (rng.chance(s.recompenses.pierreChance) ? 1 : 0) + (premiere ? 1 : 0), premiere, energie: 0,
+  };
+  if (rng.chance(CHANCE_ENERGIE)) b.energie = 1 + Math.floor(rng.suivant() * 3);
+  if (rng.chance(CHANCE_MONSTRE)) b.monstre = s.ennemis[Math.floor(rng.suivant() * s.ennemis.length)].id;
+  const z = zone(s.zone);
+  const finis = new Set([...j.stagesFinis, s.id]);
+  if (s.dif === 0 && z.recompense && !j.recompensesZones.includes(z.id) && z.stages.every((x) => finis.has(x))) b.zone = z.recompense;
+  return b;
 }
 
-/** Applique le butin : XP à chaque monstre de l'équipe, kamas, pierres d'âme, stage marqué comme fini. */
-export function appliquerVictoire(j: Joueur, s: Stage, b: Butin): { joueur: Joueur; niveaux: Record<number, number> } {
+/** Applique le butin : XP à l'équipe, kamas, pierres d'âme, énergie, monstres, stage marqué comme fini. */
+export function appliquerVictoire(j: Joueur, s: Stage, b: Butin, maintenant: number): { joueur: Joueur; niveaux: Record<number, number> } {
   const { joueur, niveaux } = donnerXp(j, j.equipe, b.xp);
-  return {
-    joueur: {
-      ...joueur,
-      kamas: joueur.kamas + b.kamas,
-      pierresAme: joueur.pierresAme + b.pierresAme,
-      stagesFinis: joueur.stagesFinis.includes(s.id) ? joueur.stagesFinis : [...joueur.stagesFinis, s.id],
-    },
-    niveaux,
+  let r: Joueur = {
+    ...joueur,
+    kamas: joueur.kamas + b.kamas,
+    pierresAme: joueur.pierresAme + b.pierresAme,
+    stagesFinis: joueur.stagesFinis.includes(s.id) ? joueur.stagesFinis : [...joueur.stagesFinis, s.id],
   };
+  if (b.energie) r = changerEnergie(r, b.energie, maintenant);
+  if (b.monstre) r = ajouterMonstre(r, b.monstre).joueur;
+  if (b.zone) r = { ...ajouterMonstre(r, b.zone.id).joueur, recompensesZones: [...r.recompensesZones, s.zone] };
+  return { joueur: r, niveaux };
 }

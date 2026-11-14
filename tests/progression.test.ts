@@ -150,7 +150,7 @@ describe('joueur', () => {
 
 describe('stages et butin', () => {
   it('chaque stage a des ennemis valides', () => {
-    for (const s of LISTE_STAGES) expect(equipeEnnemie(s).length).toBeGreaterThan(0);
+    for (const s of LISTE_STAGES) for (const d of [0, 1, 2]) expect(equipeEnnemie(stage(d ? `${s.id}@${d}` : s.id)).length).toBeGreaterThan(0);
   });
 
   it('le butin est déterministe ; la première victoire donne une pierre d\'âme', () => {
@@ -159,7 +159,7 @@ describe('stages et butin', () => {
     const b = tirerButin(j, s, 42);
     expect(b.premiere).toBe(true);
     expect(b.pierresAme).toBeGreaterThanOrEqual(1);
-    const { joueur, niveaux } = appliquerVictoire(j, s, b);
+    const { joueur, niveaux } = appliquerVictoire(j, s, b, 0);
     expect(joueur.stagesFinis).toContain('astrub-1');
     expect(joueur.kamas).toBe(j.kamas + b.kamas);
     expect(Object.keys(niveaux)).toHaveLength(4);

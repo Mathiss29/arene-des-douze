@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { charger, sauver } from './sauvegarde';
 import { peutEvoluer, type Joueur } from '../sim/joueur';
 import { MINE, kamasEnMine, recolterMine } from '../sim/mine';
-import { LISTE_STAGES } from '../sim/stages';
+import { prochainStage } from '../sim/stages';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -145,7 +145,7 @@ export class IleScene extends Phaser.Scene {
 
     // étiquettes des bâtiments (taille fixe à l'écran, placées sous chaque bâtiment)
     const evo = j.monstres.some((m) => peutEvoluer(j, m.uid));
-    const prochain = LISTE_STAGES.find((s) => !j.stagesFinis.includes(s.id));
+    const prochain = prochainStage(j);
     for (const id of Object.keys(NOMS) as IdBat[]) {
       const c = this.add.container(0, 0);
       const t = this.add.text(0, 0, NOMS[id], { fontFamily: POLICE, fontSize: '15px', fontStyle: '600', color: BIENTOT[id] ? '#c9cfc4' : '#ffffff' })
@@ -172,7 +172,7 @@ export class IleScene extends Phaser.Scene {
     this.majMine();
     this.time.addEvent({ delay: 1000, loop: true, callback: () => this.majMine() });
 
-    // Combattre : ouvre la préparation du prochain stage (comme le Zaap)
+    // Combattre : ouvre la carte des combats (comme le Zaap)
     const b = bouton(this, W - 110, H - 46, 180, 56, 'Combattre', true, () => this.ouvrir('zaap'), 20);
     u.add([b.fond, b.t]);
     u.add(texte(this, 16, H - 14, 'Glisse pour te déplacer · molette ou deux doigts pour zoomer · touche un bâtiment', 12, '#e9efe6', false, 0, 1)
@@ -207,10 +207,7 @@ export class IleScene extends Phaser.Scene {
   private ouvrir(id: IdBat) {
     if (id === 'mine') return this.recolter();
     if (id === 'amel') return this.scene.start('cercle');
-    if (id === 'zaap') {
-      const j = this.joueur, s = LISTE_STAGES.find((x) => !j.stagesFinis.includes(x.id)) ?? LISTE_STAGES[LISTE_STAGES.length - 1];
-      return this.scene.start('preparation', { stage: s.id });
-    }
+    if (id === 'zaap') return this.scene.start('zaap');
     this.message(BIENTOT[id] ?? NOMS[id]);
   }
 
