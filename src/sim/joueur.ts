@@ -30,6 +30,8 @@ export interface Joueur {
   stagesFinis: string[];
   /** Dernière équipe utilisée sur chaque stage (comme SW, qui la propose à nouveau). */
   equipesStages: Record<string, number[]>;
+  /** Mine de kamas : moment (ms) depuis lequel elle produit ; absent tant que l'île n'a pas été ouverte. */
+  mine?: number;
 }
 
 export const TAILLE_EQUIPE = 4;
@@ -190,5 +192,6 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
         .filter((e): e is [string, number[]] => Array.isArray(e[1]))
         .map(([k, v]) => [k, v.filter((u) => uids.has(u)).slice(0, TAILLE_EQUIPE)]),
     ),
+    ...(Number.isFinite(j.mine) ? { mine: Number(j.mine) } : {}),
   };
 }

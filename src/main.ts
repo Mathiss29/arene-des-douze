@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CombatScene } from './render/CombatScene';
 import { PreparationScene } from './render/PreparationScene';
 import { CercleScene } from './render/CercleScene';
+import { IleScene } from './render/IleScene';
 import { VitrineScene } from './render/VitrineScene';
 import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
@@ -10,11 +11,11 @@ import { camerasNettes, facteurNettete, textesNets } from './render/nettete';
 // Polices de Dofus 3 (Lexend pour l'interface, Rowdies pour les chiffres), chargées avant le premier texte
 await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f) => document.fonts.load(f).catch(() => undefined)));
 
-// #vitrine : vitrine des planches ; #maquette-<nom> : maquette jouable avec son panneau de questions ; sinon la préparation d'équipe
+// #vitrine : vitrine des planches ; #maquette-<nom> : maquette jouable avec son panneau de questions ; sinon l'île d'Incarnam
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };
 const maquette = MAQUETTES[location.hash];
 if (maquette) document.getElementById('jeu')!.style.width = 'calc(100% - min(380px, 42vw))';
-const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, PreparationScene, CombatScene, CercleScene] : [PreparationScene, CombatScene, CercleScene, VitrineScene];
+const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, PreparationScene, CombatScene, CercleScene] : [IleScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
 
 // Netteté : canevas à la taille réelle de l'écran (voir nettete.ts)
 const K = facteurNettete(document.getElementById('jeu')!);

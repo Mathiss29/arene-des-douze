@@ -17,8 +17,10 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Les atlas JSON sont copiés dans `public/assets/sprites/` ; les AVIF restent sur le R2 de Diablofus
   (en dév, relayés par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
-- Écrans : préparation d'équipe par défaut (`src/render/PreparationScene.ts`) puis combat (`CombatScene.ts`, récompenses à la fin),
-  Cercle d'amélioration pour nourrir et faire évoluer (`CercleScene.ts`, bouton en haut de la préparation en attendant l'île), vitrine des planches avec `#vitrine`.
+- Écrans : île d'Incarnam par défaut (`src/render/IleScene.ts` : trois caméras ciel / île / interface, images et positions dans
+  `public/assets/ile/`, faites hors dépôt par `ile_vivante.py`), préparation d'équipe (`PreparationScene.ts`, par le Zaap ou « Combattre »)
+  puis combat (`CombatScene.ts`, récompenses à la fin), Cercle d'amélioration (`CercleScene.ts`, bâtiment de l'île), vitrine avec `#vitrine`.
+  Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).
   Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement : monde de 1280 × 720,
   dessiné à la taille réelle de l'écran (`src/render/nettete.ts` : canevas ×K, caméras zoomées ×K, textes en résolution K).
   Débogage dans la console : `window.game.scene.getScene('combat')`.

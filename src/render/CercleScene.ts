@@ -238,8 +238,8 @@ export class CercleScene extends Phaser.Scene {
     const xp = this.onglet === 'xp';
 
     // En-tête
-    const ret = this.t(16, 14, '‹ Préparation', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => !this.occupe && this.scene.start('preparation', { stage: this.retour }));
+    const ret = this.t(16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => !this.occupe && this.scene.start('ile'));
     this.t(ret.x + ret.width + 10, 14, `Cercle d'amélioration · ${xp ? 'Nourrir' : 'Évoluer'}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     this.t(W - 16, 14, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     let ox = 640 - 95;

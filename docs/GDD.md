@@ -42,13 +42,19 @@
 
 ### Cercle d'amélioration (maquette « Évolution : » 1A 2A 3A 4A 5A 6A 7A 8A 9A, 13 nov. 2026)
 - Bâtiment de l'île (comme le Power-Up Circle de SW) nommé « Cercle d'amélioration », deux onglets : Nourrir (XP) et Évoluer.
-  En attendant l'île, on y entre depuis la préparation.
 - Monstre choisi au centre, 5 cases de nourriture en arc au-dessus, collection en bas : on touche un monstre pour le donner.
 - Cadenas : les monstres de l'équipe ; les 3★ et plus quand on nourrit (gardés pour l'évolution).
 - Stats avant → après au même niveau ; coût en kamas sur le bouton ; étoiles qui s'allument une à une puis éclair ;
   confirmation seulement si la nourriture compte un 3★ ou plus.
 
-### Île (maquette « Île : » 1A 2A 3A 4A 5A 6C 7A 8A 9B 10B, 13 nov. 2026)
+### Île (maquette « Île : » 1A 2A 3A 4A 5A 6C 7A 8A 9B 10B, 13 nov. 2026 ; « Incarnam : » 1A 2A 3C 4A 5A 6A 7A 8A 9A, 14 nov. 2026)
+- « Incarnam : » : l'île d'Incarnam telle quelle, cimetière compris ; nos bâtiments sont certains des siens, à leur place
+  (donc pas de placement libre pour l'instant : il faudrait vider l'île et effacer les ombres des bâtiments retirés).
+  Vivante comme Diablofus : nappes d'eau et de brume qui glissent, eau qui change de couleur, lueurs qui respirent, particules
+  officielles, ciel. Arbres immobiles (choix de Mathis).
+- Fait : écran d'accueil, glisser et zoomer, étiquettes, pastilles « ! » (Cercle d'amélioration si une évolution est possible,
+  Zaap s'il reste un stage), mine (600 kamas/h, 4 000 au plus ⚠ à équilibrer), Zaap et « Combattre » vers le prochain stage.
+  Cercle d'invocation, Boutique, Temple des Douze et Maison de Ganymède : « bientôt ».
 - Écran d'accueil : Incarnam, l'île flottante de Dofus, comme l'île de SW. On la fait glisser et on zoome.
 - Bâtiments placés librement par le joueur (mode « Déplacer »). Au départ, seulement ceux qui servent déjà :
   Cercle d'invocation, Cercle d'amélioration, Zaap, Boutique, Mine de kamas.

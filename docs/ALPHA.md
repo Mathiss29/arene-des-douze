@@ -30,7 +30,8 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
   Écrans de préparation (`PreparationScene.ts` : tri, filtre, fiche, équipe retenue par stage, monstres prêts à évoluer)
   et de récompenses (fin de `CombatScene.ts`) faits d'après la maquette « Écrans : ».
   Cercle d'amélioration (`CercleScene.ts`) : nourrir et faire évoluer, règles SW actuelles (RELOADED).
-  Reste : l'île (accueil avec ses bâtiments), écran de collection hors combat, montée des sorts par la famille.
+  Île d'Incarnam (`IleScene.ts`) : écran d'accueil vivant, bâtiments, pastilles « ! », mine de kamas.
+  Reste : invocation, boutique, temple, Ganymède, monstres qui se promènent, musique, écran de collection hors combat, montée des sorts par la famille.
 - [ ] **6. Histoire** — 7 stages enchaînés avec récompenses.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
 - [ ] **8. Invocation** — les pierres d'âme donnent des monstres.

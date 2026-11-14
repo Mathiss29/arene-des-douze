@@ -136,10 +136,9 @@ export class PreparationScene extends Phaser.Scene {
     this.calque = [];
     const j = this.joueur;
 
-    this.t(16, 14, `Astrub · ${this.stage.nom} · Normal`, 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    // En attendant l'île : accès direct au Cercle d'amélioration
-    const cercle = this.t(W / 2, 14, '⚗ Cercle d\'amélioration', 14, '#1d1405', true, 0.5, 0).setBackgroundColor('#e3b54c').setPadding(14, 7, 14, 7).setShadow(0, 0, '#000', 0);
-    cercle.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('cercle', { stage: this.stage.id }));
+    const ret = this.t(16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('ile'));
+    this.t(ret.x + ret.width + 10, 14, `Astrub · ${this.stage.nom} · Normal`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     this.t(W - 16, 14, `${fmt(j.kamas)} kamas  ·  ${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, 14, '#ffe08a', true, 1, 0)
       .setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
 
