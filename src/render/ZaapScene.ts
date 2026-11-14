@@ -299,23 +299,27 @@ export class ZaapScene extends Phaser.Scene {
     const s = stage(cleStage(z.stages[n], this.dif));
     this.garder(this.add.rectangle(px + pw / 2, py, pw - 28, 1.5, 0x3c5045).setDepth(901));
     this.t(px + 20, py + 10, `STAGE ${n + 1} · ${s.nom.toUpperCase()}${s.boss !== undefined ? ' · BOSS' : ''}`, 12, OR, true, 0, 0, 902);
-    s.ennemis.forEach((e, k) => {
-      const x = px + 46 + k * 62, y = py + 66;
-      const el = fiche(e.id).element as Element;
-      this.garder(this.add.circle(x, y, 27, 0x1d2a20).setStrokeStyle(2.5, k === s.boss ? 0xe8673f : COULEUR[el]).setDepth(902));
-      const p = portrait(this, e.id, x, y, 52, true, true, 903);
-      this.garder(p.sp); this.calque.push(p.masque);
-      this.t(x, y + 30, `${'★'.repeat(e.etoiles)} ${e.niveau}`, 10, '#ffe08a', true, 0.5, 0, 904);
+    s.vagues.forEach((v, k) => {
+      const x0 = px + 24 + k * 182;
+      this.t(x0, py + 32, `Vague ${k + 1}`, 10, '#9fb3a6', true, 0, 0, 902);
+      v.forEach((e, i) => {
+        const x = x0 + 18 + i * 42, y = py + 66;
+        const el = fiche(e.id).element as Element, boss = k === s.vagues.length - 1 && i === s.boss;
+        this.garder(this.add.circle(x, y, 19, 0x1d2a20).setStrokeStyle(boss ? 3.5 : 2, boss ? 0xff3a20 : COULEUR[el]).setDepth(902));
+        const p = portrait(this, e.id, x, y, 38, true, true, 903);
+        this.garder(p.sp); this.calque.push(p.masque);
+        this.t(x, y + 21, `${e.etoiles}★${e.niveau}`, 9, boss ? '#ff9b7a' : '#ffe08a', true, 0.5, 0, 904);
+      });
     });
     // conseil : l'élément qui a l'avantage sur la plupart des ennemis
     const compte = new Map<Element, number>();
     for (const e of s.ennemis) { const b = BAT_ELEMENT[fiche(e.id).element as Element]; compte.set(b, (compte.get(b) ?? 0) + 1); }
     const conseil = [...compte.entries()].sort((a, b) => b[1] - a[1])[0][0];
-    this.t(px + 310, py + 42, 'Conseil', 11, '#9fb3a6', false, 0, 0, 902);
-    this.garder(this.add.circle(px + 318, py + 74, 8, COULEUR[conseil]).setDepth(902));
-    this.t(px + 332, py + 65, `${NOM_ELEMENT[conseil]} (avantage)`, 14, hex(COULEUR[conseil]), true, 0, 0, 902);
+    this.t(px + 20, py + 106, 'Conseil :', 12, '#9fb3a6', false, 0, 0, 902);
+    this.garder(this.add.circle(px + 92, py + 114, 7, COULEUR[conseil]).setDepth(902));
+    this.t(px + 104, py + 105, `${NOM_ELEMENT[conseil]} (avantage sur la plupart des ennemis)`, 13, hex(COULEUR[conseil]), true, 0, 0, 902);
     // butin
-    const by = py + 116;
+    const by = py + 136;
     this.garder(this.add.image(px + 32, by + 10, 'kamas_tas').setDisplaySize(26, 26).setDepth(902));
     this.t(px + 50, by + 1, `${fmt(s.recompenses.kamas)}`, 14, '#ffffff', true, 0, 0, 902);
     this.t(px + 130, by + 1, `XP ${fmt(s.recompenses.xp)}`, 14, '#ffffff', true, 0, 0, 902);
@@ -327,7 +331,7 @@ export class ZaapScene extends Phaser.Scene {
 
     // boutons : préparer (énergie) et répéter (plus tard, 8A)
     const ouvert = stageOuvert(j, z, n, this.dif);
-    const b = bouton(this, px + 210, py + 236, 380, 50, ouvert ? `Préparer l'équipe   ⚡${s.cout}` : 'Gagne le stage d\'avant', true, () => {
+    const b = bouton(this, px + 210, py + 244, 380, 46, ouvert ? `Préparer l'équipe   ⚡${s.cout}` : 'Gagne le stage d\'avant', true, () => {
       if (!ouvert) return;
       if (energie(j, Date.now()) < s.cout) return this.message(`Pas assez d'énergie : il en faut ${s.cout}. Elle revient d'elle-même, 1 toutes les 5 minutes.`);
       this.voir('tuto:zaap');
@@ -335,7 +339,7 @@ export class ZaapScene extends Phaser.Scene {
     }, 1001);
     this.garder(b.fond); this.garder(b.t);
     if (!ouvert) b.griser();
-    const r = bouton(this, px + 480, py + 236, 150, 50, '↻ Répéter', false, () => this.message('Le combat répété arrive plus tard.'), 1001);
+    const r = bouton(this, px + 480, py + 244, 150, 46, '↻ Répéter', false, () => this.message('Le combat répété arrive plus tard.'), 1001);
     this.garder(r.fond); this.garder(r.t);
   }
 }

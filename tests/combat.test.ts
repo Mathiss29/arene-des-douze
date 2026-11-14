@@ -278,3 +278,35 @@ describe('fin de combat', () => {
     expect(c.tour).toBe(REGLES.toursMax);
   });
 });
+
+describe('vagues (histoire et donjons : 3 vagues ✓)', () => {
+  const faible = (p: string) => [monstre(`${p}_1`, 'feu', { pv: 800 }), monstre(`${p}_2`, 'eau', { pv: 800 })];
+  it('la vague suivante arrive quand la précédente est vaincue ; le combat ne finit qu\'après la dernière', () => {
+    const c = new Combat({ equipeA: equipe('a'), equipeB: faible('v1'), vaguesSuivantes: [faible('v2'), faible('v3')], graine: 5, mode: 'histoire' });
+    expect(c.nbVagues).toBe(3);
+    const pvAvant = new Map<number, number>();
+    let vagues = 0;
+    while (c.prochainTour()) {
+      const { sort, cible } = choisirAction(c);
+      c.jouer(sort, cible);
+      for (const e of c.drainEvenements()) if (e.type === 'vague') {
+        vagues++;
+        expect(e.vague).toBe(vagues + 1);
+        expect(e.uids).toHaveLength(2);
+        // les alliés gardent leurs PV ; toutes les jauges repartent de zéro
+        for (const u of c.vivants('A')) expect(u.pv).toBeLessThanOrEqual(u.stats.pv);
+        for (const u of c.unites.filter((x) => x.vivant)) expect(u.jauge).toBe(0);
+        for (const uid of e.uids) { expect(c.unite(uid).vague).toBe(vagues + 1); pvAvant.set(uid, c.unite(uid).pv); }
+      }
+    }
+    expect(vagues).toBe(2);
+    expect(c.vainqueur).toBe('A');
+    expect(c.vague).toBe(3);
+  });
+  it('perdre à la vague 2 termine le combat', () => {
+    const forts = [monstre('f1', 'feu', { pv: 99999, atq: 5000 }), monstre('f2', 'feu', { pv: 99999, atq: 5000 })];
+    const c = new Combat({ equipeA: [monstre('a', 'air', { pv: 3000 })], equipeB: [monstre('x', 'eau', { pv: 10 })], vaguesSuivantes: [forts, faible('v3')], graine: 2, mode: 'histoire' });
+    expect(c.simuler((k) => choisirAction(k))).toBe('B');
+    expect(c.vague).toBe(2);
+  });
+});

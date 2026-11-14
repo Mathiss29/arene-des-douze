@@ -223,18 +223,26 @@ export class PreparationScene extends Phaser.Scene {
     this.cliquable(fond, () => this.basculer(m.uid), () => this.ouvrirFiche(m));
   }
 
-  /** Côté droit : ennemis de la vague, équipe, leader, bouton Combattre. */
+  /** Côté droit : les 3 vagues ennemies, équipe, leader, bouton Combattre. */
   private cote() {
     this.g(panneau(this, 640, 60, 620, 640));
-    this.t(658, 78, 'ENNEMIS · VAGUE 1', 12, OR, true, 0);
-    this.stage.ennemis.forEach((e, i) => {
-      const cx = 698 + i * 150, cy = 150;
-      const f = fiche(e.id);
-      this.g(this.add.circle(cx, cy, 32, 0x22322b).setStrokeStyle(2.5, 0xff6a50).setDepth(1000));
-      this.portrait(e.id, cx, cy, 64, true, true);
-      this.t(cx + 38, cy - 24, f.nom, 12, '#ffffff', true, 0).setWordWrapWidth(100);
-      this.t(cx + 38, cy + 14, `${this.etoiles(e.etoiles)} Niv. ${e.niveau}`, 11, hex(COULEUR[f.element]), true, 0);
+    // Les 3 vagues ennemies, côte à côte (le boss du stage 7 cerclé de rouge vif)
+    this.t(658, 78, 'ENNEMIS', 12, OR, true, 0);
+    this.stage.vagues.forEach((v, k) => {
+      const x0 = 660 + k * 200;
+      this.t(x0, 100, `VAGUE ${k + 1}`, 11, '#9fb3a6', true, 0);
+      v.forEach((e, i) => {
+        const cx = x0 + 22 + i * 46, cy = 148;
+        const f = fiche(e.id), boss = k === this.stage.vagues.length - 1 && i === this.stage.boss;
+        this.g(this.add.circle(cx, cy, 21, 0x22322b).setStrokeStyle(boss ? 3.5 : 2, boss ? 0xff3a20 : COULEUR[f.element]).setDepth(1000));
+        this.portrait(e.id, cx, cy, 42, true, true);
+        this.t(cx, cy + 24, `${e.etoiles}★ ${e.niveau}`, 10, boss ? '#ff9b7a' : '#ffe08a', true);
+      });
     });
+    if (this.stage.boss !== undefined) {
+      const b = this.stage.vagues[this.stage.vagues.length - 1][this.stage.boss];
+      this.t(658, 196, `Boss : ${fiche(b.id).nom}`, 12, '#ff9b7a', true, 0);
+    }
 
     const y0 = 236;
     this.t(658, y0, `MON ÉQUIPE (${this.equipe.length} / ${TAILLE_EQUIPE})`, 12, OR, true, 0);

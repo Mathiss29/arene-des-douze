@@ -163,7 +163,9 @@ Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, ga
   8. monstres qui tombent ; 9. bouton « Continuer » ; 10. boss plus grand avec sa barre de vie ⚠ ; 11. musique de la carte ;
   12. brume sur les zones pas encore découvertes ; 13. premier combat guidé par Ganymède ; 14. lien avec les missions du jour.
   Fait le 14 nov. : tout sauf 1 (la brèche attend d'autres zones), 4 (particules), 5, 11 et 14 (attendent leurs systèmes).
-  Astrub : 7 stages faciles, comme la Forêt de Garen (« très facile » ✓) ; l'équipe de départ la finit en une quinzaine de combats.
+  Astrub : 7 stages faciles, comme la Forêt de Garen (« très facile » ✓) ; l'équipe de départ la finit en 13 à 27 combats (simulation).
+- Vagues ✓ : 3 vagues par stage, le boss à la dernière. Entre deux vagues, les alliés gardent PV, effets et recharges ; toutes les jauges
+  repartent de zéro ⚠ (pas trouvé de source SW claire ; à vérifier). Le leader d'une vague ennemie est son premier monstre.
 - Donjons : Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
 - Tour des Dimensions : 100 étages.
 - Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues. Plus tard : Kolizéum en direct, comme l'Arène mondiale de SW

@@ -3,7 +3,7 @@ import { Combat, type Evenement, type Unite } from '../sim/combat';
 import { choisirAction } from '../sim/ia';
 import { monstreCombat } from '../sim/fiches';
 import { monstre, type Joueur } from '../sim/joueur';
-import { appliquerVictoire, cleStage, DIFFICULTES, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
+import { appliquerVictoire, cleStage, DIFFICULTES, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
 import { lancerCombat } from './lancement';
 import { fiche } from '../sim/fiches';
 import { charger, sauver } from './sauvegarde';
@@ -135,7 +135,7 @@ export class CombatScene extends Phaser.Scene {
     this.graine = (Date.now() ^ (Math.random() * 1e9)) >>> 0;
     this.combat = new Combat({
       equipeA: equipeJoueur(this.joueur),
-      equipeB: equipeEnnemie(this.stage),
+      ...vaguesEnnemies(this.stage),
       graine: this.graine,
       mode: 'histoire',
     });
@@ -154,7 +154,7 @@ export class CombatScene extends Phaser.Scene {
     const [ox, oy] = origine(meta);
     const [x, y] = PLACES[u.camp][u.place];
     // le boss du stage 7 est plus grand, avec sa barre de vie en haut (idée 10 de « Zaap : »)
-    const boss = u.camp === 'B' && this.stage.boss === u.place;
+    const boss = this.estBoss(u);
     const echelle = look.echelle * ZOOM * (boss ? 1.35 : 1);
     const sens = u.camp === 'A' ? 1 : -1;
 
@@ -210,9 +210,10 @@ export class CombatScene extends Phaser.Scene {
       if (this.auto && !this.occupe && this.combat.acteur?.camp === 'A') this.jouerIA();
       this.majSorts();
     });
-    this.add.text(14, 22, `${zone(this.stage.zone).nom} ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, {
+    this.titre = this.add.text(14, 22, '', {
       fontFamily: POLICE, fontSize: '13px', fontStyle: '600', color: '#ffe08a', backgroundColor: 'rgba(10,20,15,0.8)', padding: { x: 12, y: 7 },
     }).setDepth(3000);
+    this.majTitre();
     this.majBoutons();
 
     // Sorts : 3 boutons ronds en bas à droite + bulle de description
@@ -462,6 +463,10 @@ export class CombatScene extends Phaser.Scene {
         this.majCibles();
         break;
       }
+      case 'vague':
+        await this.attendre(600);
+        await this.nouvelleVague(e);
+        break;
       case 'fin':
         await this.attendre(900);
         this.afficherFin(e.vainqueur);
@@ -489,6 +494,40 @@ export class CombatScene extends Phaser.Scene {
 
   // ───────────── mise à jour de l'affichage ─────────────
 
+  private titre!: Phaser.GameObjects.Text;
+  private majTitre() {
+    this.titre.setText(`${zone(this.stage.zone).nom} ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}  ·  Vague ${this.combat.vague} / ${this.combat.nbVagues}`);
+  }
+
+  private estBoss(u: Unite) { return u.camp === 'B' && u.vague === this.combat.nbVagues && this.stage.boss === u.place; }
+
+  /** Vague suivante : les ennemis vaincus s'effacent, les nouveaux arrivent, bannière « Vague 2 / 3 ». */
+  private async nouvelleVague(e: Extract<Evenement, { type: 'vague' }>) {
+    for (const [uid, vue] of [...this.vues]) {
+      if (vue.u.camp !== 'B' || vue.u.vivant) continue;
+      for (const o of [vue.sprite, vue.socle, vue.barres, vue.niveau, vue.effets, vue.zone]) o.destroy();
+      this.vues.delete(uid);
+    }
+    this.cibleFocus = null;
+    this.majTitre();
+    const ban = this.add.image(W / 2, H / 2 - 40, 'background_levelup_banner').setDisplaySize(460, 104).setDepth(3500);
+    const t = this.add.text(W / 2, H / 2 - 50, `Vague ${e.vague} / ${e.total}`, { fontFamily: POLICE_CHIFFRES, fontSize: '40px', color: '#ffffff' })
+      .setOrigin(0.5).setStroke('#5a2a00', 7).setDepth(3501);
+    this.tweens.add({ targets: [ban, t], alpha: { from: 0, to: 1 }, duration: 250 });
+    await this.attendre(500);
+    for (const uid of e.uids) {
+      this.creerVue(this.combat.unite(uid));
+      const vue = this.vues.get(uid)!;
+      vue.sprite.setAlpha(0);
+      this.tweens.add({ targets: vue.sprite, alpha: 1, x: { from: vue.x + 60, to: vue.x }, duration: 450 / this.v, ease: 'Cubic.easeOut' });
+    }
+    for (const vue of this.vues.values()) this.majVue(vue);
+    await this.attendre(900);
+    this.tweens.add({ targets: [ban, t], alpha: 0, duration: 300, onComplete: () => { ban.destroy(); t.destroy(); } });
+    this.majFrise();
+    this.majCibles();
+  }
+
   private barreBossG?: Phaser.GameObjects.Graphics;
   private barreBossT?: Phaser.GameObjects.Text;
   private barreBoss(u: Unite) {
@@ -506,7 +545,7 @@ export class CombatScene extends Phaser.Scene {
   private majVue(vue: Vue) {
     const { u, x, y } = vue;
     const g = vue.barres.clear();
-    if (u.camp === 'B' && this.stage.boss === u.place && this.barreBossG) this.barreBoss(u);
+    if (this.estBoss(u) && this.barreBossG) this.barreBoss(u);
     if (!u.vivant) {
       vue.zone.disableInteractive();
       vue.niveau.setVisible(false);
@@ -515,7 +554,7 @@ export class CombatScene extends Phaser.Scene {
       return;
     }
 
-    if (u.camp === 'B' && this.stage.boss === u.place) this.barreBoss(u);
+    if (this.estBoss(u)) this.barreBoss(u);
 
     // Élément + niveau (+ couronne du leader)
     g.fillStyle(COULEUR[u.element]).fillCircle(x - 40, y + 20, 7).lineStyle(1.5, 0x000000, 0.7).strokeCircle(x - 40, y + 20, 7);

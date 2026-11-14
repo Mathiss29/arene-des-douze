@@ -20,12 +20,16 @@ interface StageBase {
   nom: string;
   /** Décor (fichier lourd sur le R2). */
   arene: string;
-  ennemis: { id: string; etoiles: Etoiles; niveau: number }[];
+  /** 3 vagues d'ennemis ✓ (SW), la dernière avec le boss au stage 7. */
+  vagues: Ennemi[][];
   recompenses: { xp: number; kamas: number; pierreChance: number };
-  /** Place du boss parmi les ennemis (stage 7). */
+  /** Place du boss dans la dernière vague (stage 7). */
   boss?: number;
 }
+export interface Ennemi { id: string; etoiles: Etoiles; niveau: number }
 export interface Stage extends StageBase {
+  /** Tous les ennemis, vague après vague. */
+  ennemis: Ennemi[];
   /** Clé du stage joué (id + difficulté). */
   id: string;
   base: string;
@@ -62,13 +66,13 @@ export function stage(cle: string): Stage {
   const b = BASES.find((x) => x.id === id);
   const z = ZONES.find((x) => x.stages.includes(id));
   if (!b || !z || !(dif >= 0 && dif <= 2)) throw new Error(`Stage inconnu : ${cle}`);
-  const ennemis = b.ennemis.map((e) => {
+  const vagues = b.vagues.map((v) => v.map((e) => {
     const etoiles = Math.min(6, e.etoiles + dif) as Etoiles;
     return { id: e.id, etoiles, niveau: Math.min(NIVEAU_MAX[etoiles], e.niveau + 10 * dif) };
-  });
+  }));
   const r = b.recompenses;
   return {
-    ...b, id: cle, base: id, zone: z.id, numero: z.stages.indexOf(id) + 1, dif, cout: ENERGIE.cout[dif], ennemis,
+    ...b, id: cle, base: id, zone: z.id, numero: z.stages.indexOf(id) + 1, dif, cout: ENERGIE.cout[dif], vagues, ennemis: vagues.flat(),
     recompenses: { xp: r.xp * (1 + dif), kamas: r.kamas * (1 + dif), pierreChance: r.pierreChance + 5 * dif },
   };
 }
@@ -96,8 +100,10 @@ export function prochainStage(j: Joueur): string | null {
 /** Brèche du jour (comme la Faille dimensionnelle de SW ⚠) : quand toutes les zones sont finies en Normal. */
 export const brecheOuverte = (j: Joueur) => ZONES.every((z) => zoneFinie(j, z, 0));
 
-export function equipeEnnemie(s: Stage): MonstreCombat[] {
-  return s.ennemis.map((e) => monstreCombat(e.id, e.etoiles, e.niveau));
+/** Les vagues ennemies prêtes pour le combat : la première, puis les suivantes. */
+export function vaguesEnnemies(s: Stage): { equipeB: MonstreCombat[]; vaguesSuivantes: MonstreCombat[][] } {
+  const [premiere, ...suite] = s.vagues.map((v) => v.map((e) => monstreCombat(e.id, e.etoiles, e.niveau)));
+  return { equipeB: premiere, vaguesSuivantes: suite };
 }
 
 /** L'équipe du joueur prête pour le combat. */

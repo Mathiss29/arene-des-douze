@@ -31,6 +31,8 @@ export interface Unite {
   effets: Effet[];
   /** Tours restants avant de pouvoir relancer chaque sort. */
   recharges: number[];
+  /** Vague de l'unité (1 pour le camp A et la première vague ennemie). */
+  vague: number;
 }
 
 /** Ce qui se passe pendant le combat, dans l'ordre : l'affichage s'en sert pour animer. */
@@ -45,11 +47,14 @@ export type Evenement =
   | { type: 'fin_effet'; uid: number; effet: TypeEffet }
   | { type: 'jauge'; uid: number; avant: number; apres: number }
   | { type: 'ko'; uid: number }
+  | { type: 'vague'; vague: number; total: number; uids: number[] }
   | { type: 'fin'; vainqueur: Camp | null };
 
 export interface OptionsCombat {
   equipeA: MonstreCombat[];
   equipeB: MonstreCombat[];
+  /** Vagues ennemies suivantes (histoire, donjons) : elles arrivent quand la précédente est vaincue. */
+  vaguesSuivantes?: MonstreCombat[][];
   graine: number;
   mode: ModeCombat;
 }
@@ -70,25 +75,34 @@ export class Combat {
   private evenements: Evenement[] = [];
   private journal: Evenement[] = [];
 
+  /** Vague ennemie en cours (1…nbVagues). */
+  vague = 1;
+  readonly nbVagues: number;
+  private readonly suivantes: MonstreCombat[][];
+
   constructor(o: OptionsCombat) {
     this.mode = o.mode;
     this.rng = new Rng(o.graine);
-    let uid = 0;
-    const creer = (camp: Camp, equipe: MonstreCombat[]) => {
-      const lead = equipe[0]?.leader;
-      return equipe.map((m, place): Unite => {
-        const stats = { ...m.stats };
-        if (lead && (lead.zone === 'general' || lead.zone === o.mode || lead.zone === m.element)) {
-          const k = lead.stat;
-          stats[k] = ['tc', 'pre', 'res', 'dc'].includes(k) ? stats[k] + lead.valeur : Math.round(stats[k] * (1 + lead.valeur / 100));
-        }
-        return {
-          uid: uid++, camp, place, monstre: m, element: m.element, stats, pv: stats.pv,
-          jauge: 0, vivant: true, effets: [], recharges: m.sorts.map(() => 0),
-        };
-      });
-    };
-    this.unites = [...creer('A', o.equipeA), ...creer('B', o.equipeB)];
+    this.suivantes = [...(o.vaguesSuivantes ?? [])];
+    this.nbVagues = 1 + this.suivantes.length;
+    const a = this.creer('A', o.equipeA, 0);
+    this.unites = [...a, ...this.creer('B', o.equipeB, a.length)];
+  }
+
+  /** Unités d'une équipe, skill de leader appliqué (le leader d'une vague ennemie est son premier monstre). */
+  private creer(camp: Camp, equipe: MonstreCombat[], uid: number): Unite[] {
+    const lead = equipe[0]?.leader;
+    return equipe.map((m, place): Unite => {
+      const stats = { ...m.stats };
+      if (lead && (lead.zone === 'general' || lead.zone === this.mode || lead.zone === m.element)) {
+        const k = lead.stat;
+        stats[k] = ['tc', 'pre', 'res', 'dc'].includes(k) ? stats[k] + lead.valeur : Math.round(stats[k] * (1 + lead.valeur / 100));
+      }
+      return {
+        uid: uid++, camp, place, monstre: m, element: m.element, stats, pv: stats.pv,
+        jauge: 0, vivant: true, effets: [], recharges: m.sorts.map(() => 0), vague: camp === 'A' ? 1 : this.vague,
+      };
+    });
   }
 
   // ───────────── lecture ─────────────
@@ -372,6 +386,15 @@ export class Combat {
     if (this.fini) return true;
     const a = this.vivants('A').length, b = this.vivants('B').length;
     if (a && b) return false;
+    if (a && this.suivantes.length) {
+      // Vague suivante : les alliés gardent PV, effets et recharges ; toutes les jauges repartent de zéro ⚠
+      this.vague++;
+      const nouvelles = this.creer('B', this.suivantes.shift()!, this.unites.length);
+      this.unites.push(...nouvelles);
+      for (const u of this.unites) u.jauge = 0;
+      this.emettre({ type: 'vague', vague: this.vague, total: this.nbVagues, uids: nouvelles.map((u) => u.uid) });
+      return false;
+    }
     this.terminer(a ? 'A' : b ? 'B' : null);
     return true;
   }

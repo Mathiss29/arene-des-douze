@@ -3,7 +3,7 @@ import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoile
 import { pointsRequis, xpDonnee } from '../src/sim/progression';
 import { Rng } from '../src/sim/rng';
 import { apercuNourrir, nourrir, ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
-import { appliquerVictoire, equipeEnnemie, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
+import { appliquerVictoire, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
 import { Combat } from '../src/sim/combat';
 import { choisirAction } from '../src/sim/ia';
 
@@ -150,7 +150,11 @@ describe('joueur', () => {
 
 describe('stages et butin', () => {
   it('chaque stage a des ennemis valides', () => {
-    for (const s of LISTE_STAGES) for (const d of [0, 1, 2]) expect(equipeEnnemie(stage(d ? `${s.id}@${d}` : s.id)).length).toBeGreaterThan(0);
+    for (const s of LISTE_STAGES) for (const d of [0, 1, 2]) {
+      const v = vaguesEnnemies(stage(d ? `${s.id}@${d}` : s.id));
+      expect(v.equipeB.length).toBeGreaterThan(0);
+      expect(v.vaguesSuivantes).toHaveLength(2);
+    }
   });
 
   it('le butin est déterministe ; la première victoire donne une pierre d\'âme', () => {
@@ -170,7 +174,7 @@ describe('stages et butin', () => {
     const j = nouveauJoueur(), s = stage('astrub-1');
     let victoires = 0;
     for (let g = 0; g < 100; g++) {
-      const c = new Combat({ equipeA: equipeJoueur(j), equipeB: equipeEnnemie(s), graine: g, mode: 'histoire' });
+      const c = new Combat({ equipeA: equipeJoueur(j), ...vaguesEnnemies(s), graine: g, mode: 'histoire' });
       if (c.simuler(choisirAction) === 'A') victoires++;
     }
     expect(victoires).toBeGreaterThanOrEqual(75);
