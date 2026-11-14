@@ -99,9 +99,15 @@
 | Kwaks 3★ | Flamme · Attaque | Vent · Attaque | Glace · Soutien | ⏳ | ⏳ |
 | Tortues 3★ | Rouge · Défense | Verte · Soutien | Bleue · PV | Jaune · Défense | ⏳ |
 | Bouftous 4★ | Chef de guerre · Attaque | Boufton Orageux · Soutien | Bouftou Nuageux · PV | Boufton Palichon · Soutien | Bouftou Noir · Défense |
-| Kwakères 4★ | Flamme · Attaque | Vent · Attaque | Glace · Soutien | ⏳ | ⏳ |
+| Kwakères 4★ | Flamme | Terre | Glace | d'Or (couleur refaite) | Vent |
+| Koalaks 4★ | Griotte | Reinette | Indigo | Coco | Myrtille (couleur refaite) |
+| Dragoss 5★ | d'Argile | Calcaire | d'Ardoise | Doré (couleur refaite) | de Charbon |
+| Gelées Royales 5★ | Fraise | Menthe | Bleuet | Citron | Mûre (couleur refaite) |
 
-5★ : Kwakwa (Feu, Attaque), Wa Wabbit (Air, Soutien), Bouftou Royal (Eau, PV), Dopeul Iop (Bonta, Attaque), Dopeul Crâ (Brâkmar, Soutien).
+Maquette « 5★ : » 1A 2A 3A 4A 5A (14 nov. 2026) : comme SW ✓, chaque monstre existe dans les 5 éléments (même modèle,
+couleurs différentes). 5★ de la 0.1 : Dragoss et Gelées Royales. L'élément qui manque dans Dofus est fait en refaisant la couleur
+d'un monstre de la famille. Kwakères et Koalaks : 4★. Grands monstres seuls (Kwakwa, Wa Wabbit, Bouftou Royal, Dopeuls…) :
+recolorés en 5 éléments plus tard, pour devenir des familles 5★. Types, sorts et noms définitifs : ⏳ (avec les fiches).
 
 Skills de leader (valeurs de départ) : Piou Vert +10 % vitesse ; Tortue Bleue +21 % PV (Arène) ; Scarafeuille Blanc +18 % résistance ;
 Kwak de Vent +19 % taux critique (Donjons) ; Bouftou Nuageux +33 % PV ; Boufton Orageux +24 % vitesse (Arène) ;
