@@ -7,7 +7,7 @@
 | Monstres | 13 : Pious (1★, 5 éléments), Scarafeuilles (3★, 5 éléments), Kwaks de Flamme, de Vent et de Glace (3★) |
 | Combat | Jauge d'attaque, éléments, 3 sorts, malus et bonus, skill de leader, mode auto |
 | Histoire | 1 zone de 7 stages (3 vagues, boss au dernier) |
-| Donjon | Donjon des Bouftous, 3 niveaux, qui donne des runes |
+| Donjon | Donjon des Bouftous, 10 niveaux (comme SW depuis RELOADED ✓), qui donne des runes |
 | Runes | 6 emplacements, 4 sets, forgemagie +0 à +15 |
 | Progression | XP, niveaux, évolution jusqu'à 3★ |
 | Invocation | Pierres d'âme (1-3★) |

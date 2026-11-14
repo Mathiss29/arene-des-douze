@@ -166,7 +166,8 @@ Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, ga
   Astrub : 7 stages faciles, comme la Forêt de Garen (« très facile » ✓) ; l'équipe de départ la finit en 13 à 27 combats (simulation).
 - Vagues ✓ : 3 vagues par stage, le boss à la dernière. Entre deux vagues, les alliés gardent PV, effets et recharges ; toutes les jauges
   repartent de zéro ⚠ (pas trouvé de source SW claire ; à vérifier). Le leader d'une vague ennemie est son premier monstre.
-- Donjons : Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
+- Donjons : 10 niveaux chacun ✓ (SW v8.0.0, RELOADED : Castel du Géant, Antre du Dragon et Nécropole ramenés de B12 à B10,
+  le B10 donne les récompenses de l'ancien B12 pour 8 d'énergie). Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
 - Tour des Dimensions : 100 étages.
 - Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues. Plus tard : Kolizéum en direct, comme l'Arène mondiale de SW
   (4 monstres, choix alternés).
