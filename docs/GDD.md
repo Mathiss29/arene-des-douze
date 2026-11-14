@@ -125,6 +125,14 @@ Bouftou Royal +44 % défense (Donjons) ; Dopeul Iop +33 % taux critique (Donjons
 - Effets faits maison (`src/render/effets.ts`), pas les effets officiels.
 - ⏳ Règles de l'éveil (essences, bonus de stats, sort amélioré) à vérifier sur SW puis à coder.
 
+## Chemin de l'invocateur (maquette « Chemin : » 1A…10A, 14 nov. 2026)
+Comme le Summoner's Way de SW ✓ : quêtes qui apprennent le jeu pas à pas, faites une seule fois, en paliers (Novice, Confirmé, Expert…),
+onglets Progression et Défis (un défi par contenu, comme celui du Castel du Géant qui donne Shannon ✓), icône en haut à gauche de l'île ✓.
+- Récompenses à réclamer (pastille « ! »), coffre en fin de palier, bouton « Y aller » vers le bon écran, Ganymède félicite en bulle sur l'île.
+- Défi Donjon des Bouftous : Chef de Guerre Bouftou 4★ au bout. Dernier palier : 5★ au choix en finissant Astrub en Enfer.
+- Beaucoup de quêtes (choix de Mathis) : elles sont des données (`quetes.json`), le chemin grandit à chaque version avec le contenu
+  (Arène, Tour, autres zones, éveil…). 0.1 : toutes les quêtes possibles avec son contenu.
+
 ## 4. Invocation
 | Objet | Équivalent SW | Résultat |
 |---|---|---|
