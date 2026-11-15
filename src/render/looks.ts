@@ -35,6 +35,7 @@ export const LOOKS: Record<string, Look> = {
   // Base des recolorations Bonta et Brâkmar des Kwaks (maquette « Éveils : »)
   kwak_de_terre: { atlas: 'kwak_de_terre', ...KWAK },
   // Forme adulte (maquette « Éveils : »)
+  bouftou_royal: { atlas: 'royal', echelle: 1.05, attaques: { 0: 10 / 20 }, animSorts: [0, 0, 0] },
   boufton_noir: { atlas: 'boufton_noir', echelle: 0.55, attaques: { 0: 9 / 32, 1: 8 / 17, 2: 39 / 78 }, animSorts: [0, 1, 2] },
   // Familles de la 0.1 (maquettes « 5★ : » et « Invocation : »), échelles et impacts repris de Diablofus ; bloc fait par familles.py
   pichon_orange: { atlas: 'pichon_orange', echelle: 0.44, attaques: { 0: 8 / 29, 1: 11 / 32 }, animSorts: [0, 1] },

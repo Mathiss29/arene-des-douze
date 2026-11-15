@@ -20,7 +20,7 @@ export interface Mission {
   /** Contenu pas encore dans le jeu : mission grisée (choix 6B). */
   bientot?: string;
   /** Écran où aller (« Y aller »). */
-  ecran?: 'invocation' | 'cercle' | 'ile' | 'zaap';
+  ecran?: 'invocation' | 'cercle' | 'ile' | 'zaap' | 'donjons';
 }
 
 /** Comme SW : 4 missions à +15, 6 à +20, 180 points en tout. */
@@ -32,7 +32,7 @@ export const MISSIONS: Mission[] = [
   { id: 'histoire', nom: 'Gagner 10 combats d\'histoire', objectif: 10, points: 20, ecran: 'zaap' },
   { id: 'energie1', nom: 'Dépenser 60 points d\'énergie', objectif: 60, points: 20, ecran: 'zaap' },
   { id: 'energie2', nom: 'Dépenser 120 points d\'énergie', objectif: 120, points: 20, ecran: 'zaap' },
-  { id: 'donjon', nom: 'Finir 10 fois le Donjon des Bouftous', objectif: 10, points: 20, bientot: 'Le Donjon des Bouftous arrive bientôt.' },
+  { id: 'donjon', nom: 'Gagner 10 combats de donjon', objectif: 10, points: 20, ecran: 'donjons' },
   { id: 'rune', nom: 'Améliorer une rune', objectif: 1, points: 20, ecran: 'cercle' },
   { id: 'arene', nom: 'Livrer 5 combats au Kolizéum', objectif: 5, points: 20, bientot: 'Le Kolizéum arrive plus tard.' },
 ];

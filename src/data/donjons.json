@@ -1,0 +1,31 @@
+[
+ {
+  "id": "bouftous",
+  "nom": "Donjon des Bouftous",
+  "zone": "astrub",
+  "arene": "mondes/astrub/sol_arene_grange.webp",
+  "sets": ["xelor", "sram", "sadida", "roublard", "steamer"],
+  "symbole": "Laine du Bouftou Royal",
+  "boss": "bouftou_royal",
+  "troupeau": ["boufton_orageux", "boufton_palichon", "bouftou_nuageux", "bouftou_noir", "chef_de_guerre_bouftou"],
+  "texte": "Le Bouftou Royal règne sur sa grange. Ses runes de Xélor, Sram, Sadida, Roublard et Steamer valent le détour !"
+ },
+ {
+  "id": "dragon_cochon",
+  "nom": "Antre du Dragon Cochon",
+  "zone": "madrestam",
+  "arene": "mondes/astrub/sol_arene_chateau.webp",
+  "sets": ["ecaflip", "zobal", "pandawa", "sacrieur", "cra"],
+  "symbole": "Groin du Dragon Cochon",
+  "texte": "Le Dragon Cochon garde des runes d'Ecaflip, Zobal, Pandawa, Sacrieur et Crâ."
+ },
+ {
+  "id": "cimetiere",
+  "nom": "Cimetière des Torturés",
+  "zone": "bastion",
+  "arene": "mondes/astrub/sol_arene_squelettes.webp",
+  "sets": ["iop", "eniripsa", "feca"],
+  "symbole": "Os du Torturé",
+  "texte": "Les âmes du cimetière gardent des runes d'Iop, Eniripsa et Féca, et bientôt d'Ouginak, Eliotrope et Huppermage."
+ }
+]

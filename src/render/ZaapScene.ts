@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DONJONS, donjonOuvert, nomZone } from '../sim/donjons';
 import { charger, sauver } from './sauvegarde';
 import { type Joueur } from '../sim/joueur';
 import { avantProchaine, energie, ENERGIE } from '../sim/energie';
@@ -19,7 +20,7 @@ const BAT_ELEMENT: Record<Element, Element> = { feu: 'eau', air: 'feu', eau: 'ai
 /** Place des îles sur la carte (centre, largeur), dans l'ordre des zones. */
 const ILES = [[260, 400, 250], [520, 230, 210], [700, 470, 200], [900, 250, 190]] as const;
 const MODES = [
-  ['Donjons', 'frigost', 'Les donjons arrivent après les runes.'],
+  ['Donjons', 'frigost', ''],
   ['Tour des Dimensions', 'incarnam', 'La Tour des Dimensions (100 étages) arrive plus tard.'],
   ['Kolizéum', 'bastion', 'Le Kolizéum (combats contre les équipes des autres joueurs) arrive plus tard.'],
   ['Brèche du jour', 'madrestam', 'Une brèche s\'ouvre chaque jour quand toutes les zones sont finies en Normal.'],
@@ -138,13 +139,17 @@ export class ZaapScene extends Phaser.Scene {
     // autres modes, à droite (verrouillés pour l'instant)
     MODES.forEach(([nom, img, msg], i) => {
       const x = W - 86, y = 112 + i * 140, w = 148, h = 124;
-      const ouvert = nom === 'Brèche du jour' && brecheOuverte(j);
+      const ouvert = (nom === 'Brèche du jour' && brecheOuverte(j)) || (nom === 'Donjons' && DONJONS.some((d) => donjonOuvert(j, d)));
       const im = this.garder(this.add.image(x, y, `zaap_${img}`).setDisplaySize(w, h).setDepth(10));
       im.setCrop(im.width * 0.15, 0, im.width * 0.7, im.height);
       im.setDisplaySize(w / 0.7, h);
       if (!ouvert) im.setTint(0x555555);
       const cadre = this.garder(this.add.rectangle(x, y, w, h).setStrokeStyle(2, ouvert ? 0xb08a3a : 0x5d6f52).setDepth(11).setInteractive({ useHandCursor: true }));
-      cadre.on('pointerdown', () => this.message(msg));
+      cadre.on('pointerdown', () => {
+        // Donjons (maquette « Donjons : » 2B) : un seul lieu, la liste des donjons à gauche et leurs niveaux à droite, comme Cairos
+        if (nom === 'Donjons') return ouvert ? this.scene.start('donjons') : this.message(`Les donjons s'ouvrent quand ${nomZone(DONJONS[0].zone)} est fini en Normal.`);
+        this.message(msg);
+      });
       this.garder(this.add.rectangle(x, y + h / 2 - 15, w, 30, 0x080e0b, 0.88).setDepth(11));
       this.t(x, y + h / 2 - 25, nom, 13, '#ffffff', true, 0.5, 0, 12);
       if (!ouvert) this.garder(this.add.image(x, y - 12, 'zaap_lock_big').setDisplaySize(30, 30).setDepth(12));

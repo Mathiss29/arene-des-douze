@@ -1,4 +1,6 @@
 import { REGLES } from './regles';
+import { monstreCombat } from './fiches';
+import type { Etoiles } from './progression';
 import { Rng } from './rng';
 import {
   avantage, estBonus,
@@ -48,6 +50,8 @@ export type Evenement =
   | { type: 'jauge'; uid: number; avant: number; apres: number }
   | { type: 'ko'; uid: number }
   | { type: 'vague'; vague: number; total: number; uids: number[] }
+  /** Un boss appelle des monstres en renfort. */
+  | { type: 'invocation'; uid: number; uids: number[] }
   /** Set Violent (Ecaflip) : l'unité rejoue tout de suite. */
   | { type: 'rejoue'; uid: number }
   /** Set Vengeance (Sacrieur) : l'unité contre-attaque. */
@@ -322,8 +326,27 @@ export class Combat {
       if (e.sur === 'soi') this.tenterEffet(u, u, e, false);
       if (e.sur === 'allies') for (const a of this.vivants(u.camp)) this.tenterEffet(u, a, e, false);
     }
+    if (sort.invoque) this.invoquer(u, sort.invoque);
     if (sort.jauge?.soi) this.changerJauge(u, sort.jauge.soi);
     if (sort.jauge?.allies) for (const a of this.vivants(u.camp)) if (a !== u) this.changerJauge(a, sort.jauge.allies);
+  }
+
+  /** Renforts d'un boss : 4 monstres au plus par camp, aux places libres, une étoile de moins que lui, même niveau. */
+  private invoquer(u: Unite, inv: NonNullable<Sort['invoque']>) {
+    const prises = new Set(this.vivants(u.camp).map((x) => x.place));
+    const nouvelles: Unite[] = [];
+    for (const id of inv.ids) {
+      const place = [0, 1, 2, 3].find((p) => !prises.has(p));
+      if (place === undefined) break;
+      prises.add(place);
+      const e = Math.max(1, (u.monstre.etoiles ?? 3) - (inv.etoilesMoins ?? 1)) as Etoiles;
+      const [x] = this.creer(u.camp, [monstreCombat(id, e, u.monstre.niveau)], this.unites.length);
+      x.place = place;
+      x.vague = u.vague;
+      this.unites.push(x);
+      nouvelles.push(x);
+    }
+    if (nouvelles.length) this.emettre({ type: 'invocation', uid: u.uid, uids: nouvelles.map((x) => x.uid) });
   }
 
   /** Un coup : critique, écrasant ou effleuré selon l'élément, puis dégâts réduits par la défense. */

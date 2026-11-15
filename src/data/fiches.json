@@ -2850,5 +2850,63 @@
    "valeur": 21,
    "zone": "general"
   }
+ },
+ "bouftou_royal": {
+  "stats": {
+   "pv": 12000,
+   "atq": 760,
+   "def": 720,
+   "vit": 92,
+   "tc": 15,
+   "dc": 50,
+   "pre": 15,
+   "res": 30
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de tête royal",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.9
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Appel du troupeau",
+    "icone": 12220,
+    "recharge": 4,
+    "cible": "soi",
+    "invoque": {
+     "ids": [
+      "boufton_orageux",
+      "boufton_palichon"
+     ],
+     "etoilesMoins": 1
+    },
+    "desc": "Appelle deux Bouftons à l'aide (s'il reste de la place)."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge royale",
+    "icone": 12218,
+    "recharge": 3,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 2.3
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 20,
+      "tours": 1
+     }
+    ],
+    "desc": "Charge tous les ennemis. 20 % de chance de les étourdir pendant 1 tour."
+   }
+  ]
  }
 }

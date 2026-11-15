@@ -54,6 +54,8 @@ export interface Joueur {
   reception?: Cadeau[];
   /** Cadeaux de mise à jour et codes déjà donnés. */
   cadeauxDonnes?: string[];
+  /** Symboles des donjons (pour fabriquer plus tard). */
+  symboles?: Record<string, number>;
   /** Runes possédées (portées ou non) et prochain numéro. */
   runes?: Rune[];
   prochainUidRune?: number;
@@ -250,6 +252,7 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
     ...(Array.isArray(j.runes) ? { runes: j.runes.filter((r) => r && Number.isInteger(r.uid) && typeof r.set === 'string' && Array.isArray(r.sous))
       .map((r) => (r.porteur !== undefined && !uids.has(r.porteur) ? { ...r, porteur: undefined } : r)) } : {}),
     ...(Number.isInteger(j.prochainUidRune) ? { prochainUidRune: j.prochainUidRune } : {}),
+    ...(j.symboles && typeof j.symboles === 'object' ? { symboles: Object.fromEntries(Object.entries(j.symboles).filter(([, n]) => Number.isInteger(n) && n > 0)) } : {}),
     ...(j.prereglages && typeof j.prereglages === 'object' ? { prereglages: j.prereglages } : {}),
     ...(Number.isFinite(j.cree) ? { cree: j.cree } : {}),
     ...(Number.isFinite(j.derniereVisite) ? { derniereVisite: j.derniereVisite } : {}),

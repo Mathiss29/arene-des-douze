@@ -4,7 +4,9 @@ import { choisirAction } from '../sim/ia';
 import { monstreCombat } from '../sim/fiches';
 import { monstre, type Joueur } from '../sim/joueur';
 import { appliquerVictoire, cleStage, DIFFICULTES, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
-import { lancerCombat } from './lancement';
+import { lancerCombat, type Repetition } from './lancement';
+import { energie } from '../sim/energie';
+import { DONJONS, NB_NIVEAUX, cleDonjon, niveauOuvert } from '../sim/donjons';
 import { noterMission } from '../sim/missions';
 import { SETS } from '../sim/runes';
 import { fiche } from '../sim/fiches';
@@ -15,7 +17,7 @@ import { LOOKS, teinter } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, caseSombre, chargerUi, monstreEnPied, panneau, portrait, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, chargerUi, monstreEnPied, OR, panneau, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -101,8 +103,11 @@ export class CombatScene extends Phaser.Scene {
     super('combat');
   }
 
-  init(data: { stage?: string }) {
+  private repetition?: Repetition;
+
+  init(data: { stage?: string; repetition?: Repetition }) {
     if (data?.stage) this.stageId = data.stage;
+    this.repetition = data?.repetition;
   }
 
   preload() {
@@ -113,7 +118,10 @@ export class CombatScene extends Phaser.Scene {
     this.joueur = charger();
     this.stage = stage(this.stageId);
     if (!this.textures.exists(`arene:${this.stage.arene}`)) this.load.image(`arene:${this.stage.arene}`, distant(this.stage.arene));
-    const ids = [...this.joueur.equipe.map((u) => monstre(this.joueur, u).id), ...this.stage.ennemis.map((e) => e.id)];
+    const ennemis = this.stage.ennemis.map((e) => e.id);
+    // renforts des boss (donjons) : leurs planches aussi
+    const renforts = ennemis.flatMap((id) => monstreCombat(id).sorts.flatMap((s) => s.invoque?.ids ?? []));
+    const ids = [...new Set([...this.joueur.equipe.map((u) => monstre(this.joueur, u).id), ...ennemis, ...renforts])];
     const rec = zone(this.stage.zone).recompense;
     chargerUi(this, rec ? [...ids, rec.id] : ids);
     for (const id of ids) {
@@ -139,10 +147,11 @@ export class CombatScene extends Phaser.Scene {
       equipeA: equipeJoueur(this.joueur),
       ...vaguesEnnemies(this.stage),
       graine: this.graine,
-      mode: 'histoire',
+      mode: this.stage.donjon ? 'donjon' : 'histoire',
     });
     for (const u of this.combat.unites) this.creerVue(u);
     this.creerInterface();
+    if (this.repetition) this.interfaceRepetition();
     this.combat.drainEvenements();
     this.time.delayedCall(400, () => this.suivant());
   }
@@ -474,6 +483,20 @@ export class CombatScene extends Phaser.Scene {
         await this.attendre(900);
         this.afficherFin(e.vainqueur);
         break;
+      case 'invocation': {
+        this.flotter(this.vues.get(e.uid)!, 'Appel du troupeau !', '#ffd23f', 16, 34);
+        for (const uid of e.uids) {
+          this.creerVue(this.combat.unite(uid));
+          const vue = this.vues.get(uid)!;
+          vue.sprite.setAlpha(0);
+          this.tweens.add({ targets: vue.sprite, alpha: 1, y: { from: vue.y - 40, to: vue.y }, duration: 420 / this.v, ease: 'Bounce.easeOut' });
+        }
+        for (const vue of this.vues.values()) this.majVue(vue);
+        await this.attendre(600);
+        this.majFrise();
+        this.majCibles();
+        break;
+      }
       case 'rejoue':
         this.flotter(this.vues.get(e.uid)!, 'Violent : encore un tour !', '#ffd23f', 16, 34);
         await this.attendre(300);
@@ -506,7 +529,21 @@ export class CombatScene extends Phaser.Scene {
   // ───────────── mise à jour de l'affichage ─────────────
 
   private titre!: Phaser.GameObjects.Text;
+  /** Combats à répétition : compteur et « Arrêter après ce combat » (comme SW) ; le mode auto est forcé. */
+  private interfaceRepetition() {
+    const r = this.repetition!;
+    this.auto = true;
+    this.majBoutons();
+    const t = this.add.text(14, 58, `Répétition ${r.fait + 1} / ${r.total}`, { fontFamily: POLICE, fontSize: '13px', fontStyle: '600', color: '#1d1405', backgroundColor: '#e3b54c', padding: { x: 12, y: 6 } })
+      .setOrigin(0, 0).setDepth(3000);
+    const stop = this.add.text(14, 92, 'Arrêter après ce combat', { fontFamily: POLICE, fontSize: '12px', fontStyle: '600', color: '#ffffff', backgroundColor: 'rgba(10,20,15,0.85)', padding: { x: 10, y: 5 } })
+      .setOrigin(0, 0).setDepth(3000).setInteractive({ useHandCursor: true });
+    stop.on('pointerdown', () => { r.arret = !r.arret; stop.setText(r.arret ? 'Arrêt prévu après ce combat ✓' : 'Arrêter après ce combat'); });
+    void t;
+  }
+
   private majTitre() {
+    if (this.stage.donjon) { this.titre.setText(`${this.stage.nom}  ·  Vague ${this.combat.vague} / ${this.combat.nbVagues}`); return; }
     this.titre.setText(`${zone(this.stage.zone).nom} ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}  ·  Vague ${this.combat.vague} / ${this.combat.nbVagues}`);
   }
 
@@ -748,13 +785,20 @@ export class CombatScene extends Phaser.Scene {
     let butinAffiche: { cle: string; n: string; label: string }[] = [];
     if (victoire) {
       const butin = tirerButin(avant, this.stage, this.graine);
-      apres = noterMission(appliquerVictoire(avant, this.stage, butin, Date.now()).joueur, 'histoire', 1, Date.now());
+      apres = noterMission(appliquerVictoire(avant, this.stage, butin, Date.now()).joueur, this.stage.donjon ? 'donjon' : 'histoire', 1, Date.now());
       this.joueur = apres;
       sauver(apres);
       butinAffiche = [{ cle: 'kamas_tas', n: `+${fmt(butin.kamas)}`, label: 'kamas' }];
       if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (1ʳᵉ victoire)' : ''}` });
       if (butin.energie) butinAffiche.push({ cle: '', n: `+${butin.energie}`, label: 'énergie ⚡' });
       if (butin.monstre) butinAffiche.push({ cle: `monstre:${butin.monstre}`, n: fiche(butin.monstre).nom, label: avant.monstres.length < avant.places ? 'rejoint ta collection !' : 'collection pleine : à la Réception' });
+      const dj = butin.donjon;
+      if (dj?.rune) butinAffiche.push({ cle: 'rune', n: `Rune de ${SETS[dj.rune.set].dieu} ${dj.rune.etoiles}★`, label: SETS[dj.rune.set].nom });
+      if (dj?.premiere?.rune) butinAffiche.push({ cle: 'rune', n: `Rune ${dj.premiere.rune.etoiles}★`, label: '1er passage !' });
+      if (dj?.premiere?.parfaite || dj?.parfaites) butinAffiche.push({ cle: '', n: `+${(dj.premiere?.parfaite ?? 0) + dj.parfaites}`, label: `pierre parfaite${dj.premiere?.parfaite ? ' (1er passage)' : ''}` });
+      if (dj?.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${dj.pierresAme}`, label: 'pierre d\'âme' });
+      if (dj?.symbole) butinAffiche.push({ cle: '', n: '+1', label: dj.symbole });
+      if (this.repetition) this.cumuler(butin);
       if (butin.rune) butinAffiche.push({ cle: 'rune', n: `Rune de ${SETS[butin.rune.set].dieu} ${butin.rune.etoiles}★`, label: SETS[butin.rune.set].nom });
       if (butin.zone) butinAffiche.push({ cle: `monstre:${butin.zone.id}`, n: `${fiche(butin.zone.id).nom} ${'★'.repeat(butin.zone.etoiles)}`, label: `récompense de ${zone(this.stage.zone).nom}, à la Réception !` });
     }
@@ -793,7 +837,7 @@ export class CombatScene extends Phaser.Scene {
         if (o.cle.startsWith('monstre:')) portrait(this, o.cle.slice(8), x, yb + 30, 52, false, false, D + 3);
         else if (o.cle === 'rune') t(x, yb + 10, '⬢', 34, '#c58cff', true);
         else if (o.cle) this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
-        else t(x, yb + 14, '⚡', 26, '#8fd3ff', true);
+        else t(x, yb + 14, o.label.includes('énergie') ? '⚡' : '✦', 26, '#8fd3ff', true);
         t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);
         t(x + 40, yb + 40, o.label, 12, '#cfdccf', false, 0);
       });
@@ -802,8 +846,35 @@ export class CombatScene extends Phaser.Scene {
       t(W / 2, yb + 36, `${this.combat.tour} tours`, 12, '#93a89b');
     }
 
+    // Combats à répétition : le suivant, ou le résumé
+    if (this.repetition) {
+      const r = this.repetition;
+      r.fait++;
+      r.historique.push({ victoire, tours: this.combat.tour });
+      const encore = victoire && r.fait < r.total && !r.arret && energie(apres, Date.now()) >= this.stage.cout;
+      if (encore) {
+        t(W / 2, 470, `Combat suivant… (${r.fait} / ${r.total})`, 16, '#ffe08a', true);
+        this.time.delayedCall(1500, () => { if (!lancerCombat(this, this.stage.id, r)) this.scene.restart({ stage: this.stage.id }); });
+        return;
+      }
+      this.resumeRepetition(r, victoire, D);
+    }
+
     // Boutons
     const z = zone(this.stage.zone), n = this.stage.numero;
+    if (this.stage.donjon) {
+      const d = DONJONS.find((x) => x.id === this.stage.donjon)!;
+      const suite = n < NB_NIVEAUX && niveauOuvert(apres, d, n + 1) ? cleDonjon(d.id, n + 1) : null;
+      const l: [string, boolean, () => void][] = [
+        ['Donjons', false, () => this.scene.start('donjons', { donjon: d.id, niveau: n })],
+        ['Préparation', false, () => this.scene.start('preparation', { stage: this.stage.id })],
+        [`↻ Rejouer ⚡${this.stage.cout}`, !victoire || !suite, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('donjons', { donjon: d.id, niveau: n }); }],
+      ];
+      if (victoire && suite) l.push(['Niveau suivant ▸', true, () => this.scene.start('preparation', { stage: suite })]);
+      let bx = W / 2 - (l.length * 190 - 14) / 2;
+      for (const [libelle, vert, action] of l) { bouton(this, bx + 88, 660, 176, 46, libelle, vert, action, D + 2); bx += 190; }
+      return;
+    }
     const suivant = n < 7 && stageOuvert(apres, z, n, this.stage.dif) ? cleStage(z.stages[n], this.stage.dif) : null;
     const liste: [string, boolean, () => void][] = [
       ['Carte', false, () => this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 })],
@@ -819,6 +890,38 @@ export class CombatScene extends Phaser.Scene {
       if (libelle === 'Bientôt la suite') b.griser();
       x += w + 14;
     });
+  }
+
+  private cumuler(b: ReturnType<typeof tirerButin>) {
+    const c = this.repetition!.cumul, dj = b.donjon;
+    c.kamas += b.kamas;
+    c.pierresAme += b.pierresAme + (dj?.pierresAme ?? 0);
+    c.parfaites += (dj?.parfaites ?? 0) + (dj?.premiere?.parfaite ?? 0);
+    c.energie += b.energie;
+    for (const r of [b.rune, dj?.rune, dj?.premiere?.rune]) if (r) c.runes[r.etoiles] = (c.runes[r.etoiles] ?? 0) + 1;
+    if (dj?.symbole) c.symboles++;
+    if (b.monstre) c.monstres++;
+  }
+
+  /** Résumé des combats à répétition : butin cumulé et historique (comme SW). */
+  private resumeRepetition(r: Repetition, victoire: boolean, D: number) {
+    const x0 = 250, y0 = 150, w = 780, h = 340;
+    this.add.rectangle(W / 2, y0 + h / 2, w, h, 0x0f1814, 0.97).setStrokeStyle(2, 0xb08a3a).setDepth(D + 10);
+    const t = (x: number, y: number, s: string, taille = 14, couleur = '#e9efe6', gras = false, ox = 0) => texte(this, x, y, s, taille, couleur, gras, ox, 0).setDepth(D + 11);
+    const v = r.historique.filter((h2) => h2.victoire).length;
+    t(W / 2, y0 + 16, `Combats à répétition · ${r.fait} / ${r.total}`, 20, '#ffffff', true, 0.5);
+    t(W / 2, y0 + 46, r.arret ? 'Arrêtés à ta demande.' : !victoire ? 'Arrêtés sur une défaite.' : r.fait >= r.total ? 'Tous les combats sont faits.' : 'Plus assez d\'énergie.', 13, '#93a89b', false, 0.5);
+    const c = r.cumul;
+    const runes = Object.entries(c.runes).sort(([a], [b]) => Number(b) - Number(a)).map(([e, n]) => `${n} × ${e}★`).join(', ') || 'aucune';
+    const lignes = [
+      `Victoires : ${v} / ${r.fait}`, `Kamas : +${fmt(c.kamas)}`, `Runes : ${runes}`,
+      `Pierres d'âme : +${c.pierresAme}${c.parfaites ? ` · pierres parfaites : +${c.parfaites}` : ''}`,
+      `${c.energie ? `Énergie : +${c.energie}   ` : ''}${c.symboles ? `Symboles : +${c.symboles}   ` : ''}${c.monstres ? `Monstres : +${c.monstres}` : ''}`,
+    ].filter((l) => l.trim());
+    lignes.forEach((l, i) => t(x0 + 40, y0 + 86 + i * 30, l, 16, i === 0 ? '#ffe08a' : '#ffffff', i === 0));
+    t(x0 + 500, y0 + 86, 'Historique', 13, OR, true);
+    r.historique.slice(-14).forEach((h2, i) => t(x0 + 500 + Math.floor(i / 7) * 130, y0 + 110 + (i % 7) * 26,
+      `${r.historique.length - Math.min(14, r.historique.length) + i + 1}. ${h2.victoire ? 'Victoire' : 'Défaite'} · ${h2.tours} t.`, 12, h2.victoire ? '#b8f5a0' : '#ff9b7a'));
   }
 
   /** Barre d'XP de a (avant) vers b (après) : v de 0 à 1 ; annonce « NIVEAU SUPÉRIEUR ! » à chaque passage, « MAX » au niveau max. */

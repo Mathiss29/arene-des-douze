@@ -3,7 +3,7 @@ import { monstreCombat, fiche } from '../sim/fiches';
 import { auNiveauMax, definirEquipe, equipePourStage, monstre, peutEvoluer, TAILLE_EQUIPE, trierMonstres, type Joueur, type MonstrePossede, type Tri } from '../sim/joueur';
 import { NIVEAU_MAX, pointsRequis, type Etoiles } from '../sim/progression';
 import { DIFFICULTES, LISTE_STAGES, stage, zone, type Stage } from '../sim/stages';
-import { lancerCombat } from './lancement';
+import { lancerCombat, nouvelleRepetition } from './lancement';
 import { ELEMENTS, type Element, type Stats } from '../sim/types';
 import { LOOKS } from './looks';
 import { distant } from './assetUrl';
@@ -123,11 +123,13 @@ export class PreparationScene extends Phaser.Scene {
     this.dessiner();
   }
 
-  private combattre() {
+  private repetitions = 10;
+
+  private combattre(repetitions = 0) {
     if (!this.equipe.length) return;
     this.joueur = definirEquipe(this.joueur, this.equipe, this.stage.id);
     sauver(this.joueur);
-    if (!lancerCombat(this, this.stage.id)) this.avis(`Pas assez d'énergie : il en faut ${this.stage.cout}. Elle revient d'elle-même, 1 toutes les 5 minutes.`);
+    if (!lancerCombat(this, this.stage.id, repetitions ? nouvelleRepetition(repetitions) : undefined)) this.avis(`Pas assez d'énergie : il en faut ${this.stage.cout}. Elle revient d'elle-même, 1 toutes les 5 minutes.`);
   }
 
   private avis(msg: string) {
@@ -143,9 +145,12 @@ export class PreparationScene extends Phaser.Scene {
     this.calque = [];
     const j = this.joueur;
 
-    const ret = this.t(16, 14, '‹ Carte', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('zaap', { zone: this.stage.zone, dif: this.stage.dif, stage: this.stage.numero - 1 }));
-    this.t(ret.x + ret.width + 10, 14, `${zone(this.stage.zone).nom} · stage ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    const dj = this.stage.donjon;
+    const ret = this.t(16, 14, dj ? '‹ Donjons' : '‹ Carte', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => (dj
+      ? this.scene.start('donjons', { donjon: dj, niveau: this.stage.numero })
+      : this.scene.start('zaap', { zone: this.stage.zone, dif: this.stage.dif, stage: this.stage.numero - 1 })));
+    this.t(ret.x + ret.width + 10, 14, dj ? this.stage.nom : `${zone(this.stage.zone).nom} · stage ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     this.t(W - 16, 14, `${fmt(j.kamas)} kamas  ·  ${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, 14, '#ffe08a', true, 1, 0)
       .setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
 
@@ -282,6 +287,12 @@ export class PreparationScene extends Phaser.Scene {
     const b = bouton(this, 1140, 660, 200, 54, `⚔ Combattre  ⚡${this.stage.cout}`, true, () => this.combattre());
     this.g(b.fond); this.g(b.t);
     if (!this.equipe.length) b.griser();
+    // combats à répétition (maquette « Donjons : » 5C) : 10, 20 ou 30 fois, en auto
+    const r = bouton(this, 905, 660, 200, 54, `↻ Répéter ×${this.repetitions}`, false, () => this.combattre(this.repetitions));
+    r.t.setFontSize(15); this.g(r.fond); this.g(r.t);
+    if (!this.equipe.length) r.griser();
+    const nb = this.t(905, 622, '10 · 20 · 30', 12, '#c9cfc4', true).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(10, 3, 10, 3);
+    nb.setInteractive({ useHandCursor: true }).on('pointerdown', () => { this.repetitions = this.repetitions >= 30 ? 10 : this.repetitions + 10; this.dessiner(); });
   }
 
   // ───────────── fiche détaillée ─────────────

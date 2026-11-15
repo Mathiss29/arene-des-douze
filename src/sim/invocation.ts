@@ -44,7 +44,7 @@ export const FRAGMENTS_TRANSCENDANCE = 60;
 const TOUS = MONSTRES as FicheMonstre[];
 /** Monstres qu'une pierre peut donner, par étoiles. */
 export function bassin(p: Pierre, etoiles: number): FicheMonstre[] {
-  return TOUS.filter((m) => m.etoiles === etoiles && PIERRES[p].elements.includes(m.element));
+  return TOUS.filter((m) => !m.boss && m.etoiles === etoiles && PIERRES[p].elements.includes(m.element));
 }
 
 export const nombre = (j: Joueur, p: Pierre) => (p === 'ame' ? j.pierresAme : j.pierres[p] ?? 0);

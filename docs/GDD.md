@@ -168,6 +168,23 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
   récompenses de zone, monstres gagnés quand la collection est pleine (ils attendent qu'il y ait de la place).
 - « Tout recevoir » laisse l'énergie de côté, « Recevoir l'énergie » la prend (comme SW). Code : `src/sim/reception.ts`.
 
+## Donjons (maquette « Donjons : » 1C 2B 3C 4C 5C 6C 7A 8A, ✓ fait le 15 nov. 2026)
+- Comme Cairos ✓ : un seul lieu sur la carte du Zaap (carte « Donjons »), liste des donjons à gauche, 10 niveaux à droite.
+- Trois donjons, chacun ouvert par une zone finie en Normal : Donjon des Bouftous (Astrub ; sets Xélor, Sram, Sadida, Roublard, Steamer,
+  comme le Castel du Géant ✓), Antre du Dragon Cochon (Madrestam ; Ecaflip, Zobal, Pandawa, Sacrieur, Crâ, comme la Tanière du Dragon),
+  Cimetière des Torturés (Bastion ; Iop, Eniripsa, Féca, puis Ouginak, Eliotrope, Huppermage, comme la Nécropole).
+  0.1 : seuls les Bouftous sont jouables (Madrestam et Bastion n'ont pas encore de stages, le Dragon Cochon n'a pas de planche).
+- 3 vagues : le troupeau (une ou deux étoiles de moins), puis le Bouftou Royal seul et très gros (PV ×1,5 à partir du niveau 4 ⚠),
+  avec « Appel du troupeau » (il appelle deux Bouftons s'il a de la place) et « Charge royale » (tous, 20 % d'étourdir).
+- ✓ Énergie 5/5/6/6/7/7/7/8/8/8 et étoiles du boss 3→5★ (SW) ; niveaux du boss adoucis au début : 8, 12, 16, 22, 28, 34, 40, 48, 56, 65 ⚠.
+  Runes invisibles des ennemis à partir du niveau 8. Équilibre simulé : 3★ max finit le B3, 5★ max le B7, le B10 demande une équipe 6★ runée.
+- Butin : runes des sets du donjon (75 %, 1-2★ au B1 → 6★ Rare à Légendaire au B10 ✓), kamas, pierre d'âme 8 %, pierre parfaite 1 %
+  (à partir du B6, rares comme le veut Mathis), symbole du donjon 25 % (à partir du B3, pour fabriquer plus tard).
+  Premier passage : rune une étoile au-dessus (B1 à B5) ou pierre parfaite (B6 à B10).
+- Combats à répétition (5C) : « Répéter ×10/20/30 » dans la préparation (aussi pour l'histoire), auto forcé, vitesse ×1/×2/×3 gardée,
+  « Arrêter après ce combat », arrêt sur défaite ou faute d'énergie, résumé du butin et historique.
+- Sanctuaires élémentaires : avec l'éveil, après la 0.1. Mission du jour « Gagner 10 combats de donjon » active.
+
 ## Envies de Mathis vues dans SW (vidéo du 15 nov. 2026)
 - Réception (boîte aux lettres) : les cadeaux y attendent (6 jours), « Recevoir », « Recevoir en 1 fois », « Recevoir l'énergie » ;
   onglets Coffre, Guilde, Points sociaux. Utile pour nous : récompenses du Chemin, cadeaux de mise à jour, compensations.

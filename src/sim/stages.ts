@@ -7,6 +7,8 @@ import { envoyer } from './reception';
 import { placesLibres } from './invocation';
 import { avecRunes, runesEnnemies, setsActifs, SETS, type EtoilesRune, type SetRune } from './runes';
 import { donnerRune } from './inventaire';
+import { ajouterPierres } from './invocation';
+import { DONJONS, lireCle, NIVEAUX, recompensesDonjon, tirerButinDonjon, vaguesDonjon, type ButinDonjon } from './donjons';
 import { NIVEAU_MAX, type Etoiles } from './progression';
 import { Rng } from './rng';
 import type { MonstreCombat } from './types';
@@ -30,7 +32,7 @@ interface StageBase {
   /** Place du boss dans la dernière vague (stage 7). */
   boss?: number;
 }
-export interface Ennemi { id: string; etoiles: Etoiles; niveau: number }
+export interface Ennemi { id: string; etoiles: Etoiles; niveau: number; /** PV multipliés (boss de donjon). */ pvx?: number }
 export interface Stage extends StageBase {
   /** Tous les ennemis, vague après vague. */
   ennemis: Ennemi[];
@@ -42,6 +44,8 @@ export interface Stage extends StageBase {
   numero: number;
   dif: number;
   cout: number;
+  /** Donjon (id) : niveau `numero` de ce donjon. */
+  donjon?: string;
 }
 export interface Zone {
   id: string;
@@ -65,6 +69,14 @@ export const cleStage = (id: string, dif = 0) => (dif ? `${id}@${dif}` : id);
 
 /** Stage joué, d'après sa clé : ennemis et récompenses selon la difficulté (montants ⚠, les nôtres). */
 export function stage(cle: string): Stage {
+  const dj = lireCle(cle);
+  if (dj) {
+    const { donjon: d, n } = dj, vagues = vaguesDonjon(d, n);
+    return {
+      id: cle, base: cle, nom: `${d.nom} · niveau ${n}`, arene: d.arene, vagues, ennemis: vagues.flat(), boss: 0,
+      recompenses: recompensesDonjon(n), zone: d.zone, numero: n, dif: 0, cout: NIVEAUX[n - 1].cout, donjon: d.id,
+    };
+  }
   const [id, d] = cle.split('@');
   const dif = d ? Number(d) : 0;
   const b = BASES.find((x) => x.id === id);
@@ -106,7 +118,12 @@ export const brecheOuverte = (j: Joueur) => ZONES.every((z) => zoneFinie(j, z, 0
 
 /** Les vagues ennemies prêtes pour le combat : la première, puis les suivantes. */
 export function vaguesEnnemies(s: Stage): { equipeB: MonstreCombat[]; vaguesSuivantes: MonstreCombat[][] } {
-  const [premiere, ...suite] = s.vagues.map((v) => v.map((e) => runesEnnemies(monstreCombat(e.id, e.etoiles, e.niveau), s.dif, s.numero)));
+  // runes invisibles : selon la difficulté, ou un cran à partir du niveau 8 du donjon ⚠ (équilibre simulé : le B10 demande une équipe 6★ runée)
+  const dif = s.donjon ? (s.numero >= 8 ? 1 : 0) : s.dif;
+  const [premiere, ...suite] = s.vagues.map((v) => v.map((e) => {
+    const m = runesEnnemies(monstreCombat(e.id, e.etoiles, e.niveau), dif, s.numero);
+    return e.pvx ? { ...m, stats: { ...m.stats, pv: Math.round(m.stats.pv * e.pvx) } } : m;
+  }));
   return { equipeB: premiere, vaguesSuivantes: suite };
 }
 
@@ -133,6 +150,8 @@ export interface Butin {
   monstre?: string;
   /** Récompense de la zone, la première fois qu'elle est finie en Normal. */
   zone?: { id: string; etoiles: Etoiles };
+  /** Butin propre aux donjons. */
+  donjon?: ButinDonjon;
   /** Rune gagnée (set de la zone) et graine de son tirage. */
   rune?: { etoiles: EtoilesRune; set: SetRune; graine: number };
 }
@@ -153,6 +172,14 @@ export function tirerButin(j: Joueur, s: Stage, graine: number): Butin {
     xp: s.recompenses.xp, kamas: s.recompenses.kamas,
     pierresAme: (rng.chance(s.recompenses.pierreChance) ? 1 : 0) + (premiere ? 1 : 0), premiere, energie: 0,
   };
+  const prosp = j.equipe.reduce((n, uid) => n + (setsActifs((j.runes ?? []).filter((r) => r.porteur === uid)).enutrof ?? 0), 0);
+  if (s.donjon) {
+    // donjon : pas de pierre d'âme d'office ni de monstre ; son propre butin
+    b.pierresAme = 0;
+    b.kamas = Math.round(b.kamas * (1 + 0.2 * prosp));
+    b.donjon = tirerButinDonjon(j, DONJONS.find((d) => d.id === s.donjon)!, s.numero, rng);
+    return b;
+  }
   if (rng.chance(CHANCE_ENERGIE)) b.energie = 1 + Math.floor(rng.suivant() * 3);
   if (rng.chance(CHANCE_MONSTRE)) b.monstre = s.ennemis[Math.floor(rng.suivant() * s.ennemis.length)].id;
   // set Prospection (Enutrof) : +20 % de kamas par set porté dans l'équipe
@@ -179,6 +206,15 @@ export function appliquerVictoire(j: Joueur, s: Stage, b: Butin, maintenant: num
   // monstre gagné : dans la collection, ou à la Réception si elle est pleine (maquette « Réception : » 3B, 4A)
   if (b.monstre) r = placesLibres(r) > 0 ? ajouterMonstre(r, b.monstre).joueur : envoyer(r, `butin:${s.id}:${maintenant}`, `Monstre gagné : ${s.id} (collection pleine)`, { monstre: b.monstre }, maintenant);
   if (b.rune) r = donnerRune(r, { etoiles: b.rune.etoiles, set: b.rune.set }, b.rune.graine).joueur;
+  const dj = b.donjon;
+  if (dj) {
+    if (dj.rune) r = donnerRune(r, { etoiles: dj.rune.etoiles, set: dj.rune.set, grade: dj.rune.grade }, dj.rune.graine).joueur;
+    if (dj.premiere?.rune) r = donnerRune(r, { etoiles: dj.premiere.rune.etoiles, set: dj.premiere.rune.set, grade: dj.premiere.rune.grade }, dj.premiere.rune.graine).joueur;
+    const parfaites = dj.parfaites + (dj.premiere?.parfaite ?? 0);
+    if (parfaites) r = ajouterPierres(r, 'parfaite', parfaites);
+    r = { ...r, pierresAme: r.pierresAme + dj.pierresAme };
+    if (dj.symbole) r = { ...r, symboles: { ...(r.symboles ?? {}), [dj.symbole]: (r.symboles?.[dj.symbole] ?? 0) + 1 } };
+  }
   // récompense de zone : envoyée à la Réception
   if (b.zone) r = { ...envoyer(r, `zone:${s.zone}`, `Récompense de zone : ${zone(s.zone).nom}`, { monstre: b.zone.id }, maintenant), recompensesZones: [...r.recompensesZones, s.zone] };
   return { joueur: r, niveaux };

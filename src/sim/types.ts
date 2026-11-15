@@ -16,6 +16,8 @@ export interface FicheMonstre {
   type: TypeMonstre;
   /** Nom une fois éveillé (unique par élément, comme dans SW). */
   nomEveil: string;
+  /** Boss de donjon : jamais invoqué. */
+  boss?: boolean;
 }
 
 export const ELEMENTS: readonly Element[] = ['feu', 'air', 'eau', 'bonta', 'brakmar'];
@@ -82,6 +84,8 @@ export interface Sort {
   nettoie?: boolean;
   /** Jauge d'attaque en points de % : la cible (négatif = réduction, résistable), le lanceur, ses alliés. */
   jauge?: { cible?: { valeur: number; chance: number }; soi?: number; allies?: number };
+  /** Invocation (boss de donjon) : appelle ces monstres dans son camp, s'il reste de la place, une étoile de moins que lui. */
+  invoque?: { ids: string[]; etoilesMoins?: number };
   /** Passif : jamais lancé (effets permanents à venir). */
   passif?: boolean;
   /** Icône officielle de Dofus (public/assets/ui/sorts/sort_<icone>.png). */

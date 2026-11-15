@@ -1,52 +1,462 @@
 [
-  {"id": "piou_rouge", "nom": "Piou Rouge", "famille": "piou", "element": "feu", "etoiles": 1, "type": "attaque", "nomEveil": "Braisillon"},
-  {"id": "piou_vert", "nom": "Piou Vert", "famille": "piou", "element": "air", "etoiles": 1, "type": "soutien", "nomEveil": "Zéphyrin"},
-  {"id": "piou_bleu", "nom": "Piou Bleu", "famille": "piou", "element": "eau", "etoiles": 1, "type": "soutien", "nomEveil": "Ploufette"},
-  {"id": "piou_jaune", "nom": "Piou Jaune", "famille": "piou", "element": "bonta", "etoiles": 1, "type": "pv", "nomEveil": "Soleillou"},
-  {"id": "piou_violet", "nom": "Piou Violet", "famille": "piou", "element": "brakmar", "etoiles": 1, "type": "attaque", "nomEveil": "Ombrelin"},
-  {"id": "scarafeuille_rouge", "nom": "Scarafeuille Rouge", "famille": "scarafeuille", "element": "feu", "etoiles": 3, "type": "soutien", "nomEveil": "Automnelle"},
-  {"id": "scarafeuille_vert", "nom": "Scarafeuille Vert", "famille": "scarafeuille", "element": "air", "etoiles": 3, "type": "defense", "nomEveil": "Chlorofil"},
-  {"id": "scarafeuille_bleu", "nom": "Scarafeuille Bleu", "famille": "scarafeuille", "element": "eau", "etoiles": 3, "type": "soutien", "nomEveil": "Ondine"},
-  {"id": "scarafeuille_blanc", "nom": "Scarafeuille Blanc", "famille": "scarafeuille", "element": "bonta", "etoiles": 3, "type": "pv", "nomEveil": "Lumifeuille"},
-  {"id": "scarafeuille_noir", "nom": "Scarafeuille Noir", "famille": "scarafeuille", "element": "brakmar", "etoiles": 3, "type": "attaque", "nomEveil": "Sylvombre"},
-  {"id": "kwak_de_flamme", "nom": "Kwak de Flamme", "famille": "kwak", "element": "feu", "etoiles": 3, "type": "attaque", "nomEveil": "Flambard"},
-  {"id": "kwak_de_vent", "nom": "Kwak de Vent", "famille": "kwak", "element": "air", "etoiles": 3, "type": "attaque", "nomEveil": "Bourrasquin"},
-  {"id": "kwak_de_glace", "nom": "Kwak de Glace", "famille": "kwak", "element": "eau", "etoiles": 3, "type": "soutien", "nomEveil": "Frimas"},
-  {"id": "pichon_orange", "nom": "Pichon Orange", "famille": "pichon", "element": "feu", "etoiles": 2, "type": "attaque", "nomEveil": "Écaillor"},
-  {"id": "pichon_vert", "nom": "Pichon Vert", "famille": "pichon", "element": "air", "etoiles": 2, "type": "soutien", "nomEveil": "Algueline"},
-  {"id": "pichon_bleu", "nom": "Pichon Bleu", "famille": "pichon", "element": "eau", "etoiles": 2, "type": "pv", "nomEveil": "Marinou"},
-  {"id": "pichon_blanc", "nom": "Pichon Blanc", "famille": "pichon", "element": "bonta", "etoiles": 2, "type": "soutien", "nomEveil": "Nacrine"},
-  {"id": "pichon_sombre", "nom": "Pichon Sombre", "famille": "pichon", "element": "brakmar", "etoiles": 2, "type": "attaque", "nomEveil": "Abyssin"},
-  {"id": "kwak_dore", "nom": "Kwak Doré", "famille": "kwak", "element": "bonta", "etoiles": 3, "type": "soutien", "nomEveil": "Aurik"},
-  {"id": "kwak_sombre", "nom": "Kwak Sombre", "famille": "kwak", "element": "brakmar", "etoiles": 3, "type": "attaque", "nomEveil": "Noirplume"},
-  {"id": "larve_orange", "nom": "Larve Orange", "famille": "larve", "element": "feu", "etoiles": 3, "type": "attaque", "nomEveil": "Braisille"},
-  {"id": "larve_verte", "nom": "Larve Verte", "famille": "larve", "element": "air", "etoiles": 3, "type": "defense", "nomEveil": "Mousseline"},
-  {"id": "larve_bleue", "nom": "Larve Bleue", "famille": "larve", "element": "eau", "etoiles": 3, "type": "soutien", "nomEveil": "Ondoyante"},
-  {"id": "larve_doree", "nom": "Larve Dorée", "famille": "larve", "element": "bonta", "etoiles": 3, "type": "pv", "nomEveil": "Soleille"},
-  {"id": "larve_sombre", "nom": "Larve Sombre", "famille": "larve", "element": "brakmar", "etoiles": 3, "type": "attaque", "nomEveil": "Ténébrelle"},
-  {"id": "kwakere_de_flamme", "nom": "Kwakère de Flamme", "famille": "kwakere", "element": "feu", "etoiles": 4, "type": "attaque", "nomEveil": "Ignéos"},
-  {"id": "kwakere_de_terre", "nom": "Kwakère de Terre", "famille": "kwakere", "element": "air", "etoiles": 4, "type": "defense", "nomEveil": "Rocaille"},
-  {"id": "kwakere_de_glace", "nom": "Kwakère de Glace", "famille": "kwakere", "element": "eau", "etoiles": 4, "type": "soutien", "nomEveil": "Givrine"},
-  {"id": "kwakere_d_or", "nom": "Kwakère d'Or", "famille": "kwakere", "element": "bonta", "etoiles": 4, "type": "pv", "nomEveil": "Auréos"},
-  {"id": "kwakere_de_vent", "nom": "Kwakère de Vent", "famille": "kwakere", "element": "brakmar", "etoiles": 4, "type": "attaque", "nomEveil": "Ombrevent"},
-  {"id": "koalak_griotte", "nom": "Koalak Griotte", "famille": "koalak", "element": "feu", "etoiles": 4, "type": "attaque", "nomEveil": "Griottin"},
-  {"id": "koalak_reinette", "nom": "Koalak Reinette", "famille": "koalak", "element": "air", "etoiles": 4, "type": "pv", "nomEveil": "Reinetto"},
-  {"id": "koalak_indigo", "nom": "Koalak Indigo", "famille": "koalak", "element": "eau", "etoiles": 4, "type": "defense", "nomEveil": "Indigor"},
-  {"id": "koalak_coco", "nom": "Koalak Coco", "famille": "koalak", "element": "bonta", "etoiles": 4, "type": "soutien", "nomEveil": "Cocotte"},
-  {"id": "koalak_myrtille", "nom": "Koalak Myrtille", "famille": "koalak", "element": "brakmar", "etoiles": 4, "type": "attaque", "nomEveil": "Myrtilou"},
-  {"id": "chef_de_guerre_bouftou", "nom": "Chef de Guerre Bouftou", "famille": "bouftou", "element": "feu", "etoiles": 4, "type": "attaque", "nomEveil": "Bélier de Guerre"},
-  {"id": "boufton_orageux", "nom": "Boufton Orageux", "famille": "bouftou", "element": "air", "etoiles": 4, "type": "soutien", "nomEveil": "Tonnerrin"},
-  {"id": "bouftou_nuageux", "nom": "Bouftou Nuageux", "famille": "bouftou", "element": "eau", "etoiles": 4, "type": "pv", "nomEveil": "Cumulaine"},
-  {"id": "boufton_palichon", "nom": "Boufton Palichon", "famille": "bouftou", "element": "bonta", "etoiles": 4, "type": "soutien", "nomEveil": "Lainedor"},
-  {"id": "bouftou_noir", "nom": "Bouftou Noir", "famille": "bouftou", "element": "brakmar", "etoiles": 4, "type": "defense", "nomEveil": "Toison Noire"},
-  {"id": "dragoss_argile", "nom": "Dragoss d'Argile", "famille": "dragoss", "element": "feu", "etoiles": 5, "type": "attaque", "nomEveil": "Argilor"},
-  {"id": "dragoss_calcaire", "nom": "Dragoss Calcaire", "famille": "dragoss", "element": "air", "etoiles": 5, "type": "defense", "nomEveil": "Calcydre"},
-  {"id": "dragoss_ardoise", "nom": "Dragoss d'Ardoise", "famille": "dragoss", "element": "eau", "etoiles": 5, "type": "pv", "nomEveil": "Ardoisine"},
-  {"id": "dragoss_dore", "nom": "Dragoss Doré", "famille": "dragoss", "element": "bonta", "etoiles": 5, "type": "soutien", "nomEveil": "Aurodragon"},
-  {"id": "dragoss_charbon", "nom": "Dragoss de Charbon", "famille": "dragoss", "element": "brakmar", "etoiles": 5, "type": "attaque", "nomEveil": "Charbrax"},
-  {"id": "gelee_royale_fraise", "nom": "Gelée Royale Fraise", "famille": "gelee_royale", "element": "feu", "etoiles": 5, "type": "attaque", "nomEveil": "Reine Fraise"},
-  {"id": "gelee_royale_menthe", "nom": "Gelée Royale Menthe", "famille": "gelee_royale", "element": "air", "etoiles": 5, "type": "soutien", "nomEveil": "Reine Menthe"},
-  {"id": "gelee_royale_bleuet", "nom": "Gelée Royale Bleuet", "famille": "gelee_royale", "element": "eau", "etoiles": 5, "type": "pv", "nomEveil": "Reine Bleuet"},
-  {"id": "gelee_royale_citron", "nom": "Gelée Royale Citron", "famille": "gelee_royale", "element": "bonta", "etoiles": 5, "type": "soutien", "nomEveil": "Reine Citron"},
-  {"id": "gelee_royale_mure", "nom": "Gelée Royale Mûre", "famille": "gelee_royale", "element": "brakmar", "etoiles": 5, "type": "defense", "nomEveil": "Reine Mûre"}
+ {
+  "id": "piou_rouge",
+  "nom": "Piou Rouge",
+  "famille": "piou",
+  "element": "feu",
+  "etoiles": 1,
+  "type": "attaque",
+  "nomEveil": "Braisillon"
+ },
+ {
+  "id": "piou_vert",
+  "nom": "Piou Vert",
+  "famille": "piou",
+  "element": "air",
+  "etoiles": 1,
+  "type": "soutien",
+  "nomEveil": "Zéphyrin"
+ },
+ {
+  "id": "piou_bleu",
+  "nom": "Piou Bleu",
+  "famille": "piou",
+  "element": "eau",
+  "etoiles": 1,
+  "type": "soutien",
+  "nomEveil": "Ploufette"
+ },
+ {
+  "id": "piou_jaune",
+  "nom": "Piou Jaune",
+  "famille": "piou",
+  "element": "bonta",
+  "etoiles": 1,
+  "type": "pv",
+  "nomEveil": "Soleillou"
+ },
+ {
+  "id": "piou_violet",
+  "nom": "Piou Violet",
+  "famille": "piou",
+  "element": "brakmar",
+  "etoiles": 1,
+  "type": "attaque",
+  "nomEveil": "Ombrelin"
+ },
+ {
+  "id": "scarafeuille_rouge",
+  "nom": "Scarafeuille Rouge",
+  "famille": "scarafeuille",
+  "element": "feu",
+  "etoiles": 3,
+  "type": "soutien",
+  "nomEveil": "Automnelle"
+ },
+ {
+  "id": "scarafeuille_vert",
+  "nom": "Scarafeuille Vert",
+  "famille": "scarafeuille",
+  "element": "air",
+  "etoiles": 3,
+  "type": "defense",
+  "nomEveil": "Chlorofil"
+ },
+ {
+  "id": "scarafeuille_bleu",
+  "nom": "Scarafeuille Bleu",
+  "famille": "scarafeuille",
+  "element": "eau",
+  "etoiles": 3,
+  "type": "soutien",
+  "nomEveil": "Ondine"
+ },
+ {
+  "id": "scarafeuille_blanc",
+  "nom": "Scarafeuille Blanc",
+  "famille": "scarafeuille",
+  "element": "bonta",
+  "etoiles": 3,
+  "type": "pv",
+  "nomEveil": "Lumifeuille"
+ },
+ {
+  "id": "scarafeuille_noir",
+  "nom": "Scarafeuille Noir",
+  "famille": "scarafeuille",
+  "element": "brakmar",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Sylvombre"
+ },
+ {
+  "id": "kwak_de_flamme",
+  "nom": "Kwak de Flamme",
+  "famille": "kwak",
+  "element": "feu",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Flambard"
+ },
+ {
+  "id": "kwak_de_vent",
+  "nom": "Kwak de Vent",
+  "famille": "kwak",
+  "element": "air",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Bourrasquin"
+ },
+ {
+  "id": "kwak_de_glace",
+  "nom": "Kwak de Glace",
+  "famille": "kwak",
+  "element": "eau",
+  "etoiles": 3,
+  "type": "soutien",
+  "nomEveil": "Frimas"
+ },
+ {
+  "id": "pichon_orange",
+  "nom": "Pichon Orange",
+  "famille": "pichon",
+  "element": "feu",
+  "etoiles": 2,
+  "type": "attaque",
+  "nomEveil": "Écaillor"
+ },
+ {
+  "id": "pichon_vert",
+  "nom": "Pichon Vert",
+  "famille": "pichon",
+  "element": "air",
+  "etoiles": 2,
+  "type": "soutien",
+  "nomEveil": "Algueline"
+ },
+ {
+  "id": "pichon_bleu",
+  "nom": "Pichon Bleu",
+  "famille": "pichon",
+  "element": "eau",
+  "etoiles": 2,
+  "type": "pv",
+  "nomEveil": "Marinou"
+ },
+ {
+  "id": "pichon_blanc",
+  "nom": "Pichon Blanc",
+  "famille": "pichon",
+  "element": "bonta",
+  "etoiles": 2,
+  "type": "soutien",
+  "nomEveil": "Nacrine"
+ },
+ {
+  "id": "pichon_sombre",
+  "nom": "Pichon Sombre",
+  "famille": "pichon",
+  "element": "brakmar",
+  "etoiles": 2,
+  "type": "attaque",
+  "nomEveil": "Abyssin"
+ },
+ {
+  "id": "kwak_dore",
+  "nom": "Kwak Doré",
+  "famille": "kwak",
+  "element": "bonta",
+  "etoiles": 3,
+  "type": "soutien",
+  "nomEveil": "Aurik"
+ },
+ {
+  "id": "kwak_sombre",
+  "nom": "Kwak Sombre",
+  "famille": "kwak",
+  "element": "brakmar",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Noirplume"
+ },
+ {
+  "id": "larve_orange",
+  "nom": "Larve Orange",
+  "famille": "larve",
+  "element": "feu",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Braisille"
+ },
+ {
+  "id": "larve_verte",
+  "nom": "Larve Verte",
+  "famille": "larve",
+  "element": "air",
+  "etoiles": 3,
+  "type": "defense",
+  "nomEveil": "Mousseline"
+ },
+ {
+  "id": "larve_bleue",
+  "nom": "Larve Bleue",
+  "famille": "larve",
+  "element": "eau",
+  "etoiles": 3,
+  "type": "soutien",
+  "nomEveil": "Ondoyante"
+ },
+ {
+  "id": "larve_doree",
+  "nom": "Larve Dorée",
+  "famille": "larve",
+  "element": "bonta",
+  "etoiles": 3,
+  "type": "pv",
+  "nomEveil": "Soleille"
+ },
+ {
+  "id": "larve_sombre",
+  "nom": "Larve Sombre",
+  "famille": "larve",
+  "element": "brakmar",
+  "etoiles": 3,
+  "type": "attaque",
+  "nomEveil": "Ténébrelle"
+ },
+ {
+  "id": "kwakere_de_flamme",
+  "nom": "Kwakère de Flamme",
+  "famille": "kwakere",
+  "element": "feu",
+  "etoiles": 4,
+  "type": "attaque",
+  "nomEveil": "Ignéos"
+ },
+ {
+  "id": "kwakere_de_terre",
+  "nom": "Kwakère de Terre",
+  "famille": "kwakere",
+  "element": "air",
+  "etoiles": 4,
+  "type": "defense",
+  "nomEveil": "Rocaille"
+ },
+ {
+  "id": "kwakere_de_glace",
+  "nom": "Kwakère de Glace",
+  "famille": "kwakere",
+  "element": "eau",
+  "etoiles": 4,
+  "type": "soutien",
+  "nomEveil": "Givrine"
+ },
+ {
+  "id": "kwakere_d_or",
+  "nom": "Kwakère d'Or",
+  "famille": "kwakere",
+  "element": "bonta",
+  "etoiles": 4,
+  "type": "pv",
+  "nomEveil": "Auréos"
+ },
+ {
+  "id": "kwakere_de_vent",
+  "nom": "Kwakère de Vent",
+  "famille": "kwakere",
+  "element": "brakmar",
+  "etoiles": 4,
+  "type": "attaque",
+  "nomEveil": "Ombrevent"
+ },
+ {
+  "id": "koalak_griotte",
+  "nom": "Koalak Griotte",
+  "famille": "koalak",
+  "element": "feu",
+  "etoiles": 4,
+  "type": "attaque",
+  "nomEveil": "Griottin"
+ },
+ {
+  "id": "koalak_reinette",
+  "nom": "Koalak Reinette",
+  "famille": "koalak",
+  "element": "air",
+  "etoiles": 4,
+  "type": "pv",
+  "nomEveil": "Reinetto"
+ },
+ {
+  "id": "koalak_indigo",
+  "nom": "Koalak Indigo",
+  "famille": "koalak",
+  "element": "eau",
+  "etoiles": 4,
+  "type": "defense",
+  "nomEveil": "Indigor"
+ },
+ {
+  "id": "koalak_coco",
+  "nom": "Koalak Coco",
+  "famille": "koalak",
+  "element": "bonta",
+  "etoiles": 4,
+  "type": "soutien",
+  "nomEveil": "Cocotte"
+ },
+ {
+  "id": "koalak_myrtille",
+  "nom": "Koalak Myrtille",
+  "famille": "koalak",
+  "element": "brakmar",
+  "etoiles": 4,
+  "type": "attaque",
+  "nomEveil": "Myrtilou"
+ },
+ {
+  "id": "chef_de_guerre_bouftou",
+  "nom": "Chef de Guerre Bouftou",
+  "famille": "bouftou",
+  "element": "feu",
+  "etoiles": 4,
+  "type": "attaque",
+  "nomEveil": "Bélier de Guerre"
+ },
+ {
+  "id": "boufton_orageux",
+  "nom": "Boufton Orageux",
+  "famille": "bouftou",
+  "element": "air",
+  "etoiles": 4,
+  "type": "soutien",
+  "nomEveil": "Tonnerrin"
+ },
+ {
+  "id": "bouftou_nuageux",
+  "nom": "Bouftou Nuageux",
+  "famille": "bouftou",
+  "element": "eau",
+  "etoiles": 4,
+  "type": "pv",
+  "nomEveil": "Cumulaine"
+ },
+ {
+  "id": "boufton_palichon",
+  "nom": "Boufton Palichon",
+  "famille": "bouftou",
+  "element": "bonta",
+  "etoiles": 4,
+  "type": "soutien",
+  "nomEveil": "Lainedor"
+ },
+ {
+  "id": "bouftou_noir",
+  "nom": "Bouftou Noir",
+  "famille": "bouftou",
+  "element": "brakmar",
+  "etoiles": 4,
+  "type": "defense",
+  "nomEveil": "Toison Noire"
+ },
+ {
+  "id": "dragoss_argile",
+  "nom": "Dragoss d'Argile",
+  "famille": "dragoss",
+  "element": "feu",
+  "etoiles": 5,
+  "type": "attaque",
+  "nomEveil": "Argilor"
+ },
+ {
+  "id": "dragoss_calcaire",
+  "nom": "Dragoss Calcaire",
+  "famille": "dragoss",
+  "element": "air",
+  "etoiles": 5,
+  "type": "defense",
+  "nomEveil": "Calcydre"
+ },
+ {
+  "id": "dragoss_ardoise",
+  "nom": "Dragoss d'Ardoise",
+  "famille": "dragoss",
+  "element": "eau",
+  "etoiles": 5,
+  "type": "pv",
+  "nomEveil": "Ardoisine"
+ },
+ {
+  "id": "dragoss_dore",
+  "nom": "Dragoss Doré",
+  "famille": "dragoss",
+  "element": "bonta",
+  "etoiles": 5,
+  "type": "soutien",
+  "nomEveil": "Aurodragon"
+ },
+ {
+  "id": "dragoss_charbon",
+  "nom": "Dragoss de Charbon",
+  "famille": "dragoss",
+  "element": "brakmar",
+  "etoiles": 5,
+  "type": "attaque",
+  "nomEveil": "Charbrax"
+ },
+ {
+  "id": "gelee_royale_fraise",
+  "nom": "Gelée Royale Fraise",
+  "famille": "gelee_royale",
+  "element": "feu",
+  "etoiles": 5,
+  "type": "attaque",
+  "nomEveil": "Reine Fraise"
+ },
+ {
+  "id": "gelee_royale_menthe",
+  "nom": "Gelée Royale Menthe",
+  "famille": "gelee_royale",
+  "element": "air",
+  "etoiles": 5,
+  "type": "soutien",
+  "nomEveil": "Reine Menthe"
+ },
+ {
+  "id": "gelee_royale_bleuet",
+  "nom": "Gelée Royale Bleuet",
+  "famille": "gelee_royale",
+  "element": "eau",
+  "etoiles": 5,
+  "type": "pv",
+  "nomEveil": "Reine Bleuet"
+ },
+ {
+  "id": "gelee_royale_citron",
+  "nom": "Gelée Royale Citron",
+  "famille": "gelee_royale",
+  "element": "bonta",
+  "etoiles": 5,
+  "type": "soutien",
+  "nomEveil": "Reine Citron"
+ },
+ {
+  "id": "gelee_royale_mure",
+  "nom": "Gelée Royale Mûre",
+  "famille": "gelee_royale",
+  "element": "brakmar",
+  "etoiles": 5,
+  "type": "defense",
+  "nomEveil": "Reine Mûre"
+ },
+ {
+  "id": "bouftou_royal",
+  "nom": "Bouftou Royal",
+  "famille": "bouftou",
+  "element": "air",
+  "etoiles": 4,
+  "type": "pv",
+  "nomEveil": "Bouftou Royal",
+  "boss": true
+ }
 ]

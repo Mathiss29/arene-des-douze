@@ -18,6 +18,7 @@ export function choisirAction(c: Combat, cibleVoulue?: number): { sort: number; 
   const sort = [...dispo].reverse().find((i) => {
     const s = u.monstre.sorts[i];
     const soinPur = !!s.soin && !s.mult;
+    if (s.invoque && allies.length >= 4) return false; // pas de place pour des renforts
     return !soinPur || blesse;
   }) ?? dispo[0];
 
