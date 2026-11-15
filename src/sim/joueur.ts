@@ -72,7 +72,8 @@ export function ajouterMonstre(j: Joueur, id: string): { joueur: Joueur; uid: nu
 }
 
 /** Places de la collection au départ ⚠ (SW a aussi un stockage limité qu'on agrandit ; ses chiffres restent à vérifier). */
-export const PLACES_DEPART = 50;
+/** ✓ SW (depuis v7.1.9) : 120 places d'office, sans achat ; les anciennes sauvegardes passent à 120. */
+export const PLACES_DEPART = 120;
 
 /** Change l'équipe (le premier est le leader) ; retenue pour ce stage si on le précise. */
 export function definirEquipe(j: Joueur, uids: number[], stageId?: string): Joueur {

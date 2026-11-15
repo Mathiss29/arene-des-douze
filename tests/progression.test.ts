@@ -180,3 +180,11 @@ describe('stages et butin', () => {
     expect(victoires).toBeGreaterThanOrEqual(75);
   });
 });
+
+describe('boss au-delà du niveau 40', () => {
+  it('la pente des stats continue après le maximum', () => {
+    expect(partStats(6, 40)).toBe(1);
+    expect(partStats(6, 65)).toBeGreaterThan(1.1);
+    expect(ajouterXp(6, 40, 0, 1e9).niveau).toBe(40);
+  });
+});

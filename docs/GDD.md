@@ -132,6 +132,30 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
 - Défi Donjon des Bouftous : Chef de Guerre Bouftou 4★ au bout. Dernier palier : 5★ au choix en finissant Astrub en Enfer.
 - Beaucoup de quêtes (choix de Mathis) : elles sont des données (`quetes.json`), le chemin grandit à chaque version avec le contenu
   (Arène, Tour, autres zones, éveil…). 0.1 : toutes les quêtes possibles avec son contenu.
+- ✓ Vu dans SW 9.3.9 (vidéo de Mathis, 15 nov.) : onglets Progression (paliers Novice / Intermédiaire / Avancé), Défis, Spécial.
+  Paliers de 55, 21 et 18 quêtes ; chaque palier fini donne un coffre (ex. Avancé : 1 000 cristaux + un objet).
+  Quêtes en cartes : titre, compteur (1/1, 3/3, 20/20…), récompense (ex. 20 de chaque essence + 150 000 mana, 10 morceaux de vélin,
+  200 000 ou 300 000 mana, 5 parchemins, 100 cristaux…), « Terminé » ; Ellia explique la quête en bas (chez nous Ganymède).
+  Exemples : finir le 7e stage d'une zone, fabriquer une boîte magique, niveau du Labyrinthe, Tribunal d'ascension étage 100 (Normal)
+  puis étage 1 (Hell), rune antique 3/3, énergie dimensionnelle 20/20.
+- ✓ Onglet Spécial « Aide pour les monstres 4★ » : une liste de missions qui remplit une barre (70 % chez Mathis) ;
+  à 100 %, on invoque le monstre 4★ naturel de son choix. Puis « Aide pour les monstres 5★ » et « Amélioration des monstres 5★ » (verrouillés).
+  Idée pour nous : un Chemin « Aide aux 4★ » qui finit sur un 4★ au choix.
+
+## Missions du jour et Trophées (✓ vus dans SW 9.3.9, vidéo de Mathis, 15 nov. 2026)
+- Missions du jour à points : chaque mission donne +15 ou +20 points, 100 points suffisent (sur 180 possibles), remise à zéro chaque jour.
+  · +15 : Début de la journée (se connecter) · Le devoir d'un invocateur (invoquer 3 fois) · Entretien de rune (améliorer une rune) ·
+    Construction d'amitié (5 fois, amis)
+  · +20 : Tête à tête (5 combats d'arène) · Exploration de l'Histoire (10 stages) · Conquérant de l'Espoir (10 donjons) ·
+    Chance d'Ameria I et II (250 puis 500, sans doute de l'énergie dépensée) · 3 missions de guilde
+- Paliers de points : 20 → 100 000 mana + 10 Vélins inconnus · 40 → 100 000 mana + 3 objets · 60 → 100 000 mana + 1 rune ·
+  80 → 50 d'énergie + 1 vélin · 100 → 30 cristaux + 2 morceaux de vélin de transcendance.
+  Pour nous : même système (pierres d'âme, kamas, énergie, rune, Ogrines, 2 fragments), avec les missions de notre contenu
+  (connexion, invoquer, améliorer, stages, donjon, énergie dépensée).
+- Trophées (succès faits une fois) par thème : Histoire, Cairos, Rift, Arène, Monstre, Autres, avec un score total.
+  Ex. Histoire : finir une zone en Difficile → 50 000 mana ; en Enfer → 30 cristaux. Monstre : invoquer un Eau, un Feu et un Vent → 30 000 mana.
+  Cairos : finir le B10 avec seulement des monstres Feu → 150 000 mana. Pour nous : plus tard, après la 0.1 (zones Difficile/Enfer d'abord).
+- Missions de retour (joueurs revenus) : 7 jours de missions à +20 points ; pas pour nous.
 
 ## 4. Invocation
 | Objet | Équivalent SW | Résultat |
@@ -156,11 +180,14 @@ Maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A (14 nov. 2026) :
 - Premier 5★ : un 5★ au choix offert en finissant Astrub en Enfer (dernier palier du chemin de l'invocateur).
 - Pierre d'âme transcendante : un 5★ Feu, Air ou Eau assuré ✓ (parchemin de transcendance de SW). Dans la 0.1 : récompense du dernier
   palier du chemin de l'invocateur, et fragments donnés par les missions du jour (2 par jour comme SW ✓ d'après un site de joueurs).
-  ⚠ Nombre de fragments pour une pierre : pas trouvé pour SW, 60 en attendant (un mois de missions).
+  ✓ SW : 300 morceaux pour un parchemin de Transcendance (100 pour un Légendaire, 50 pour un Lumière & Ténèbres ; pièces de monstre 10/20/40/50/100 du 1★ au 5★).
+  Choix de Mathis : 60 fragments chez nous (un mois de missions), plus doux que SW.
+  ✓ Les 2 morceaux par jour viennent du dernier palier des missions du jour (100 points), vu dans SW 9.3.9.
   Pas de version Bonta/Brâkmar ni de bénédiction pour l'instant.
-- Aussi dans la 0.1 : revendre un monstre contre des kamas ✓ (SW), fiche du monstre juste après l'invocation (« Voir »), bestiaire
-  (tous les monstres, en ombre si pas encore eus, petit cadeau par découverte), collection à place limitée agrandie avec des kamas ✓ (SW ;
-  ⚠ 50 places au départ en attendant les vrais chiffres). Missions du jour avancées dans la 0.1 (pour les fragments).
+- Aussi dans la 0.1 : pas de revente : SW ne vend pas les monstres, ils servent à l'amélioration ou à l'évolution ✓ (Mathis), fiche du monstre juste après l'invocation (« Voir »), bestiaire
+  (tous les monstres, en ombre si pas encore eus, petit cadeau par découverte), collection de 120 places d'office, sans achat (choix de Mathis, comme SW actuel).
+  ✓ SW : 50 places autrefois, 70 en v6.5.3, puis 120 d'office depuis v7.1.9 (plus d'achat de places) ; au-delà, l'Entrepôt de monstres
+  (10 places pour 200 000 mana ou 50 cristaux, jusqu'à 800). Missions du jour avancées dans la 0.1 (pour les fragments).
 - Après la 0.1 : fusion ✓ (SW : quatre 4★ précis donnent un 5★ précis, comme Veromos), qui demande les éveils.
 - 3★ Bonta/Brâkmar en plus des Scarafeuilles Blanc et Noir : Kwaks (couleur refaite) et Larves (plusieurs couleurs dans Dofus).
 
@@ -184,7 +211,9 @@ Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, ga
   par un chemin, autres modes à droite (Donjons, Tour, Kolizéum, Brèche), liste des 7 stages à droite de l'image de la zone,
   onglets de difficulté, énergie, aperçu (ennemis, butin) avant « Préparer l'équipe », récompense de zone, combat répété (plus tard).
   ✓ La difficulté suivante s'ouvre quand la zone est finie ; la zone suivante quand la précédente est finie en Normal.
-  ✓ Énergie : +1 toutes les 5 minutes, payée au départ du combat. ⚠ Max 60 (SW : selon le niveau d'invocateur), coûts 3 / 4 / 5 (un seul guide).
+  ✓ Énergie : +1 toutes les 5 minutes, payée au départ du combat. ✓ Coûts 3 / 4 / 5 (Normal / Difficile / Enfer, lus dans SW 9.3.9). ⚠ Max 60 (SW : 500 au niveau 100, selon le niveau d'invocateur ; dépassable).
+  ✓ Ennemis dans SW (Garen, stage 1) : Normal 1★ niv. 1 ; Difficile 2-3★ niv. 16, un monstre de plus ; Enfer 3-5★ niv. 40.
+  ✓ Récompense de zone aussi en Difficile (Garen 7 Difficile : 5 Rois angemon niv. 15 + 1 000 000 de mana).
   ✓ Les stages donnent parfois un monstre (SW : ~1 à 3 %) et de l'énergie ; ⚠ nos taux : 3 % et 25 % (1 à 3).
   ✓ Récompense la première fois qu'une zone est finie en Normal (SW : souvent un monstre) : Astrub donne un Scarafeuille Bleu ★★★.
   ⚠ Difficile / Enfer : +1 / +2 étoiles et +10 / +20 niveaux aux ennemis, récompenses ×2 / ×3 (les nôtres).
@@ -199,7 +228,13 @@ Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, ga
 - Vagues ✓ : 3 vagues par stage, le boss à la dernière. Entre deux vagues, les alliés gardent PV, effets et recharges ; toutes les jauges
   repartent de zéro ⚠ (pas trouvé de source SW claire ; à vérifier). Le leader d'une vague ennemie est son premier monstre.
 - Donjons : 10 niveaux chacun ✓ (SW v8.0.0, RELOADED : Castel du Géant, Antre du Dragon et Nécropole ramenés de B12 à B10,
-  le B10 donne les récompenses de l'ancien B12 pour 8 d'énergie). Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
+  le B10 donne les récompenses de l'ancien B12 pour 8 d'énergie).
+  ✓ Lu dans SW 9.3.9 (Castel du Géant), boss / niveau / énergie : B1 3★ 12 / 5 · B2 3★ 15 / 5 · B3 3★ 20 / 6 · B4 4★ 25 / 6 · B5 3★ 30 / 7 ·
+    B6 4★ 40 / 7 · B7 4★ 50 / 7 · B8 5★ 55 / 8 · B9 5★ 60 / 8 · B10 5★ 65 / 8 ; puis Abysses Normal (niv. 70) et Hard (niv. 75), 9 d'énergie.
+  ✓ Butin affiché au B10 : runes 6★ Rare à Légendaire de 5 sets (Désespoir 4 : assommer +25 % · Énergie 2 : PV +15 % · Fatale 4 : ATQ +35 % ·
+    Lame 2 : critique +12 % · Rapide 4 : VIT +25 %), Symbole du Géant, morceaux de rune, Arcenmon, Vélin inconnu, Vélin mystique,
+    fragment de vélin gravé, pierres métamorphes. Les Abysses ajoutent le set Intangible.
+  Choix de Mathis : les boss de donjon peuvent dépasser le niveau 40 (comme SW), nos monstres jamais (pente des stats prolongée au-delà ⚠). Donjon des Bouftous (runes), Antre du Dragon Cochon (runes de haut niveau), Sanctuaires élémentaires (essences).
 - Tour des Dimensions : 100 étages.
 - Kolizéum : PvP asynchrone (défense jouée par l'IA), classement, ligues. Plus tard : Kolizéum en direct, comme l'Arène mondiale de SW
   (4 monstres, choix alternés).

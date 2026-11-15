@@ -42,9 +42,13 @@ export const pointsRequis = (e: 1 | 2 | 3 | 4 | 5) => e * POINTS_NOURRITURE[e];
 const PART_MAX: Record<Etoiles, number> = { 1: 0.3, 2: 0.4, 3: 0.52, 4: 0.65, 5: 0.8, 6: 1 };
 const PART_NIVEAU_1: Record<Etoiles, number> = { 1: 0.15, 2: 0.285, 3: 0.38, 4: 0.494, 5: 0.6175, 6: 0.76 };
 
+/**
+ * Nos monstres s'arrêtent à NIVEAU_MAX ; les boss de donjon peuvent aller au-delà (SW : B10 niveau 65 ✓, choix de Mathis) :
+ * au-dessus du maximum, la pente continue (⚠ la nôtre).
+ */
 export function partStats(etoiles: Etoiles, niveau: number): number {
   const max = NIVEAU_MAX[etoiles];
-  const n = Math.min(Math.max(1, niveau), max);
+  const n = Math.max(1, niveau);
   return PART_NIVEAU_1[etoiles] + ((PART_MAX[etoiles] - PART_NIVEAU_1[etoiles]) * (n - 1)) / (max - 1);
 }
 

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { charger, sauver } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import {
-  FRAGMENTS_TRANSCENDANCE, ORDRE_PIERRES, PIERRES, PLACES_EN_PLUS, agrandir, assemblerTranscendante, coutPlaces, invoquer, nombre, refus,
+  FRAGMENTS_TRANSCENDANCE, ORDRE_PIERRES, PIERRES, assemblerTranscendante, invoquer, nombre, refus,
   type Invoque, type Pierre,
 } from '../sim/invocation';
 import { fiche, monstreCombat } from '../sim/fiches';
@@ -113,7 +113,7 @@ export class InvocationScene extends Phaser.Scene {
       const r = refus(this.joueur, p, n);
       if (r === 'pierres') return this.message(nombre(this.joueur, p) ? `Il te faut ${n} ${PIERRES[p].nom.toLowerCase()}s.` : `Tu n'as pas de ${PIERRES[p].nom.toLowerCase()}.`);
       if (r === 'kamas') return this.message(`Il te faut ${fmt(PIERRES[p].cout * n)} kamas.`);
-      if (r === 'places') return this.message('Ta collection est pleine : agrandis-la ou revends des monstres.');
+      if (r === 'places') return this.message('Ta collection est pleine : sers-toi de monstres au Cercle d\'amélioration (nourrir ou évoluer).');
       this.lancer(n);
     };
     const b1 = bouton(this, CX - 120, H - 62, 220, 58, `Invoquer`, true, () => essai(1), 1001);
@@ -125,12 +125,7 @@ export class InvocationScene extends Phaser.Scene {
     if (refus(j, p, 10)) b10.griser();
 
     // collection
-    this.t(W - 20, H - 100, `Collection : ${j.monstres.length} / ${j.places}`, 13, j.monstres.length >= j.places ? '#ff9b7a' : '#c9cfc4', true, 1, 0, 1000);
-    const ag = bouton(this, W - 130, H - 56, 220, 40, `Agrandir (+${PLACES_EN_PLUS}) · ${fmt(coutPlaces(j))}`, false, () => {
-      if (this.joueur.kamas < coutPlaces(this.joueur)) return this.message(`Il te faut ${fmt(coutPlaces(this.joueur))} kamas.`);
-      this.joueur = agrandir(this.joueur); sauver(this.joueur); this.dessiner();
-    }, 1001);
-    this.garder(ag.fond); this.garder(ag.t);
+    this.t(W - 20, H - 60, `Collection : ${j.monstres.length} / ${j.places}`, 13, j.monstres.length >= j.places ? '#ff9b7a' : '#c9cfc4', true, 1, 0, 1000);
   }
 
   private message(s: string) {

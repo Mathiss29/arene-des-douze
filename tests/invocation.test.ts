@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { lireSauvegarde, nouveauJoueur, type Joueur } from '../src/sim/joueur';
 import {
-  FRAGMENTS_TRANSCENDANCE, ORDRE_PIERRES, PIERRES, agrandir, ajouterPierres, assemblerTranscendante, bassin, coutPlaces, invoquer, nombre, refus, revendre,
+  FRAGMENTS_TRANSCENDANCE, ORDRE_PIERRES, PIERRES, ajouterPierres, assemblerTranscendante, bassin, invoquer, nombre, refus,
 } from '../src/sim/invocation';
 import { fiche } from '../src/sim/fiches';
 
@@ -63,26 +63,13 @@ describe('Collection', () => {
     expect(r.fragments).toBe(3);
     expect(() => assemblerTranscendante(r)).toThrow();
   });
-  it('revendre rapporte des kamas, jamais un monstre de l\'équipe', () => {
-    const j = invoquer(riche('ame', 1), 'ame', 1, 5).joueur;
-    const nouveau = j.monstres[j.monstres.length - 1];
-    const r = revendre(j, nouveau.uid);
-    expect(r.kamas).toBeGreaterThan(0);
-    expect(r.joueur.monstres.some((m) => m.uid === nouveau.uid)).toBe(false);
-    expect(() => revendre(j, j.equipe[0])).toThrow();
-  });
-  it('agrandir la collection coûte de plus en plus cher', () => {
-    const j = { ...nouveauJoueur(), kamas: 1_000_000 };
-    const a = agrandir(j);
-    expect(a.places).toBe(j.places + 5);
-    expect(coutPlaces(a)).toBeGreaterThan(coutPlaces(j));
-  });
   it('pierres, fragments, bestiaire et places gardés dans la sauvegarde', () => {
-    const j = { ...ajouterPierres(nouveauJoueur(), 'legendaire', 2), fragments: 7, places: 60 };
+    const j = { ...ajouterPierres(nouveauJoueur(), 'legendaire', 2), fragments: 7, places: 130 };
     const l = lireSauvegarde(JSON.parse(JSON.stringify(j)))!;
     expect(l.pierres.legendaire).toBe(2);
     expect(l.fragments).toBe(7);
-    expect(l.places).toBe(60);
+    expect(l.places).toBe(130);
+    expect(lireSauvegarde({ ...j, places: 50 })!.places).toBe(120);
     expect(l.decouverts).toEqual(expect.arrayContaining(j.monstres.map((m) => m.id)));
   });
 });

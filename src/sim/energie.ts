@@ -1,7 +1,8 @@
 /**
  * Énergie des combats d'histoire (maquette « Zaap : » 5A). SW : elle revient d'elle-même, 1 toutes les 5 minutes ✓.
- * Maximum et coûts : les nôtres ⚠ (SW fait monter le maximum avec le niveau d'invocateur, non vérifié ;
- * coûts 3 / 4 / 5 selon la difficulté d'après un seul guide). Pur : le temps est passé en argument (ms).
+ * Coûts 3 / 4 / 5 (Normal / Difficile / Enfer) ✓ (lus dans SW 9.3.9, Forêt de Garen, novembre 2026).
+ * Maximum : le nôtre ⚠ (SW : 500 au niveau 100, monte avec le niveau d'invocateur ; on peut dépasser le maximum).
+ * Pur : le temps est passé en argument (ms).
  */
 import type { Joueur } from './joueur';
 

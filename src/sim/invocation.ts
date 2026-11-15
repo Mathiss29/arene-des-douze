@@ -98,23 +98,6 @@ export function assemblerTranscendante(j: Joueur): Joueur {
   return ajouterPierres({ ...j, fragments: j.fragments - FRAGMENTS_TRANSCENDANCE }, 'transcendante', 1);
 }
 
-/** Prix de revente par étoiles naturelles ⚠ (SW rachète les monstres en mana ; montants à vérifier). */
-export const PRIX_REVENTE: Record<number, number> = { 1: 100, 2: 300, 3: 1_000, 4: 5_000, 5: 20_000 };
-export function revendre(j: Joueur, uid: number): { joueur: Joueur; kamas: number } {
-  const m = j.monstres.find((x) => x.uid === uid);
-  if (!m) throw new Error(`Monstre ${uid} introuvable`);
-  if (j.equipe.includes(uid)) throw new Error('On ne revend pas un monstre de l\'équipe');
-  const nat = TOUS.find((x) => x.id === m.id)!.etoiles;
-  const kamas = PRIX_REVENTE[nat];
-  const equipesStages = Object.fromEntries(Object.entries(j.equipesStages).map(([k, v]) => [k, v.filter((u) => u !== uid)]));
-  return { joueur: { ...j, kamas: j.kamas + kamas, monstres: j.monstres.filter((x) => x.uid !== uid), equipesStages }, kamas };
-}
+/** Pas de revente : dans SW on ne vend pas un monstre, il sert seulement à l'amélioration ou à l'évolution ✓ (Mathis, SW 9.3.9). */
 
-/** Agrandir la collection : +5 places ⚠ (SW fait payer en mana, de plus en plus cher ; chiffres à vérifier). */
-export const PLACES_EN_PLUS = 5;
-export const coutPlaces = (j: Joueur) => 20_000 + Math.max(0, j.places - 50) * 2_000;
-export function agrandir(j: Joueur): Joueur {
-  const c = coutPlaces(j);
-  if (j.kamas < c) throw new Error('Pas assez de kamas');
-  return { ...j, kamas: j.kamas - c, places: j.places + PLACES_EN_PLUS };
-}
+/** Pas d'achat de places : SW donne d'office les 120 places depuis la v7.1.9 ✓ (vu dans SW 9.3.9 : 61/120). L'Entrepôt (800 places) viendra plus tard. */
