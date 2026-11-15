@@ -81,10 +81,13 @@
 - XP ✓ : table de SW niveau par niveau (`src/sim/progression.ts`, ⚠ d'avant RELOADED) ; l'XP en trop au niveau max est perdue.
 - Stats : les fiches donnent les stats 6★ niveau 40 ; PV, Attaque et Défense suivent le niveau et les étoiles (⚠ courbe provisoire),
   les autres stats sont fixes ✓.
-- Stats de base comme SW ✓ : chaque monstre a les siennes, mais PV/15 + Attaque + Défense (6★ niv. 40, éveillé) est le même pour
-  tous les monstres d'une même étoile naturelle : 1★ 1 482 · 3★ 1 812 · 4★ 1 977 · 5★ 2 142 (vérifié sur le tableau des stats du wiki SW ;
-  ⚠ 2★ 1 647 déduit, les paliers étant réguliers de 165). Un 1★ naturel finit donc environ 18 % sous un 3★ naturel.
-  ⚠ Pour l'instant nos fiches suivent ce budget sans éveil ; le bonus d'éveil viendra avec les éveils.
+- Stats de base comme SW ✓ : PV/15 + Attaque + Défense (6★ niv. 40) est le même pour tous les monstres d'une même étoile naturelle.
+  ✓ Moyennes réelles (API SWARFARM, 837 monstres non éveillés, 15 nov. 2026) : 1★ 1 317 · 2★ 1 482 · 3★ 1 647 · 4★ 1 812 · 5★ 1 977
+  (+165 par étoile ; l'éveil ajoute un palier, soit les anciens chiffres du wiki). Nos fiches prennent les PV, ATQ et DEF moyens de SW
+  pour leur étoile et leur type (Attaque, Défense, PV, Soutien), critique 15 %, dégâts critiques 50 %, résistance 15 %, précision 0 % ✓.
+- Sorts ✓ : multiplicateurs recalés sur les médianes de SW (SWARFARM, 3 000 sorts) selon le rang du sort, le nombre de coups et la zone :
+  sort 1 ×3,8 (2 coups ×1,9, 3 coups ×1,3) ; sort 2 ×5,5 (3 coups ×2,0, zone ×3,0) ; sort 3 ×6,75 (zone ×4,4) ; −15 % s'il étourdit ⚠.
+  Fichier des moyennes : `outils/swarfarm_moyennes.json` (hors dépôt). Le Bouftou Royal est à part (boss).
 - Départ : Piou Vert (leader), Kwak de Flamme, Piou Bleu, Piou Rouge, niveau 1, et 5 000 kamas.
 - Éveil ✓ : avec des essences de son élément et de magie, en trois paliers (bas, moyen, haut ; 5 d'un palier → 1 du suivant au Centre de fusion) ;
   nom, apparence, stats, sort amélioré ou nouveau. Second éveil pour certains monstres (plus tard).

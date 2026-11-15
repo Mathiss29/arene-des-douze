@@ -1,11 +1,11 @@
 {
  "piou_rouge": {
   "stats": {
-   "pv": 6195,
-   "atq": 634,
-   "def": 435,
+   "pv": 7080,
+   "atq": 512,
+   "def": 333,
    "vit": 103,
-   "tc": 20,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -18,7 +18,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.4
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -29,7 +29,7 @@
     "recharge": 3,
     "cible": "ennemi",
     "mult": {
-     "atq": 5.0
+     "atq": 5.5
     },
     "effets": [
      {
@@ -44,9 +44,9 @@
  },
  "piou_vert": {
   "stats": {
-   "pv": 7200,
-   "atq": 499,
-   "def": 503,
+   "pv": 6894,
+   "atq": 506,
+   "def": 351,
    "vit": 108,
    "tc": 15,
    "dc": 50,
@@ -66,7 +66,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -92,9 +92,9 @@
  },
  "piou_bleu": {
   "stats": {
-   "pv": 7200,
-   "atq": 499,
-   "def": 503,
+   "pv": 6894,
+   "atq": 506,
+   "def": 351,
    "vit": 101,
    "tc": 15,
    "dc": 50,
@@ -109,7 +109,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -126,9 +126,9 @@
  },
  "piou_jaune": {
   "stats": {
-   "pv": 8745,
-   "atq": 446,
-   "def": 453,
+   "pv": 8194,
+   "atq": 392,
+   "def": 378,
    "vit": 97,
    "tc": 15,
    "dc": 50,
@@ -164,11 +164,11 @@
  },
  "piou_violet": {
   "stats": {
-   "pv": 6195,
-   "atq": 634,
-   "def": 435,
+   "pv": 7080,
+   "atq": 512,
+   "def": 333,
    "vit": 104,
-   "tc": 20,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -181,7 +181,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.4
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -192,7 +192,7 @@
     "recharge": 3,
     "cible": "ennemi",
     "mult": {
-     "atq": 4.6
+     "atq": 5.5
     },
     "effets": [
      {
@@ -207,9 +207,9 @@
  },
  "scarafeuille_rouge": {
   "stats": {
-   "pv": 9375,
-   "atq": 597,
-   "def": 591,
+   "pv": 8771,
+   "atq": 532,
+   "def": 530,
    "vit": 103,
    "tc": 15,
    "dc": 50,
@@ -224,7 +224,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.4
+     "atq": 3.8
     },
     "effets": [
      {
@@ -263,9 +263,9 @@
  },
  "scarafeuille_vert": {
   "stats": {
-   "pv": 8565,
-   "atq": 512,
-   "def": 729,
+   "pv": 8608,
+   "atq": 480,
+   "def": 593,
    "vit": 96,
    "tc": 15,
    "dc": 50,
@@ -323,9 +323,9 @@
  },
  "scarafeuille_bleu": {
   "stats": {
-   "pv": 9375,
-   "atq": 597,
-   "def": 591,
+   "pv": 8771,
+   "atq": 532,
+   "def": 530,
    "vit": 104,
    "tc": 15,
    "dc": 50,
@@ -340,7 +340,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -367,9 +367,9 @@
  },
  "scarafeuille_blanc": {
   "stats": {
-   "pv": 11310,
-   "atq": 531,
-   "def": 527,
+   "pv": 9421,
+   "atq": 494,
+   "def": 525,
    "vit": 99,
    "tc": 15,
    "dc": 50,
@@ -429,11 +429,11 @@
  },
  "scarafeuille_noir": {
   "stats": {
-   "pv": 8115,
-   "atq": 761,
-   "def": 510,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 102,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -446,7 +446,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.6
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -458,7 +458,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.45
+     "atq": 2.0
     },
     "effets": [
      {
@@ -477,7 +477,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.2
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -485,11 +485,11 @@
  },
  "kwak_de_flamme": {
   "stats": {
-   "pv": 8115,
-   "atq": 761,
-   "def": 510,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -502,7 +502,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.6
+     "atq": 3.8
     },
     "effets": [
      {
@@ -520,7 +520,7 @@
     "recharge": 3,
     "cible": "ennemis",
     "mult": {
-     "atq": 2.2
+     "atq": 3.0
     },
     "effets": [
      {
@@ -538,7 +538,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.0
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -546,11 +546,11 @@
  },
  "kwak_de_vent": {
   "stats": {
-   "pv": 8115,
-   "atq": 761,
-   "def": 510,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 112,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -568,7 +568,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.5
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -580,7 +580,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.5
+     "atq": 1.7
     },
     "jauge": {
      "soi": 25
@@ -594,7 +594,7 @@
     "recharge": 4,
     "cible": "ennemis",
     "mult": {
-     "atq": 2.6
+     "atq": 3.74
     },
     "jauge": {
      "cible": {
@@ -608,13 +608,13 @@
  },
  "kwak_de_glace": {
   "stats": {
-   "pv": 9375,
-   "atq": 597,
-   "def": 591,
+   "pv": 8771,
+   "atq": 532,
+   "def": 530,
    "vit": 108,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -625,7 +625,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "effets": [
      {
@@ -643,7 +643,7 @@
     "recharge": 4,
     "cible": "ennemis",
     "mult": {
-     "atq": 2.0
+     "atq": 2.55
     },
     "jauge": {
      "cible": {
@@ -660,7 +660,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.8
+     "atq": 5.74
     },
     "effets": [
      {
@@ -675,11 +675,11 @@
  },
  "pichon_orange": {
   "stats": {
-   "pv": 6900,
-   "atq": 705,
-   "def": 482,
+   "pv": 6446,
+   "atq": 628,
+   "def": 425,
    "vit": 102,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -692,7 +692,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.38
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -704,7 +704,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.41
+     "atq": 2.0
     },
     "effets": [
      {
@@ -720,9 +720,9 @@
  },
  "pichon_vert": {
   "stats": {
-   "pv": 8010,
-   "atq": 555,
-   "def": 558,
+   "pv": 7328,
+   "atq": 475,
+   "def": 518,
    "vit": 102,
    "tc": 15,
    "dc": 50,
@@ -737,7 +737,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.1
+     "atq": 3.8
     },
     "effets": [
      {
@@ -761,9 +761,9 @@
  },
  "pichon_bleu": {
   "stats": {
-   "pv": 9705,
-   "atq": 496,
-   "def": 504,
+   "pv": 8589,
+   "atq": 459,
+   "def": 450,
    "vit": 98,
    "tc": 15,
    "dc": 50,
@@ -796,9 +796,9 @@
  },
  "pichon_blanc": {
   "stats": {
-   "pv": 8010,
-   "atq": 555,
-   "def": 558,
+   "pv": 7328,
+   "atq": 475,
+   "def": 518,
    "vit": 104,
    "tc": 15,
    "dc": 50,
@@ -813,7 +813,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.1
+     "atq": 3.8
     },
     "effets": [
      {
@@ -837,11 +837,11 @@
  },
  "pichon_sombre": {
   "stats": {
-   "pv": 6900,
-   "atq": 705,
-   "def": 482,
+   "pv": 6446,
+   "atq": 628,
+   "def": 425,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -854,7 +854,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.38
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -866,7 +866,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.41
+     "atq": 2.0
     },
     "effets": [
      {
@@ -882,9 +882,9 @@
  },
  "kwak_dore": {
   "stats": {
-   "pv": 8805,
-   "atq": 611,
-   "def": 614,
+   "pv": 8771,
+   "atq": 532,
+   "def": 530,
    "vit": 101,
    "tc": 15,
    "dc": 50,
@@ -899,7 +899,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "effets": [
      {
@@ -942,11 +942,11 @@
  },
  "kwak_sombre": {
   "stats": {
-   "pv": 7590,
-   "atq": 776,
-   "def": 530,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 103,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -959,7 +959,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.6
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -971,7 +971,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.5
+     "atq": 2.0
     },
     "effets": [
      {
@@ -990,7 +990,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.1
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -998,11 +998,11 @@
  },
  "larve_orange": {
   "stats": {
-   "pv": 7590,
-   "atq": 776,
-   "def": 530,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 104,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1015,7 +1015,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.6
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1027,7 +1027,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.5
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1046,7 +1046,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.1
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1054,9 +1054,9 @@
  },
  "larve_verte": {
   "stats": {
-   "pv": 8565,
-   "atq": 513,
-   "def": 728,
+   "pv": 8608,
+   "atq": 480,
+   "def": 593,
    "vit": 97,
    "tc": 15,
    "dc": 50,
@@ -1115,9 +1115,9 @@
  },
  "larve_bleue": {
   "stats": {
-   "pv": 8805,
-   "atq": 611,
-   "def": 614,
+   "pv": 8771,
+   "atq": 532,
+   "def": 530,
    "vit": 105,
    "tc": 15,
    "dc": 50,
@@ -1132,7 +1132,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.3
+     "atq": 3.8
     },
     "effets": [
      {
@@ -1175,9 +1175,9 @@
  },
  "larve_doree": {
   "stats": {
-   "pv": 10680,
-   "atq": 545,
-   "def": 555,
+   "pv": 9421,
+   "atq": 494,
+   "def": 525,
    "vit": 96,
    "tc": 15,
    "dc": 50,
@@ -1229,11 +1229,11 @@
  },
  "larve_sombre": {
   "stats": {
-   "pv": 7590,
-   "atq": 776,
-   "def": 530,
+   "pv": 7782,
+   "atq": 652,
+   "def": 476,
    "vit": 103,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1246,7 +1246,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.6
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1258,7 +1258,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.5
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1277,7 +1277,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.1
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1285,11 +1285,11 @@
  },
  "kwakere_de_flamme": {
   "stats": {
-   "pv": 8280,
-   "atq": 846,
-   "def": 579,
+   "pv": 8869,
+   "atq": 692,
+   "def": 529,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1302,7 +1302,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.82
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1314,7 +1314,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.59
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1333,7 +1333,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.47
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1346,9 +1346,9 @@
  },
  "kwakere_de_terre": {
   "stats": {
-   "pv": 9345,
-   "atq": 559,
-   "def": 795,
+   "pv": 8870,
+   "atq": 545,
+   "def": 676,
    "vit": 99,
    "tc": 15,
    "dc": 50,
@@ -1412,13 +1412,13 @@
  },
  "kwakere_de_glace": {
   "stats": {
-   "pv": 9615,
-   "atq": 666,
-   "def": 670,
+   "pv": 9718,
+   "atq": 573,
+   "def": 591,
    "vit": 107,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -1429,7 +1429,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.5
+     "atq": 3.8
     },
     "effets": [
      {
@@ -1477,9 +1477,9 @@
  },
  "kwakere_d_or": {
   "stats": {
-   "pv": 11655,
-   "atq": 595,
-   "def": 605,
+   "pv": 10249,
+   "atq": 587,
+   "def": 542,
    "vit": 98,
    "tc": 15,
    "dc": 50,
@@ -1536,11 +1536,11 @@
  },
  "kwakere_de_vent": {
   "stats": {
-   "pv": 8280,
-   "atq": 846,
-   "def": 579,
+   "pv": 8869,
+   "atq": 692,
+   "def": 529,
    "vit": 105,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1553,7 +1553,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.82
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1565,7 +1565,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.59
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1584,7 +1584,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.47
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1597,11 +1597,11 @@
  },
  "koalak_griotte": {
   "stats": {
-   "pv": 8280,
-   "atq": 846,
-   "def": 579,
+   "pv": 8869,
+   "atq": 692,
+   "def": 529,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1614,7 +1614,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.82
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1626,7 +1626,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.59
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1645,7 +1645,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.47
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1658,9 +1658,9 @@
  },
  "koalak_reinette": {
   "stats": {
-   "pv": 11655,
-   "atq": 595,
-   "def": 605,
+   "pv": 10249,
+   "atq": 587,
+   "def": 542,
    "vit": 101,
    "tc": 15,
    "dc": 50,
@@ -1717,9 +1717,9 @@
  },
  "koalak_indigo": {
   "stats": {
-   "pv": 9345,
-   "atq": 559,
-   "def": 795,
+   "pv": 8870,
+   "atq": 545,
+   "def": 676,
    "vit": 100,
    "tc": 15,
    "dc": 50,
@@ -1783,13 +1783,13 @@
  },
  "koalak_coco": {
   "stats": {
-   "pv": 9615,
-   "atq": 666,
-   "def": 670,
+   "pv": 9718,
+   "atq": 573,
+   "def": 591,
    "vit": 103,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -1800,7 +1800,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.5
+     "atq": 3.8
     },
     "effets": [
      {
@@ -1848,11 +1848,11 @@
  },
  "koalak_myrtille": {
   "stats": {
-   "pv": 8280,
-   "atq": 846,
-   "def": 579,
+   "pv": 8869,
+   "atq": 692,
+   "def": 529,
    "vit": 105,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1865,7 +1865,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.82
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1877,7 +1877,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.59
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1896,7 +1896,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.47
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1909,11 +1909,11 @@
  },
  "chef_de_guerre_bouftou": {
   "stats": {
-   "pv": 8280,
-   "atq": 846,
-   "def": 579,
+   "pv": 8869,
+   "atq": 692,
+   "def": 529,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -1926,7 +1926,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.82
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -1938,7 +1938,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.59
+     "atq": 2.0
     },
     "effets": [
      {
@@ -1957,7 +1957,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.47
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -1970,13 +1970,13 @@
  },
  "boufton_orageux": {
   "stats": {
-   "pv": 9615,
-   "atq": 666,
-   "def": 670,
+   "pv": 9718,
+   "atq": 573,
+   "def": 591,
    "vit": 106,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -1987,7 +1987,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.5
+     "atq": 3.8
     },
     "effets": [
      {
@@ -2035,9 +2035,9 @@
  },
  "bouftou_nuageux": {
   "stats": {
-   "pv": 11655,
-   "atq": 595,
-   "def": 605,
+   "pv": 10249,
+   "atq": 587,
+   "def": 542,
    "vit": 102,
    "tc": 15,
    "dc": 50,
@@ -2094,13 +2094,13 @@
  },
  "boufton_palichon": {
   "stats": {
-   "pv": 9615,
-   "atq": 666,
-   "def": 670,
+   "pv": 9718,
+   "atq": 573,
+   "def": 591,
    "vit": 103,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -2111,7 +2111,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.5
+     "atq": 3.8
     },
     "effets": [
      {
@@ -2159,9 +2159,9 @@
  },
  "bouftou_noir": {
   "stats": {
-   "pv": 9345,
-   "atq": 559,
-   "def": 795,
+   "pv": 8870,
+   "atq": 545,
+   "def": 676,
    "vit": 97,
    "tc": 15,
    "dc": 50,
@@ -2225,11 +2225,11 @@
  },
  "dragoss_argile": {
   "stats": {
-   "pv": 8970,
-   "atq": 917,
-   "def": 627,
+   "pv": 9589,
+   "atq": 756,
+   "def": 582,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -2242,7 +2242,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 4.03
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -2254,7 +2254,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.68
+     "atq": 2.0
     },
     "effets": [
      {
@@ -2273,7 +2273,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.83
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -2286,9 +2286,9 @@
  },
  "dragoss_calcaire": {
   "stats": {
-   "pv": 10125,
-   "atq": 606,
-   "def": 861,
+   "pv": 9799,
+   "atq": 589,
+   "def": 735,
    "vit": 99,
    "tc": 15,
    "dc": 50,
@@ -2352,9 +2352,9 @@
  },
  "dragoss_ardoise": {
   "stats": {
-   "pv": 12630,
-   "atq": 645,
-   "def": 655,
+   "pv": 11062,
+   "atq": 644,
+   "def": 595,
    "vit": 102,
    "tc": 15,
    "dc": 50,
@@ -2411,13 +2411,13 @@
  },
  "dragoss_dore": {
   "stats": {
-   "pv": 10410,
-   "atq": 722,
-   "def": 726,
+   "pv": 10284,
+   "atq": 650,
+   "def": 641,
    "vit": 103,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -2428,7 +2428,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.7
+     "atq": 3.8
     },
     "effets": [
      {
@@ -2476,11 +2476,11 @@
  },
  "dragoss_charbon": {
   "stats": {
-   "pv": 8970,
-   "atq": 917,
-   "def": 627,
+   "pv": 9589,
+   "atq": 756,
+   "def": 582,
    "vit": 105,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -2493,7 +2493,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 4.03
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -2505,7 +2505,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.68
+     "atq": 2.0
     },
     "effets": [
      {
@@ -2524,7 +2524,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.83
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -2537,11 +2537,11 @@
  },
  "gelee_royale_fraise": {
   "stats": {
-   "pv": 8970,
-   "atq": 917,
-   "def": 627,
+   "pv": 9589,
+   "atq": 756,
+   "def": 582,
    "vit": 106,
-   "tc": 25,
+   "tc": 15,
    "dc": 50,
    "pre": 0,
    "res": 15
@@ -2554,7 +2554,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 4.03
+     "atq": 3.8
     },
     "desc": "Frappe un ennemi."
    },
@@ -2566,7 +2566,7 @@
     "cible": "ennemi",
     "coups": 3,
     "mult": {
-     "atq": 1.68
+     "atq": 2.0
     },
     "effets": [
      {
@@ -2585,7 +2585,7 @@
     "recharge": 4,
     "cible": "ennemi",
     "mult": {
-     "atq": 6.83
+     "atq": 6.75
     },
     "desc": "Énorme frappe sur un ennemi."
    }
@@ -2598,13 +2598,13 @@
  },
  "gelee_royale_menthe": {
   "stats": {
-   "pv": 10410,
-   "atq": 722,
-   "def": 726,
+   "pv": 10284,
+   "atq": 650,
+   "def": 641,
    "vit": 106,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -2615,7 +2615,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.7
+     "atq": 3.8
     },
     "effets": [
      {
@@ -2663,9 +2663,9 @@
  },
  "gelee_royale_bleuet": {
   "stats": {
-   "pv": 12630,
-   "atq": 645,
-   "def": 655,
+   "pv": 11062,
+   "atq": 644,
+   "def": 595,
    "vit": 102,
    "tc": 15,
    "dc": 50,
@@ -2722,13 +2722,13 @@
  },
  "gelee_royale_citron": {
   "stats": {
-   "pv": 10410,
-   "atq": 722,
-   "def": 726,
+   "pv": 10284,
+   "atq": 650,
+   "def": 641,
    "vit": 103,
    "tc": 15,
    "dc": 50,
-   "pre": 25,
+   "pre": 0,
    "res": 15
   },
   "sorts": [
@@ -2739,7 +2739,7 @@
     "recharge": 0,
     "cible": "ennemi",
     "mult": {
-     "atq": 3.7
+     "atq": 3.8
     },
     "effets": [
      {
@@ -2787,9 +2787,9 @@
  },
  "gelee_royale_mure": {
   "stats": {
-   "pv": 10125,
-   "atq": 606,
-   "def": 861,
+   "pv": 9799,
+   "atq": 589,
+   "def": 735,
    "vit": 97,
    "tc": 15,
    "dc": 50,
