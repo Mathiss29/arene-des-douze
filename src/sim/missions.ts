@@ -8,6 +8,7 @@
 import type { Joueur } from './joueur';
 import { changerEnergie } from './energie';
 import { ajouterPierres } from './invocation';
+import { donnerRune } from './inventaire';
 
 export type IdMission = 'connexion' | 'invoquer' | 'ameliorer' | 'mine' | 'histoire' | 'energie1' | 'energie2' | 'donjon' | 'rune' | 'arene';
 
@@ -32,17 +33,17 @@ export const MISSIONS: Mission[] = [
   { id: 'energie1', nom: 'Dépenser 60 points d\'énergie', objectif: 60, points: 20, ecran: 'zaap' },
   { id: 'energie2', nom: 'Dépenser 120 points d\'énergie', objectif: 120, points: 20, ecran: 'zaap' },
   { id: 'donjon', nom: 'Finir 10 fois le Donjon des Bouftous', objectif: 10, points: 20, bientot: 'Le Donjon des Bouftous arrive bientôt.' },
-  { id: 'rune', nom: 'Améliorer une rune', objectif: 1, points: 20, bientot: 'Les runes arrivent bientôt.' },
+  { id: 'rune', nom: 'Améliorer une rune', objectif: 1, points: 20, ecran: 'cercle' },
   { id: 'arene', nom: 'Livrer 5 combats au Kolizéum', objectif: 5, points: 20, bientot: 'Le Kolizéum arrive plus tard.' },
 ];
 
-export interface Coffre { points: number; kamas?: number; pierresAme?: number; parfaites?: number; energie?: number; fragments?: number }
+export interface Coffre { points: number; kamas?: number; pierresAme?: number; parfaites?: number; energie?: number; fragments?: number; rune?: 3 | 4 | 5 }
 
 /** Coffres (choix 5A) ⚠. Ogrines au dernier coffre quand elles existeront (SW : 30 cristaux). */
 export const COFFRES: Coffre[] = [
   { points: 20, kamas: 5_000, pierresAme: 3 },
   { points: 40, kamas: 5_000, pierresAme: 5 },
-  { points: 60, kamas: 10_000 },
+  { points: 60, kamas: 5_000, rune: 4 },
   { points: 80, energie: 20, parfaites: 1 },
   { points: 100, kamas: 10_000, fragments: 2 },
 ];
@@ -108,6 +109,7 @@ export function ouvrirCoffre(j: Joueur, i: number, maintenant: number): Joueur {
   let r: Joueur = { ...j, kamas: j.kamas + (c.kamas ?? 0), pierresAme: j.pierresAme + (c.pierresAme ?? 0), fragments: j.fragments + (c.fragments ?? 0), missions: { ...e, coffres: [...e.coffres, i] } };
   if (c.parfaites) r = ajouterPierres(r, 'parfaite', c.parfaites);
   if (c.energie) r = changerEnergie(r, c.energie, maintenant);
+  if (c.rune) r = donnerRune(r, { etoiles: c.rune }, maintenant).joueur;
   return r;
 }
 

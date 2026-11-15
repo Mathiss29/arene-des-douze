@@ -2,12 +2,64 @@
  {
   "id": "bienvenue-0.1",
   "titre": "Ganymède : bienvenue dans l'Arène des Douze !",
-  "contenu": { "pierresAme": 10, "kamas": 20000 }
+  "contenu": {
+   "pierresAme": 10,
+   "kamas": 20000
+  }
+ },
+ {
+  "id": "runes-depart-0.1",
+  "titre": "Ganymède : tes premières runes (Fatal et Énergie)",
+  "contenu": {
+   "runes": [
+    {
+     "etoiles": 3,
+     "set": "sram",
+     "emplacement": 1,
+     "grade": 1
+    },
+    {
+     "etoiles": 3,
+     "set": "sram",
+     "emplacement": 2,
+     "grade": 1
+    },
+    {
+     "etoiles": 3,
+     "set": "sram",
+     "emplacement": 3,
+     "grade": 1
+    },
+    {
+     "etoiles": 3,
+     "set": "sram",
+     "emplacement": 4,
+     "grade": 1
+    },
+    {
+     "etoiles": 3,
+     "set": "enutrof",
+     "emplacement": 5,
+     "grade": 1
+    },
+    {
+     "etoiles": 3,
+     "set": "enutrof",
+     "emplacement": 6,
+     "grade": 1
+    }
+   ]
+  }
  },
  {
   "id": "code-discord-0.1",
   "titre": "Code Discord : merci de tester la 0.1 !",
   "code": "DOUZE01",
-  "contenu": { "pierres": { "parfaite": 1 }, "energie": 30 }
+  "contenu": {
+   "pierres": {
+    "parfaite": 1
+   },
+   "energie": 30
+  }
  }
 ]

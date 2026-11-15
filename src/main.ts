@@ -7,6 +7,7 @@ import { ZaapScene } from './render/ZaapScene';
 import { InvocationScene } from './render/InvocationScene';
 import { MissionsScene } from './render/MissionsScene';
 import { ReceptionScene } from './render/ReceptionScene';
+import { MonstreScene } from './render/MonstreScene';
 import { VitrineScene } from './render/VitrineScene';
 import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
@@ -19,7 +20,7 @@ await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f)
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };
 const maquette = MAQUETTES[location.hash];
 if (maquette) document.getElementById('jeu')!.style.width = 'calc(100% - min(380px, 42vw))';
-const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
+const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, MonstreScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
 
 // Netteté : canevas à la taille réelle de l'écran (voir nettete.ts)
 const K = facteurNettete(document.getElementById('jeu')!);

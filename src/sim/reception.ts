@@ -9,6 +9,8 @@ import { ajouterMonstre } from './joueur';
 import { changerEnergie } from './energie';
 import { ajouterPierres, placesLibres, type Pierre } from './invocation';
 import CADEAUX from '../data/cadeaux.json';
+import { donnerRune } from './inventaire';
+import type { ParamsRune } from './runes';
 
 export interface Contenu {
   kamas?: number;
@@ -18,6 +20,8 @@ export interface Contenu {
   fragments?: number;
   /** Monstre (id) au niveau 1 de ses étoiles naturelles. */
   monstre?: string;
+  /** Runes (tirées à la réception). */
+  runes?: ParamsRune[];
 }
 
 export interface Cadeau {
@@ -36,7 +40,7 @@ export const CADEAUX_MAJ = CADEAUX as CadeauMaj[];
 
 export const DUREE_CADEAU = 7 * 24 * 3_600_000;
 
-const durable = (c: Contenu) => !!(c.monstre || c.pierresAme || (c.pierres && Object.values(c.pierres).some((n) => (n ?? 0) > 0)));
+const durable = (c: Contenu) => !!(c.monstre || c.runes?.length || c.pierresAme || (c.pierres && Object.values(c.pierres).some((n) => (n ?? 0) > 0)));
 
 /** Cadeaux encore là (les cadeaux expirés disparaissent). */
 export const cadeaux = (j: Joueur, maintenant: number): Cadeau[] => (j.reception ?? []).filter((c) => c.expire === undefined || c.expire > maintenant);
@@ -57,6 +61,7 @@ function appliquer(j: Joueur, c: Contenu, maintenant: number): Joueur {
   for (const [p, n] of Object.entries(c.pierres ?? {})) if (n) r = ajouterPierres(r, p as Pierre, n);
   if (c.energie) r = changerEnergie(r, c.energie, maintenant);
   if (c.monstre) r = ajouterMonstre(r, c.monstre).joueur;
+  (c.runes ?? []).forEach((p, i) => { r = donnerRune(r, p, (maintenant + i * 7919) & 0x7fffffff).joueur; });
   return r;
 }
 

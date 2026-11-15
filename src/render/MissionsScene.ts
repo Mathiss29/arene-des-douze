@@ -119,5 +119,6 @@ function contenu(c: Coffre): string {
   if (c.parfaites) l.push(`${c.parfaites} pierre parfaite`);
   if (c.energie) l.push(`${c.energie} énergie`);
   if (c.fragments) l.push(`${c.fragments} fragments`);
+  if (c.rune) l.push(`1 rune ${c.rune}★`);
   return l.join('\n');
 }

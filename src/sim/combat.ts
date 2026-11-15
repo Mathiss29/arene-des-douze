@@ -48,6 +48,10 @@ export type Evenement =
   | { type: 'jauge'; uid: number; avant: number; apres: number }
   | { type: 'ko'; uid: number }
   | { type: 'vague'; vague: number; total: number; uids: number[] }
+  /** Set Violent (Ecaflip) : l'unité rejoue tout de suite. */
+  | { type: 'rejoue'; uid: number }
+  /** Set Vengeance (Sacrieur) : l'unité contre-attaque. */
+  | { type: 'contre'; uid: number; cible: number }
   | { type: 'fin'; vainqueur: Camp | null };
 
 export interface OptionsCombat {
@@ -86,14 +90,33 @@ export class Combat {
     this.suivantes = [...(o.vaguesSuivantes ?? [])];
     this.nbVagues = 1 + this.suivantes.length;
     const a = this.creer('A', o.equipeA, 0);
-    this.unites = [...a, ...this.creer('B', o.equipeB, a.length)];
+    const b = this.creer('B', o.equipeB, a.length);
+    this.unites = [...a, ...b];
+    this.debutEquipe(a);
+    this.debutEquipe(b);
+  }
+
+  /** Unité qui rejoue tout de suite (set Violent), et nombre de tours gagnés de suite. */
+  private encore: Unite | null = null;
+  private chaine = 0;
+  private enContre = false;
+
+  private sets(u: Unite, s: string): number { return u.monstre.sets?.[s] ?? 0; }
+
+  /** Set Bouclier (Féca) ✓ : au début du combat (ou de la vague), bouclier de 15 % des PV par set pour toute l'équipe, 3 tours. */
+  private debutEquipe(equipe: Unite[]) {
+    const n = Math.max(0, ...equipe.map((u) => this.sets(u, 'feca')));
+    if (n) for (const u of equipe) this.poser(u, 'bouclier', 3, Math.round((u.monstre.base ?? u.monstre.stats).pv * 0.15 * n));
   }
 
   /** Unités d'une équipe, skill de leader appliqué (le leader d'une vague ennemie est son premier monstre). */
   private creer(camp: Camp, equipe: MonstreCombat[], uid: number): Unite[] {
     const lead = equipe[0]?.leader;
+    // set Combat (Osamodas) ✓ : ATQ des alliés +8 % de leur base par set porté dans l'équipe
+    const combat = equipe.reduce((s, m) => s + (m.sets?.osamodas ?? 0), 0);
     return equipe.map((m, place): Unite => {
       const stats = { ...m.stats };
+      if (combat) stats.atq += Math.round((m.base ?? m.stats).atq * 0.08 * combat);
       if (lead && (lead.zone === 'general' || lead.zone === this.mode || lead.zone === m.element)) {
         const k = lead.stat;
         stats[k] = ['tc', 'pre', 'res', 'dc'].includes(k) ? stats[k] + lead.valeur : Math.round(stats[k] * (1 + lead.valeur / 100));
@@ -177,9 +200,19 @@ export class Combat {
         return null;
       }
       const vivants = this.unites.filter((u) => u.vivant);
-      while (!vivants.some((u) => u.jauge >= 100)) for (const u of vivants) u.jauge += this.vitesse(u) * REGLES.jaugeParVitesse;
-      // Le plus haut joue ; égalité : le plus rapide, puis l'ordre des unités (déterministe)
-      const u = vivants.reduce((m, x) => (x.jauge > m.jauge || (x.jauge === m.jauge && this.vitesse(x) > this.vitesse(m)) ? x : m));
+      let u: Unite;
+      if (this.encore?.vivant) {
+        // set Violent : l'unité rejoue sans attendre sa jauge
+        u = this.encore;
+        this.encore = null;
+        this.emettre({ type: 'rejoue', uid: u.uid });
+      } else {
+        this.encore = null;
+        this.chaine = 0;
+        while (!vivants.some((x) => x.jauge >= 100)) for (const x of vivants) x.jauge += this.vitesse(x) * REGLES.jaugeParVitesse;
+        // Le plus haut joue ; égalité : le plus rapide, puis l'ordre des unités (déterministe)
+        u = vivants.reduce((m, x) => (x.jauge > m.jauge || (x.jauge === m.jauge && this.vitesse(x) > this.vitesse(m)) ? x : m));
+      }
       u.jauge = 0;
       this.tour++;
       this.acteur = u;
@@ -225,7 +258,10 @@ export class Combat {
     u.recharges[indexSort] = sort.recharge;
     this.emettre({ type: 'sort', uid: u.uid, sort: indexSort, cibles: cibles.map((c) => c.uid) });
     this.lancer(u, sort, cibles);
+    // set Violent (Ecaflip) ✓ : 22 % de chances de rejouer, 45 % de moins à chaque tour gagné de suite
+    const violent = this.sets(u, 'ecaflip') && u.vivant && this.rng.chance(22 * Math.pow(0.55, this.chaine));
     this.finirTour(u);
+    if (violent && !this.fini) { this.encore = u; this.chaine++; }
   }
 
   /** Joue le combat jusqu'au bout, les deux camps à l'IA. */
@@ -248,7 +284,20 @@ export class Combat {
           if (!c.vivant) break;
           const coup = this.frapper(u, c, sort);
           dernierEffleure = coup.effleure;
+          // set Désespoir (Sadida) ✓ RELOADED : 25 % de chances d'étourdir, au premier coup seulement
+          if (n === 0 && offensif && this.sets(u, 'sadida')) this.tenterEffet(u, c, { type: 'etourdi', chance: 25, tours: 1 }, coup.effleure);
           if (c.vivant) for (const e of sort.effets ?? []) if (e.parCoup) this.tenterEffet(u, c, e, coup.effleure);
+        }
+      }
+      // set Vengeance (Sacrieur) ✓ : 15 % de chances par set de contre-attaquer avec le premier sort, à 75 % des dégâts
+      if (offensif && sort.mult && c.vivant && u.vivant && !this.enContre && this.sets(c, 'sacrieur') && this.rng.chance(15 * this.sets(c, 'sacrieur'))) {
+        const premier = c.monstre.sorts[0];
+        if (premier?.mult) {
+          this.enContre = true;
+          this.emettre({ type: 'contre', uid: c.uid, cible: u.uid });
+          const mult = Object.fromEntries(Object.entries(premier.mult).map(([k, v]) => [k, (v ?? 0) * 0.75]));
+          this.frapper(c, u, { ...premier, mult });
+          this.enContre = false;
         }
       }
       if (!c.vivant) continue;
@@ -298,6 +347,8 @@ export class Combat {
     const variation = 1 + (this.rng.suivant() * 2 - 1) * REGLES.variation;
     const montant = Math.max(1, Math.round((brut * variation * REGLES.defA) / (REGLES.defB + REGLES.defC * def)));
     this.infliger(c, montant, u.uid, { critique, ecrasant, effleure });
+    // set Vampire (Eniripsa) ✓ : rend 35 % des dégâts infligés
+    if (u.vivant && this.sets(u, 'eniripsa')) this.soigner(u, Math.round(montant * 0.35 * this.sets(u, 'eniripsa')));
     return { montant, critique, ecrasant, effleure };
   }
 
@@ -391,6 +442,7 @@ export class Combat {
       this.vague++;
       const nouvelles = this.creer('B', this.suivantes.shift()!, this.unites.length);
       this.unites.push(...nouvelles);
+      this.debutEquipe(nouvelles);
       for (const u of this.unites) u.jauge = 0;
       this.emettre({ type: 'vague', vague: this.vague, total: this.nbVagues, uids: nouvelles.map((u) => u.uid) });
       return false;

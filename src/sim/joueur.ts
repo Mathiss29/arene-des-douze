@@ -7,6 +7,7 @@ import type { Rng } from './rng';
 import { fiche } from './fiches';
 import { ELEMENTS } from './types';
 import type { Cadeau } from './reception';
+import type { Rune } from './runes';
 
 export const VERSION_SAUVEGARDE = 1;
 
@@ -53,6 +54,15 @@ export interface Joueur {
   reception?: Cadeau[];
   /** Cadeaux de mise à jour et codes déjà donnés. */
   cadeauxDonnes?: string[];
+  /** Runes possédées (portées ou non) et prochain numéro. */
+  runes?: Rune[];
+  prochainUidRune?: number;
+  /** Préréglages de runes par monstre (uid → jusqu'à 3 listes de runes). */
+  prereglages?: Record<number, { nom: string; runes: number[] }[]>;
+  /** Première visite, dernière visite, fin des avantages de retour (ms) : retrait de rune gratuit (maquette « Runes : » 6A). */
+  cree?: number;
+  derniereVisite?: number;
+  retour?: number;
 }
 
 export const TAILLE_EQUIPE = 4;
@@ -144,7 +154,9 @@ export function donnerXp(j: Joueur, uids: number[], gain: number): { joueur: Jou
 function sacrifier(j: Joueur, uids: readonly number[], garder: number): Joueur {
   const equipe = j.equipe.filter((u) => !uids.includes(u));
   const equipesStages = Object.fromEntries(Object.entries(j.equipesStages).map(([k, v]) => [k, v.filter((u) => !uids.includes(u))]));
-  return { ...j, monstres: j.monstres.filter((x) => !uids.includes(x.uid)), equipe: equipe.length ? equipe : [garder], equipesStages };
+  // les runes des monstres sacrifiés reviennent dans l'inventaire (gratuitement)
+  const runes = j.runes?.map((r) => (r.porteur !== undefined && uids.includes(r.porteur) ? { ...r, porteur: undefined } : r));
+  return { ...j, monstres: j.monstres.filter((x) => !uids.includes(x.uid)), equipe: equipe.length ? equipe : [garder], equipesStages, ...(runes ? { runes } : {}) };
 }
 
 /** XP et kamas qu'apporterait cette nourriture (sans le bonus aléatoire). */
@@ -235,5 +247,12 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
     ...(Array.isArray(j.reception) ? { reception: j.reception.filter((c) => c && typeof c.id === 'string' && typeof c.titre === 'string' && c.contenu && typeof c.contenu === 'object' && Number.isFinite(c.arrive))
       .map((c): Cadeau => ({ id: c.id, titre: c.titre, contenu: c.contenu, arrive: c.arrive, ...(Number.isFinite(c.expire) ? { expire: c.expire } : {}), ...(c.vu ? { vu: true } : {}) })) } : {}),
     ...(Array.isArray(j.cadeauxDonnes) ? { cadeauxDonnes: j.cadeauxDonnes.filter((s) => typeof s === 'string') } : {}),
+    ...(Array.isArray(j.runes) ? { runes: j.runes.filter((r) => r && Number.isInteger(r.uid) && typeof r.set === 'string' && Array.isArray(r.sous))
+      .map((r) => (r.porteur !== undefined && !uids.has(r.porteur) ? { ...r, porteur: undefined } : r)) } : {}),
+    ...(Number.isInteger(j.prochainUidRune) ? { prochainUidRune: j.prochainUidRune } : {}),
+    ...(j.prereglages && typeof j.prereglages === 'object' ? { prereglages: j.prereglages } : {}),
+    ...(Number.isFinite(j.cree) ? { cree: j.cree } : {}),
+    ...(Number.isFinite(j.derniereVisite) ? { derniereVisite: j.derniereVisite } : {}),
+    ...(Number.isFinite(j.retour) ? { retour: j.retour } : {}),
   };
 }

@@ -107,6 +107,10 @@ export interface MonstreCombat {
   stats: Stats;
   sorts: Sort[];
   leader?: Leader;
+  /** Stats sans les runes (les pourcentages des runes et des sets portent sur elles). */
+  base?: Stats;
+  /** Sets de runes complets portés (id du set → nombre), pour leurs effets en combat. */
+  sets?: Partial<Record<string, number>>;
   /** Pour l'affichage. */
   etoiles?: number;
   niveau?: number;

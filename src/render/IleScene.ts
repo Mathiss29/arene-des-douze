@@ -5,6 +5,7 @@ import { MINE, kamasEnMine, recolterMine } from '../sim/mine';
 import { prochainStage } from '../sim/stages';
 import { aRecevoir, noterMission } from '../sim/missions';
 import { cadeaux, distribuer } from '../sim/reception';
+import { visite } from '../sim/inventaire';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -85,7 +86,7 @@ export class IleScene extends Phaser.Scene {
     // la mine produit dès la première visite de l'île
     if (this.joueur.mine === undefined) this.joueur = { ...this.joueur, mine: Date.now() };
     // mission « Début de la journée »
-    this.joueur = distribuer(noterMission(this.joueur, 'connexion', 1, Date.now()), Date.now());
+    this.joueur = visite(distribuer(noterMission(this.joueur, 'connexion', 1, Date.now()), Date.now()), Date.now());
     sauver(this.joueur);
 
     // morceaux vivants : un cadre par morceau dans l'atlas vif0

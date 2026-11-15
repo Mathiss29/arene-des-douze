@@ -218,14 +218,27 @@ Maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A (14 nov. 2026) :
 - Après la 0.1 : fusion ✓ (SW : quatre 4★ précis donnent un 5★ précis, comme Veromos), qui demande les éveils.
 - 3★ Bonta/Brâkmar en plus des Scarafeuilles Blanc et Noir : Kwaks (couleur refaite) et Larves (plusieurs couleurs dans Dofus).
 
-## 5. Runes
-- 6 emplacements : 1, 3 et 5 à stat principale fixe (Attaque, Défense, PV fixes) ; 2, 4 et 6 variables ; seul le 2 peut avoir la vitesse.
-- Rareté : Commune (0 sous-stat) à Légendaire (4).
-- Forgemagie +0 à +15 ; sous-stat ajoutée ou améliorée à +3, +6, +9 et +12. ✓ Depuis RELOADED, plus d'échec : la montée est instantanée
-  (+3/+6/+9/+12/+15 au choix) et coûte un montant fixe selon le grade de la rune.
-- Sets (dieux du Monde des Douze) : Ecaflip (Violent), Xélor (Swift), Sadida (Despair), Iop (Rage), Sram (Fatal), Eniripsa (Vampire),
-  Sacrieur (Revenge), Féca (Shield), Crâ (Focus), Pandawa (Endure), Osamodas (Fight), Enutrof (spécifique au jeu).
-  (SW compte d'autres sets : Énergie, Garde, Lame, Némésis, Volonté, Destruction, Détermination, Amélioration, Précision, Tolérance… à placer plus tard.)
+## 5. Runes (maquette « Runes : » 1A 2B+C 3C 4C 5C 6A 7B 8C 9A, ✓ fait le 15 nov. 2026)
+- ✓ SW (wiki) : 6 emplacements ; 1 ATQ fixe, 3 DEF fixe, 5 PV fixe ; 2, 4, 6 variables (VIT seulement en 2, critiques en 4,
+  résistance et précision en 6). 1 à 6★, grades Commune → Légendaire (0 à 4 sous-stats), +0 à +15, sous-stat ajoutée ou montée
+  à +3/+6/+9/+12. Valeurs des stats principales et des sous-stats par étoile reprises du wiki. Pourcentages sur la base du monstre.
+- ✓ RELOADED : plus d'échec, prix fixe, palier par palier ou d'un coup jusqu'à +15 ; grade d'origine affiché.
+  ⚠ Coûts : ceux d'une tentative d'avant RELOADED (wiki), SW a augmenté le prix fixe depuis.
+- ✓ Retrait : 1 000 / 2 500 / 5 000 / 10 000 / 25 000 / 50 000 selon les étoiles ; remplacer ou déplacer une rune = la retirer.
+  Gratuit pour un joueur nouveau (30 jours) ou de retour (après 14 jours d'absence, pendant 30 jours) ⚠ durées.
+  Les runes d'un monstre sacrifié reviennent dans l'inventaire.
+- Sets (12 dieux) : Ecaflip = Violent (4, 22 % de rejouer, −45 % par tour gagné de suite), Xélor = Rapide (4, VIT +25 %),
+  Sadida = Désespoir (4, 25 % d'étourdir au premier coup ✓ RELOADED), Iop = Rage (4, dégâts crit. +40 %), Sram = Fatal (4, ATQ +35 %),
+  Eniripsa = Vampire (4, 35 % des dégâts en PV), Sacrieur = Vengeance (2, 15 % de contre-attaque à 75 %),
+  Féca = Bouclier (2, bouclier de 15 % des PV à l'équipe, 3 tours), Crâ = Concentration (2, précision +20 %),
+  Pandawa = Endurance (2, résistance +20 %), Osamodas = Combat (2, ATQ des alliés +8 %), Enutrof = Énergie (2, PV +15 %) ⚠ choix provisoire.
+- Sources : zones (set de la zone : Astrub Iop ; Normal 20 % 1-3★, Difficile 30 % 2-4★, Enfer 40 % 3-5★ ⚠), coffre des missions
+  à 60 points (1 rune 4★), Réception (6 runes 3★ Fatal et Énergie offertes au départ), donjon (6★) à venir.
+- Écran : fiche du monstre, onglet Runes (depuis le Cercle d'amélioration et la préparation d'équipe) : 6 emplacements autour du monstre,
+  stats avec le bonus des runes, montée animée à chaque palier, inventaire par emplacement, vente sélective (étoiles et grade),
+  3 préréglages par monstre. Prix de vente ⚠ les nôtres.
+- Ennemis : runes invisibles ⚠ (rien en Normal, puis +12 % de PV/ATQ/DEF par difficulté et un peu par stage, VIT, crit., rés., préc.).
+- Plus tard : Intangible, Lame, Garde, Némésis, Volonté, Destruction et les sets de soutien du Royaume spirituel.
 
 ## 6. Économie
 Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, gagnées en jouant uniquement), Essences, Jetons de Kolizéum. ⏳ Montants.

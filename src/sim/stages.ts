@@ -5,6 +5,8 @@ import { ajouterMonstre, donnerXp, type Joueur } from './joueur';
 import { changerEnergie, ENERGIE } from './energie';
 import { envoyer } from './reception';
 import { placesLibres } from './invocation';
+import { avecRunes, runesEnnemies, SETS, type EtoilesRune, type SetRune } from './runes';
+import { donnerRune } from './inventaire';
 import { NIVEAU_MAX, type Etoiles } from './progression';
 import { Rng } from './rng';
 import type { MonstreCombat } from './types';
@@ -104,7 +106,7 @@ export const brecheOuverte = (j: Joueur) => ZONES.every((z) => zoneFinie(j, z, 0
 
 /** Les vagues ennemies prêtes pour le combat : la première, puis les suivantes. */
 export function vaguesEnnemies(s: Stage): { equipeB: MonstreCombat[]; vaguesSuivantes: MonstreCombat[][] } {
-  const [premiere, ...suite] = s.vagues.map((v) => v.map((e) => monstreCombat(e.id, e.etoiles, e.niveau)));
+  const [premiere, ...suite] = s.vagues.map((v) => v.map((e) => runesEnnemies(monstreCombat(e.id, e.etoiles, e.niveau), s.dif, s.numero)));
   return { equipeB: premiere, vaguesSuivantes: suite };
 }
 
@@ -112,7 +114,7 @@ export function vaguesEnnemies(s: Stage): { equipeB: MonstreCombat[]; vaguesSuiv
 export function equipeJoueur(j: Joueur): MonstreCombat[] {
   return j.equipe.map((uid) => {
     const m = j.monstres.find((x) => x.uid === uid)!;
-    return monstreCombat(m.id, m.etoiles, m.niveau);
+    return avecRunes(monstreCombat(m.id, m.etoiles, m.niveau), (j.runes ?? []).filter((r) => r.porteur === uid));
   });
 }
 
@@ -131,7 +133,17 @@ export interface Butin {
   monstre?: string;
   /** Récompense de la zone, la première fois qu'elle est finie en Normal. */
   zone?: { id: string; etoiles: Etoiles };
+  /** Rune gagnée (set de la zone) et graine de son tirage. */
+  rune?: { etoiles: EtoilesRune; set: SetRune; graine: number };
 }
+
+/**
+ * Runes des zones (maquette « Runes : » 3C, 4C) ⚠ : chaque zone donne son set (Astrub : Iop) ;
+ * Normal 20 % (1 à 3★), Difficile 30 % (2 à 4★), Enfer 40 % (3 à 5★). Les 6★ viendront du donjon.
+ */
+export const RUNES_ZONE = [{ chance: 20, min: 1 }, { chance: 30, min: 2 }, { chance: 40, min: 3 }];
+export const setDeZone = (z: Zone): SetRune | undefined =>
+  (Object.keys(SETS) as SetRune[]).find((s) => SETS[s].dieu.toLowerCase() === z.runes?.toLowerCase());
 
 /** Butin d'une victoire, tiré avec sa propre graine (déterministe, rejouable par le serveur). */
 export function tirerButin(j: Joueur, s: Stage, graine: number): Butin {
@@ -144,6 +156,8 @@ export function tirerButin(j: Joueur, s: Stage, graine: number): Butin {
   if (rng.chance(CHANCE_ENERGIE)) b.energie = 1 + Math.floor(rng.suivant() * 3);
   if (rng.chance(CHANCE_MONSTRE)) b.monstre = s.ennemis[Math.floor(rng.suivant() * s.ennemis.length)].id;
   const z = zone(s.zone);
+  const rz = RUNES_ZONE[s.dif], set = setDeZone(z);
+  if (set && rng.chance(rz.chance)) b.rune = { etoiles: (rz.min + Math.floor(rng.suivant() * 3)) as EtoilesRune, set, graine: Math.floor(rng.suivant() * 2 ** 31) };
   const finis = new Set([...j.stagesFinis, s.id]);
   if (s.dif === 0 && z.recompense && !j.recompensesZones.includes(z.id) && z.stages.every((x) => finis.has(x))) b.zone = z.recompense;
   return b;
@@ -161,6 +175,7 @@ export function appliquerVictoire(j: Joueur, s: Stage, b: Butin, maintenant: num
   if (b.energie) r = changerEnergie(r, b.energie, maintenant);
   // monstre gagné : dans la collection, ou à la Réception si elle est pleine (maquette « Réception : » 3B, 4A)
   if (b.monstre) r = placesLibres(r) > 0 ? ajouterMonstre(r, b.monstre).joueur : envoyer(r, `butin:${s.id}:${maintenant}`, `Monstre gagné : ${s.id} (collection pleine)`, { monstre: b.monstre }, maintenant);
+  if (b.rune) r = donnerRune(r, { etoiles: b.rune.etoiles, set: b.rune.set }, b.rune.graine).joueur;
   // récompense de zone : envoyée à la Réception
   if (b.zone) r = { ...envoyer(r, `zone:${s.zone}`, `Récompense de zone : ${zone(s.zone).nom}`, { monstre: b.zone.id }, maintenant), recompensesZones: [...r.recompensesZones, s.zone] };
   return { joueur: r, niveaux };

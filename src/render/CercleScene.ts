@@ -303,6 +303,9 @@ export class CercleScene extends Phaser.Scene {
     this.t(640, 450, `Niv. ${c.niveau} / ${NIVEAU_MAX[e]} · ${NOM_TYPE[f.type]}`, 12, '#9fb3a6');
     const ch = this.t(150, 470, '↺ Changer de monstre', 12, '#cfdccf', true).setBackgroundColor('rgba(42,58,50,0.95)').setPadding(10, 5, 10, 5);
     ch.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (this.occupe) return; this.cible = null; this.nourr = []; this.alerte = ''; this.dessiner(); });
+    // fiche du monstre, onglet Runes (maquette « Runes : » 1A)
+    const ru = this.t(150, 432, '⬢ Runes', 13, '#1d1405', true).setBackgroundColor('#c58cff').setPadding(14, 6, 14, 6).setShadow(0, 0, '#000', 0);
+    ru.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (!this.occupe) this.scene.start('monstre', { uid: c.uid, retour: { scene: 'cercle', data: { cible: c.uid } } }); });
 
     // À droite : points ou XP, stats avant → après
     const sx = 935, sy = 196;

@@ -121,6 +121,7 @@ function contenu(c: Contenu): string {
   for (const [p, n] of Object.entries(c.pierres ?? {})) if (n) l.push(`${PIERRES[p as Pierre].nom} ×${n}`);
   if (c.energie) l.push(`${c.energie} énergie`);
   if (c.fragments) l.push(`${c.fragments} fragment${c.fragments > 1 ? 's' : ''}`);
+  if (c.runes?.length) l.push(`${c.runes.length} rune${c.runes.length > 1 ? 's' : ''} ${c.runes[0].etoiles}★`);
   return l.join(' · ');
 }
 

@@ -6,6 +6,7 @@ import { monstre, type Joueur } from '../sim/joueur';
 import { appliquerVictoire, cleStage, DIFFICULTES, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
 import { lancerCombat } from './lancement';
 import { noterMission } from '../sim/missions';
+import { SETS } from '../sim/runes';
 import { fiche } from '../sim/fiches';
 import { charger, sauver } from './sauvegarde';
 import { NIVEAU_MAX, XP_NIVEAU, type Etoiles } from '../sim/progression';
@@ -473,6 +474,14 @@ export class CombatScene extends Phaser.Scene {
         await this.attendre(900);
         this.afficherFin(e.vainqueur);
         break;
+      case 'rejoue':
+        this.flotter(this.vues.get(e.uid)!, 'Violent : encore un tour !', '#ffd23f', 16, 34);
+        await this.attendre(300);
+        break;
+      case 'contre':
+        this.flotter(this.vues.get(e.uid)!, 'Vengeance !', '#ff8a7a', 16, 34);
+        await this.attendre(250);
+        break;
       case 'sort':
         break;
     }
@@ -746,6 +755,7 @@ export class CombatScene extends Phaser.Scene {
       if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (1ʳᵉ victoire)' : ''}` });
       if (butin.energie) butinAffiche.push({ cle: '', n: `+${butin.energie}`, label: 'énergie ⚡' });
       if (butin.monstre) butinAffiche.push({ cle: `monstre:${butin.monstre}`, n: fiche(butin.monstre).nom, label: avant.monstres.length < avant.places ? 'rejoint ta collection !' : 'collection pleine : à la Réception' });
+      if (butin.rune) butinAffiche.push({ cle: 'rune', n: `Rune de ${SETS[butin.rune.set].dieu} ${butin.rune.etoiles}★`, label: SETS[butin.rune.set].nom });
       if (butin.zone) butinAffiche.push({ cle: `monstre:${butin.zone.id}`, n: `${fiche(butin.zone.id).nom} ${'★'.repeat(butin.zone.etoiles)}`, label: `récompense de ${zone(this.stage.zone).nom}, à la Réception !` });
     }
 
@@ -776,11 +786,12 @@ export class CombatScene extends Phaser.Scene {
     panneau(this, 250, yb - 14, 780, 82, D + 1);
     if (victoire) {
       t(270, yb - 4, 'BUTIN', 11, '#e3b54c', true, 0);
-      const pas = butinAffiche.length > 3 ? 190 : 240;
+      const pas = butinAffiche.length > 4 ? 150 : butinAffiche.length > 3 ? 190 : 240;
       butinAffiche.forEach((o, k) => {
         const x = 360 + k * pas;
         caseSombre(this, x, yb + 30, 60, D + 2);
         if (o.cle.startsWith('monstre:')) portrait(this, o.cle.slice(8), x, yb + 30, 52, false, false, D + 3);
+        else if (o.cle === 'rune') t(x, yb + 10, '⬢', 34, '#c58cff', true);
         else if (o.cle) this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
         else t(x, yb + 14, '⚡', 26, '#8fd3ff', true);
         t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);

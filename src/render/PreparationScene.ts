@@ -264,6 +264,12 @@ export class PreparationScene extends Phaser.Scene {
       this.t(724, y + 34, `${this.etoiles(m.etoiles)} · Niv. ${m.niveau}${max} · ${NOM_TYPE[f.type]}`, 11, '#9fb3a6', false, 0);
       this.g(this.add.circle(1224, y + 16, 6, COULEUR[f.element]).setStrokeStyle(1.5, 0x000000).setDepth(1001));
       this.t(1224, y + 44, 'Retirer', 11, '#9fb3a6', false, 1, 0.5);
+      // runes du monstre (maquette « Runes : » 1A) : l'équipe est gardée avant de partir
+      const ru = this.t(1150, y + 44, '⬢ Runes', 12, '#d9b3ff', true, 1, 0.5);
+      ru.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+        this.joueur = definirEquipe(this.joueur, this.equipe, this.stage.id); sauver(this.joueur);
+        this.scene.start('monstre', { uid, retour: { scene: 'preparation', data: { stage: this.stage.id } } });
+      });
       this.cliquable(fond, () => this.basculer(uid), () => this.ouvrirFiche(m));
     }
 
