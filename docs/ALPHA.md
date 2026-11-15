@@ -1,46 +1,39 @@
-# Alpha jouable
+# Version 0.1
 
-**But :** une boucle Summoners War complète, jouable en 30 à 60 minutes, sans serveur.
+**But :** une boucle Summoners War complète, jouable dans le navigateur (PC et téléphone, en paysage), sans serveur.
+En ligne : https://mathiss29.github.io/arene-des-douze/
 
-| Système | Contenu de l'alpha |
+| Système | Dans la 0.1 |
 |---|---|
-| Monstres | 13 : Pious (1★, 5 éléments), Scarafeuilles (3★, 5 éléments), Kwaks de Flamme, de Vent et de Glace (3★) |
-| Combat | Jauge d'attaque, éléments, 3 sorts, malus et bonus, skill de leader, mode auto |
-| Histoire | 1 zone de 7 stages (3 vagues, boss au dernier) |
-| Donjon | Donjon des Bouftous, 10 niveaux (comme SW depuis RELOADED ✓), qui donne des runes |
-| Runes | 6 emplacements, 4 sets, forgemagie +0 à +15 |
-| Progression | XP, niveaux, évolution jusqu'à 3★ |
-| Invocation | Toutes les pierres (âme, parfaite, élémentaires, Bonta/Brâkmar, légendaire, transcendante), ×10, bestiaire, place limitée |
-| Chemin de l'invocateur | Quêtes Novice → Expert et défis, pour tout le contenu de la 0.1 |
-| Missions du jour | Quelques missions simples, fragments de pierre transcendante |
-| Monstres | + familles 4★ (Kwakères, Koalaks, Bouftous) et 5★ (Dragoss, Gelées Royales), 3★ Bonta/Brâkmar (Kwaks, Larves) |
-| Sauvegarde | Locale (navigateur) |
+| Île d'Incarnam | Écran d'accueil vivant, bâtiments, mine de kamas, Ganymède au premier lancement |
+| Monstres | 50 monstres (1★ à 5★, 5 éléments), fiches recalées sur les vraies moyennes de SW (SWARFARM) + le Bouftou Royal (boss) |
+| Combat | Jauge d'attaque, éléments, 3 sorts, bonus et malus, leader, auto, vitesse ×1/×2/×3, 3 vagues |
+| Histoire | Astrub : 7 stages × Normal, Difficile, Enfer (ennemis runés), récompense de zone, énergie |
+| Donjons | Écran façon Cairos ; Donjon des Bouftous jouable (10 niveaux, Bouftou Royal) ; Dragon Cochon et Cimetière avec leurs zones |
+| Combats à répétition | ×10/20/30 en auto, arrêt, résumé du butin et historique |
+| Runes | 6 emplacements, 1 à 6★, grades, montée sans échec à +15, 15 sets, retrait, vente sélective, préréglages |
+| Progression | XP, nourrir, évolution jusqu'à 6★ (règles RELOADED) |
+| Invocation | Toutes les pierres, ×10, fragments de transcendance, 120 places, bestiaire |
+| Chemin de l'invocateur | 42 quêtes (Novice, Intermédiaire, Avancé), 4 défis, coffres, 5★ au choix, Chef de Guerre Bouftou |
+| Missions du jour | 10 missions à points, 5 coffres, remise à zéro à 6 h |
+| Réception | Cadeaux de mise à jour, codes (DOUZE01), récompenses de zone, monstres en trop |
+| Sauvegarde | Locale, versionnée, copie de secours, export/import par code |
+| Options | Signaler un bug (rapport pour Discord), plein écran, recommencer |
+| Qualité | 200+ tests, test de fumée de tous les écrans avant chaque mise en ligne |
 
-Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
+Pas dans la 0.1 : Madrestam et Bastion (et donc les donjons du Dragon Cochon et du Cimetière), compétences d'invocateur,
+éveil et Sanctuaires, Kolizéum, Tour, comptes en ligne, amis et guilde, fusion, combat d'exploration.
 
 ## Étapes
 
-- [x] **1. Squelette** — Vite + TS + Phaser 3.80.1 + vitest, planches Diablofus chargées depuis le R2, vitrine des 13 monstres animés.
-- [x] **2. Moteur de combat (`src/sim/`)** — un combat 4 contre 4 tourne dans les tests ; même graine = même résultat.
-  `combat.ts` (jauge, sorts, bonus/malus, éléments, leader), `regles.ts` (constantes SW, ✓ vérifiées / ⚠ à confirmer), `ia.ts` (mode auto).
-- [x] **3. Scène de combat Phaser** — un combat entier jouable à la souris : sorts, cibles, animations, mode auto.
-  `src/render/CombatScene.ts`, selon la maquette « Combat : » 1B 2B 3A 4B 5A. Combat d'essai 4 contre 4 dans la salle des Scarafeuilles (alliés gagnants ≈ 83 % en auto).
-- [ ] **4. Données des 13 monstres** — stats, sorts et skills de leader en JSON.
-  Fiches provisoires en place (`src/data/fiches.json`) : stats « niveau max » par type, 2 sorts (Pious) ou 3 sorts, icônes officielles. À équilibrer.
-- [ ] **5. Collection et progression** — XP, niveaux, évolution, sauvegarde locale.
-  Fait : état du joueur (`src/sim/joueur.ts`), table d'XP et niveaux max de SW, croissance des stats, évolution (`progression.ts`),
-  butin des stages (`stages.ts`), sauvegarde locale, XP et montées de niveau après chaque victoire.
-  Écrans de préparation (`PreparationScene.ts` : tri, filtre, fiche, équipe retenue par stage, monstres prêts à évoluer)
-  et de récompenses (fin de `CombatScene.ts`) faits d'après la maquette « Écrans : ».
-  Cercle d'amélioration (`CercleScene.ts`) : nourrir et faire évoluer, règles SW actuelles (RELOADED).
-  Île d'Incarnam (`IleScene.ts`) : écran d'accueil vivant, bâtiments, pastilles « ! », mine de kamas.
-  Reste : invocation, boutique, temple, Ganymède, monstres qui se promènent, musique, écran de collection hors combat, montée des sorts par la famille.
-- [ ] **6. Histoire** — 7 stages enchaînés avec récompenses.
-  Fait : Zaap (`ZaapScene.ts`), zone d'Astrub en 7 stages × 3 difficultés (`stages.ts`, `zones.json`), énergie (`energie.ts`),
-  récompense de zone, monstres qui tombent, boss au 7ᵉ, 3 vagues par stage (`combat.ts` : `vaguesSuivantes`). Reste : autres zones.
-- [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
-- [ ] **8. Invocation** — Cercle d'invocation (maquette « Invocation : »), toutes les pierres, bestiaire, place limitée.
-  Fait : écran d'invocation (×1, ×10, animation, résultat, fiche), toutes les pierres, fragments, places ; 37 monstres de plus.
-  Reste : bestiaire, sources des pierres (donjon, zones, Temple, chemin, missions).
-- [ ] **8 bis. Chemin de l'invocateur et missions du jour** (maquette « Chemin : »).
-- [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent.
+- [x] **1. Squelette** — Vite + TS + Phaser 3.80.1 + vitest, planches Diablofus depuis le R2.
+- [x] **2. Moteur de combat** — déterministe (même graine = même combat), règles SW.
+- [x] **3. Scène de combat** — sorts, cibles, animations, auto, vitesse.
+- [x] **4. Fiches des monstres** — 50 monstres, stats et multiplicateurs de sorts recalés sur SW (SWARFARM, 15 nov. 2026).
+- [x] **5. Collection et progression** — XP, nourrir, évoluer, île, mine.
+- [x] **6. Histoire** — Zaap, Astrub en 3 difficultés, énergie, vagues, boss.
+- [x] **7. Runes et donjons** — runes, sets, donjons façon Cairos, combats à répétition.
+- [x] **8. Invocation** — pierres, fragments, places, bestiaire.
+- [x] **8 bis. Chemin de l'invocateur, missions du jour, Réception.**
+- [x] **8 ter. Solidité** — sauvegarde versionnée, export/import, signalement de bug, test de fumée.
+- [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent (Mathis), retours, puis 0.2.

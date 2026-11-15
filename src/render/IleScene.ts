@@ -73,6 +73,7 @@ export class IleScene extends Phaser.Scene {
     chargerUi(this, []);
     const d = 'assets/ile/';
     this.load.json('ile', d + 'ile.json');
+    if (!this.textures.exists('pnj_ganymede')) this.load.image('pnj_ganymede', 'assets/ui/pnj_ganymede.webp');
     for (const n of ['a0', 'a1', 'b', 'ciel', 'vif0']) if (!this.textures.exists('ile_' + n)) this.load.image('ile_' + n, `${d}${n}.webp`);
     this.load.json('ile_particules', d + 'particules.json');
     if (!this.textures.exists('ile_particules')) this.load.atlas('ile_particules', d + 'particules.webp', d + 'particules_atlas.json');
@@ -132,6 +133,7 @@ export class IleScene extends Phaser.Scene {
     this.cam.centerOn((a[0] + tp[0]) / 2 + 100, (a[1] + tp[1] + tp[3]) / 2);
 
     this.interface();
+    this.bienvenue();
     this.controles();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.input.off('wheel'));
   }
@@ -253,6 +255,28 @@ export class IleScene extends Phaser.Scene {
     if (id === 'invoc') return this.scene.start('invocation');
     if (id === 'zaap') return this.scene.start('zaap');
     this.message(BIENTOT[id] ?? NOMS[id]);
+  }
+
+  /** Premier lancement : Ganymède présente la 0.1 et le chemin à suivre. */
+  private bienvenue() {
+    if (this.joueur.vus.includes('tuto:ile')) return;
+    this.joueur = { ...this.joueur, vus: [...this.joueur.vus, 'tuto:ile'] };
+    sauver(this.joueur);
+    const objets: Phaser.GameObjects.GameObject[] = [];
+    const voile = this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.6).setInteractive();
+    const cadre = this.add.rectangle(W / 2, H / 2, 640, 330, 0x0f1814, 0.97).setStrokeStyle(2, 0xb08a3a);
+    const gany = this.add.image(W / 2 - 230, H / 2 - 40, 'pnj_ganymede').setDisplaySize(150, 142);
+    const titre = texte(this, W / 2 - 130, H / 2 - 140, 'Bienvenue dans l\'Arène des Douze !', 20, '#ffe08a', true, 0, 0);
+    const corps = texte(this, W / 2 - 130, H / 2 - 100,
+      'Je suis Ganymède. Ici, tu invoques des monstres du Monde des Douze, tu les fais grandir et tu leur poses des runes, comme dans Summoners War.\n\n'
+      + '• « Combattre » : l\'histoire, en commençant par Astrub.\n• Le Chemin de l\'invocateur, en haut à gauche, te guide pas à pas.\n'
+      + '• Des cadeaux t\'attendent déjà à la Réception !\n\nC\'est la version 0.1 : dis-nous tout sur le Discord (Options › Signaler un bug).', 13, '#e9efe6', false, 0, 0)
+      .setWordWrapWidth(420);
+    [voile, cadre, gany, titre, corps].forEach((o, i) => o.setDepth(5000 + i));
+    objets.push(voile, cadre, gany, titre, corps);
+    const b = bouton(this, W / 2 + 80, H / 2 + 130, 200, 46, 'C\'est parti !', true, () => objets.forEach((o) => o.destroy()), 5010);
+    objets.push(b.fond, b.t);
+    this.ui.add(objets);
   }
 
   private message(t: string) {
