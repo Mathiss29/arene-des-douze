@@ -29,7 +29,6 @@ const NOMS: Record<IdBat, string> = {
   temple: 'Temple des Douze', gany: 'Maison de Ganymède', zaap: 'Zaap',
 };
 const BIENTOT: Partial<Record<IdBat, string>> = {
-  invoc: 'Le Cercle d\'invocation arrive bientôt : invoquer des monstres avec les pierres d\'âme.',
   bout: 'La Boutique arrive bientôt : son stock changera toutes les heures.',
   temple: 'Le Temple des Douze arrive bientôt : un vœu par jour.',
   gany: 'Ganymède arrive bientôt : ses quêtes pour bien débuter et les missions du jour.',
@@ -153,7 +152,8 @@ export class IleScene extends Phaser.Scene {
       const fond = this.add.rectangle(0, 0, t.width + 26, t.height + 12, 0x0c1410, 0.86).setStrokeStyle(1.5, BIENTOT[id] ? 0x4a5446 : 0xb08a3a);
       c.add([fond, t]);
       // pastille « ! » : quelque chose à faire là (maquette « Île : » 3)
-      if ((id === 'amel' && evo) || (id === 'zaap' && prochain)) {
+      const pierres = j.pierresAme > 0 || Object.values(j.pierres).some((n) => n > 0);
+      if ((id === 'amel' && evo) || (id === 'zaap' && prochain) || (id === 'invoc' && pierres)) {
         const px = fond.width / 2 - 2, py = -fond.height / 2 - 2;
         c.add(this.add.circle(px, py, 11, 0xe8673f).setStrokeStyle(2, 0xffffff));
         c.add(this.add.text(px, py, '!', { fontFamily: CHIFFRES, fontSize: '15px', color: '#ffffff' }).setOrigin(0.5));
@@ -207,6 +207,7 @@ export class IleScene extends Phaser.Scene {
   private ouvrir(id: IdBat) {
     if (id === 'mine') return this.recolter();
     if (id === 'amel') return this.scene.start('cercle');
+    if (id === 'invoc') return this.scene.start('invocation');
     if (id === 'zaap') return this.scene.start('zaap');
     this.message(BIENTOT[id] ?? NOMS[id]);
   }

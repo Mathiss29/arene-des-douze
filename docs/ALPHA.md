@@ -40,5 +40,7 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
   récompense de zone, monstres qui tombent, boss au 7ᵉ, 3 vagues par stage (`combat.ts` : `vaguesSuivantes`). Reste : autres zones.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
 - [ ] **8. Invocation** — Cercle d'invocation (maquette « Invocation : »), toutes les pierres, revente, bestiaire, place limitée.
+  Fait : écran d'invocation (×1, ×10, animation, résultat, fiche), toutes les pierres, fragments, places ; 37 monstres de plus.
+  Reste : écran de revente, bestiaire, sources des pierres (donjon, zones, Temple, chemin, missions).
 - [ ] **8 bis. Chemin de l'invocateur et missions du jour** (maquette « Chemin : »).
 - [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent.
