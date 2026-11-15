@@ -10,7 +10,10 @@
 | Donjon | Donjon des Bouftous, 10 niveaux (comme SW depuis RELOADED ✓), qui donne des runes |
 | Runes | 6 emplacements, 4 sets, forgemagie +0 à +15 |
 | Progression | XP, niveaux, évolution jusqu'à 3★ |
-| Invocation | Pierres d'âme (1-3★) |
+| Invocation | Toutes les pierres (âme, parfaite, élémentaires, Bonta/Brâkmar, légendaire, transcendante), ×10, revente, bestiaire, place limitée |
+| Chemin de l'invocateur | Quêtes Novice → Expert et défis, pour tout le contenu de la 0.1 |
+| Missions du jour | Quelques missions simples, fragments de pierre transcendante |
+| Monstres | + familles 4★ (Kwakères, Koalaks, Bouftous) et 5★ (Dragoss, Gelées Royales), 3★ Bonta/Brâkmar (Kwaks, Larves) |
 | Sauvegarde | Locale (navigateur) |
 
 Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
@@ -36,5 +39,6 @@ Hors alpha : Kolizéum, comptes en ligne, éveil, Tour, 4-5★.
   Fait : Zaap (`ZaapScene.ts`), zone d'Astrub en 7 stages × 3 difficultés (`stages.ts`, `zones.json`), énergie (`energie.ts`),
   récompense de zone, monstres qui tombent, boss au 7ᵉ, 3 vagues par stage (`combat.ts` : `vaguesSuivantes`). Reste : autres zones.
 - [ ] **7. Runes et donjon** — les runes tombent, s'équipent et se forgemagent.
-- [ ] **8. Invocation** — les pierres d'âme donnent des monstres.
+- [ ] **8. Invocation** — Cercle d'invocation (maquette « Invocation : »), toutes les pierres, revente, bestiaire, place limitée.
+- [ ] **8 bis. Chemin de l'invocateur et missions du jour** (maquette « Chemin : »).
 - [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent.

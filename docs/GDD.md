@@ -154,6 +154,15 @@ Maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A (14 nov. 2026) :
 - 0.1 : toutes les pierres (âme, parfaite, élémentaires, Bonta/Brâkmar, légendaire). Fragments d'âme : plus tard.
 - Pierres parfaites : premiers passages des niveaux du donjon, fins de zone en Difficile/Enfer, vœu du Temple.
 - Premier 5★ : un 5★ au choix offert en finissant Astrub en Enfer (dernier palier du chemin de l'invocateur).
+- Pierre d'âme transcendante : un 5★ Feu, Air ou Eau assuré ✓ (parchemin de transcendance de SW). Dans la 0.1 : récompense du dernier
+  palier du chemin de l'invocateur, et fragments donnés par les missions du jour (2 par jour comme SW ✓ d'après un site de joueurs).
+  ⚠ Nombre de fragments pour une pierre : pas trouvé pour SW, 60 en attendant (un mois de missions).
+  Pas de version Bonta/Brâkmar ni de bénédiction pour l'instant.
+- Aussi dans la 0.1 : revendre un monstre contre des kamas ✓ (SW), fiche du monstre juste après l'invocation (« Voir »), bestiaire
+  (tous les monstres, en ombre si pas encore eus, petit cadeau par découverte), collection à place limitée agrandie avec des kamas ✓ (SW ;
+  ⚠ 50 places au départ en attendant les vrais chiffres). Missions du jour avancées dans la 0.1 (pour les fragments).
+- Après la 0.1 : fusion ✓ (SW : quatre 4★ précis donnent un 5★ précis, comme Veromos), qui demande les éveils.
+- 3★ Bonta/Brâkmar en plus des Scarafeuilles Blanc et Noir : Kwaks (couleur refaite) et Larves (plusieurs couleurs dans Dofus).
 
 ## 5. Runes
 - 6 emplacements : 1, 3 et 5 à stat principale fixe (Attaque, Défense, PV fixes) ; 2, 4 et 6 variables ; seul le 2 peut avoir la vitesse.
