@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Element, Leader, Stats } from '../sim/types';
-import { LOOKS } from './looks';
+import { LOOKS, teinter } from './looks';
 import { atlasPlanche, dossierPlanches } from './assetUrl';
 import { origine } from './animations';
 
@@ -87,6 +87,7 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
   const [ox, oy] = origine(meta);
   const k = look.echelle * zoom;
   const sp = scene.add.sprite(x, y, look.atlas, 'AnimStatique_1_0').setOrigin(ox, oy).setScale(miroir ? -k : k, k).setDepth(y);
+  teinter(sp, id);
   if (scene.anims.exists(`${look.atlas}/AnimStatique_1`)) sp.play(`${look.atlas}/AnimStatique_1`);
   return sp;
 }
@@ -94,6 +95,7 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
 /** Portrait recadré dans un cercle ou un carré. Renvoie le sprite et son masque (à détruire avec). */
 export function portrait(scene: Phaser.Scene, id: string, x: number, y: number, taille: number, rond = true, miroir = false, profondeur = 1001) {
   const sp = scene.add.sprite(x, y, LOOKS[id].atlas, 'AnimStatique_1_0').setDepth(profondeur);
+  teinter(sp, id);
   const f = sp.frame;
   const k = (taille * 1.1) / Math.max(f.cutWidth, f.cutHeight);
   sp.setOrigin((f.x + f.cutWidth / 2) / f.realWidth, (f.y + f.cutHeight * 0.47) / f.realHeight).setScale(miroir ? -k : k, k);

@@ -9,7 +9,7 @@ import { fiche } from '../sim/fiches';
 import { charger, sauver } from './sauvegarde';
 import { NIVEAU_MAX, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { avantage, estBonus, type Element, type Sort, type TypeEffet } from '../sim/types';
-import { LOOKS } from './looks';
+import { LOOKS, teinter } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
@@ -160,6 +160,7 @@ export class CombatScene extends Phaser.Scene {
 
     const socle = this.add.ellipse(x, y, boss ? 130 : 96, boss ? 40 : 30, boss ? 0x5a0f08 : 0x000000, 0.35).setDepth(y - 1);
     const sprite = this.add.sprite(x, y, look.atlas).setOrigin(ox, oy).setScale(echelle * sens, echelle).setDepth(y);
+    teinter(sprite, u.monstre.id);
     sprite.play(`${look.atlas}/AnimStatique_1`);
     const f = sprite.frame;
     const haut = y - (oy * f.realHeight - f.y) * echelle;

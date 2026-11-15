@@ -36,6 +36,14 @@ export interface Joueur {
   energie?: { n: number; depuis: number };
   /** Zones dont la récompense a été donnée. */
   recompensesZones: string[];
+  /** Pierres d'invocation autres que la pierre d'âme (parfaite, élémentaires, Bonta/Brâkmar, légendaire, transcendante). */
+  pierres: Record<string, number>;
+  /** Fragments de pierre transcendante (missions du jour). */
+  fragments: number;
+  /** Monstres déjà eus au moins une fois (bestiaire). */
+  decouverts: string[];
+  /** Places de la collection (comme le stockage de SW). */
+  places: number;
   /** Ce que le joueur a déjà vu : « zone:astrub », « dif:astrub@1 », « tuto:zaap »… (pastilles « Nouveau ! », textes, tutoriel). */
   vus: string[];
 }
@@ -47,7 +55,7 @@ const DEPART = ['piou_vert', 'kwak_de_flamme', 'piou_bleu', 'piou_rouge'];
 
 export function nouveauJoueur(): Joueur {
   const monstres = DEPART.map((id, i): MonstrePossede => ({ uid: i + 1, id, etoiles: fiche(id).etoiles as Etoiles, niveau: 1, xp: 0 }));
-  return { version: VERSION_SAUVEGARDE, prochainUid: monstres.length + 1, kamas: 5000, pierresAme: 0, monstres, equipe: monstres.map((m) => m.uid), stagesFinis: [], equipesStages: {}, recompensesZones: [], vus: [] };
+  return { version: VERSION_SAUVEGARDE, prochainUid: monstres.length + 1, kamas: 5000, pierresAme: 0, monstres, equipe: monstres.map((m) => m.uid), stagesFinis: [], equipesStages: {}, recompensesZones: [], vus: [], pierres: {}, fragments: 0, decouverts: [...new Set(DEPART)], places: PLACES_DEPART };
 }
 
 export function monstre(j: Joueur, uid: number): MonstrePossede {
@@ -59,8 +67,12 @@ export function monstre(j: Joueur, uid: number): MonstrePossede {
 /** Ajoute un monstre (invocation, butin) au niveau 1 de ses étoiles naturelles. */
 export function ajouterMonstre(j: Joueur, id: string): { joueur: Joueur; uid: number } {
   const m: MonstrePossede = { uid: j.prochainUid, id, etoiles: fiche(id).etoiles as Etoiles, niveau: 1, xp: 0 };
-  return { joueur: { ...j, prochainUid: j.prochainUid + 1, monstres: [...j.monstres, m] }, uid: m.uid };
+  const decouverts = j.decouverts.includes(id) ? j.decouverts : [...j.decouverts, id];
+  return { joueur: { ...j, prochainUid: j.prochainUid + 1, monstres: [...j.monstres, m], decouverts }, uid: m.uid };
 }
+
+/** Places de la collection au départ ⚠ (SW a aussi un stockage limité qu'on agrandit ; ses chiffres restent à vérifier). */
+export const PLACES_DEPART = 50;
 
 /** Change l'équipe (le premier est le leader) ; retenue pour ce stage si on le précise. */
 export function definirEquipe(j: Joueur, uids: number[], stageId?: string): Joueur {
@@ -202,5 +214,9 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
     ...(j.energie && Number.isFinite(j.energie.n) && Number.isFinite(j.energie.depuis) ? { energie: { n: Math.max(0, j.energie.n), depuis: j.energie.depuis } } : {}),
     recompensesZones: Array.isArray(j.recompensesZones) ? j.recompensesZones.filter((s) => typeof s === 'string') : [],
     vus: Array.isArray(j.vus) ? j.vus.filter((s) => typeof s === 'string') : [],
+    pierres: Object.fromEntries(Object.entries(j.pierres && typeof j.pierres === 'object' ? j.pierres : {}).filter(([, n]) => Number.isInteger(n) && n > 0)),
+    fragments: Math.max(0, Math.floor(Number(j.fragments) || 0)),
+    decouverts: [...new Set([...(Array.isArray(j.decouverts) ? j.decouverts.filter((s) => typeof s === 'string') : []), ...monstres.map((m) => m.id)])],
+    places: Math.max(PLACES_DEPART, Math.floor(Number(j.places) || 0)),
   };
 }

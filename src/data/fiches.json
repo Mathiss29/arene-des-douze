@@ -672,5 +672,2183 @@
     "desc": "Frappe un ennemi. 60 % de chance de l'étourdir 1 tour."
    }
   ]
+ },
+ "pichon_orange": {
+  "stats": {
+   "pv": 6900,
+   "atq": 705,
+   "def": 482,
+   "vit": 102,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de nageoire",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.38
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Remous",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.41
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   }
+  ]
+ },
+ "pichon_vert": {
+  "stats": {
+   "pv": 8010,
+   "atq": 555,
+   "def": 558,
+   "vit": 102,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de nageoire",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.1
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Remous",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   }
+  ]
+ },
+ "pichon_bleu": {
+  "stats": {
+   "pv": 9705,
+   "atq": 496,
+   "def": 504,
+   "vit": 98,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de nageoire",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.41,
+     "pv": 0.13
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Remous",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   }
+  ]
+ },
+ "pichon_blanc": {
+  "stats": {
+   "pv": 8010,
+   "atq": 555,
+   "def": 558,
+   "vit": 104,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de nageoire",
+    "icone": 11844,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.1
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Remous",
+    "icone": 11968,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   }
+  ]
+ },
+ "pichon_sombre": {
+  "stats": {
+   "pv": 6900,
+   "atq": 705,
+   "def": 482,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de nageoire",
+    "icone": 11835,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.38
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Remous",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.41
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   }
+  ]
+ },
+ "kwak_dore": {
+  "stats": {
+   "pv": 8805,
+   "atq": 611,
+   "def": 614,
+   "vit": 101,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de bec",
+    "icone": 11849,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Pluie de plumes",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri du Kwak",
+    "icone": 11939,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ]
+ },
+ "kwak_sombre": {
+  "stats": {
+   "pv": 7590,
+   "atq": 776,
+   "def": 530,
+   "vit": 103,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de bec",
+    "icone": 11852,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.6
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Pluie de plumes",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.5
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri du Kwak",
+    "icone": 11979,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.1
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ]
+ },
+ "larve_orange": {
+  "stats": {
+   "pv": 7590,
+   "atq": 776,
+   "def": 530,
+   "vit": 104,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Morsure",
+    "icone": 11832,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.6
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Bave gluante",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.5
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Mue",
+    "icone": 12218,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.1
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ]
+ },
+ "larve_verte": {
+  "stats": {
+   "pv": 8565,
+   "atq": 513,
+   "def": 728,
+   "vit": 97,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Morsure",
+    "icone": 11847,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.6,
+     "def": 2.0
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Bave gluante",
+    "icone": 11904,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Mue",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.5,
+     "def": 2.6
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ]
+ },
+ "larve_bleue": {
+  "stats": {
+   "pv": 8805,
+   "atq": 611,
+   "def": 614,
+   "vit": 105,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Morsure",
+    "icone": 11925,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.3
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Bave gluante",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Mue",
+    "icone": 11939,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ]
+ },
+ "larve_doree": {
+  "stats": {
+   "pv": 10680,
+   "atq": 545,
+   "def": 555,
+   "vit": 96,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Morsure",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.5,
+     "pv": 0.14
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Bave gluante",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Mue",
+    "icone": 11957,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.0,
+     "pv": 0.1
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ]
+ },
+ "larve_sombre": {
+  "stats": {
+   "pv": 7590,
+   "atq": 776,
+   "def": 530,
+   "vit": 103,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Morsure",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.6
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Bave gluante",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.5
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Mue",
+    "icone": 11882,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.1
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ]
+ },
+ "kwakere_de_flamme": {
+  "stats": {
+   "pv": 8280,
+   "atq": 846,
+   "def": 579,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Bec tranchant",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.82
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Plumes acérées",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.59
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri de la Kwakère",
+    "icone": 11979,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.47
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "kwakere_de_terre": {
+  "stats": {
+   "pv": 9345,
+   "atq": 559,
+   "def": 795,
+   "vit": 99,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Bec tranchant",
+    "icone": 11844,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.7,
+     "def": 2.12
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Plumes acérées",
+    "icone": 11939,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri de la Kwakère",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "def": 2.76
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ],
+  "leader": {
+   "stat": "def",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "kwakere_de_glace": {
+  "stats": {
+   "pv": 9615,
+   "atq": 666,
+   "def": 670,
+   "vit": 107,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Bec tranchant",
+    "icone": 11835,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.5
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Plumes acérées",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri de la Kwakère",
+    "icone": 12220,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 10,
+   "zone": "general"
+  }
+ },
+ "kwakere_d_or": {
+  "stats": {
+   "pv": 11655,
+   "atq": 595,
+   "def": 605,
+   "vit": 98,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Bec tranchant",
+    "icone": 11849,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "pv": 0.15
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Plumes acérées",
+    "icone": 11968,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri de la Kwakère",
+    "icone": 11941,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.06,
+     "pv": 0.11
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ],
+  "leader": {
+   "stat": "pv",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "kwakere_de_vent": {
+  "stats": {
+   "pv": 8280,
+   "atq": 846,
+   "def": 579,
+   "vit": 105,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Bec tranchant",
+    "icone": 11852,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.82
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Plumes acérées",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.59
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Cri de la Kwakère",
+    "icone": 12218,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.47
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "koalak_griotte": {
+  "stats": {
+   "pv": 8280,
+   "atq": 846,
+   "def": 579,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de massue",
+    "icone": 11832,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.82
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Cueillette",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.59
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Rage du Koalak",
+    "icone": 11882,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.47
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "koalak_reinette": {
+  "stats": {
+   "pv": 11655,
+   "atq": 595,
+   "def": 605,
+   "vit": 101,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de massue",
+    "icone": 11847,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "pv": 0.15
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Cueillette",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Rage du Koalak",
+    "icone": 11957,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.06,
+     "pv": 0.11
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ],
+  "leader": {
+   "stat": "pv",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "koalak_indigo": {
+  "stats": {
+   "pv": 9345,
+   "atq": 559,
+   "def": 795,
+   "vit": 100,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de massue",
+    "icone": 11925,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.7,
+     "def": 2.12
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Cueillette",
+    "icone": 11866,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Rage du Koalak",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "def": 2.76
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ],
+  "leader": {
+   "stat": "def",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "koalak_coco": {
+  "stats": {
+   "pv": 9615,
+   "atq": 666,
+   "def": 670,
+   "vit": 103,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de massue",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.5
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Cueillette",
+    "icone": 11862,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Rage du Koalak",
+    "icone": 11904,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 10,
+   "zone": "general"
+  }
+ },
+ "koalak_myrtille": {
+  "stats": {
+   "pv": 8280,
+   "atq": 846,
+   "def": 579,
+   "vit": 105,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de massue",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.82
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Cueillette",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.59
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Rage du Koalak",
+    "icone": 11979,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.47
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "chef_de_guerre_bouftou": {
+  "stats": {
+   "pv": 8280,
+   "atq": 846,
+   "def": 579,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de corne",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.82
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Laine épaisse",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.59
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge du troupeau",
+    "icone": 12218,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.47
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "boufton_orageux": {
+  "stats": {
+   "pv": 9615,
+   "atq": 666,
+   "def": 670,
+   "vit": 106,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de corne",
+    "icone": 11844,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.5
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Laine épaisse",
+    "icone": 11968,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge du troupeau",
+    "icone": 11866,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 10,
+   "zone": "general"
+  }
+ },
+ "bouftou_nuageux": {
+  "stats": {
+   "pv": 11655,
+   "atq": 595,
+   "def": 605,
+   "vit": 102,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de corne",
+    "icone": 11835,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "pv": 0.15
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Laine épaisse",
+    "icone": 11862,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge du troupeau",
+    "icone": 11923,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.06,
+     "pv": 0.11
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ],
+  "leader": {
+   "stat": "pv",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "boufton_palichon": {
+  "stats": {
+   "pv": 9615,
+   "atq": 666,
+   "def": 670,
+   "vit": 103,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de corne",
+    "icone": 11849,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.5
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Laine épaisse",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge du troupeau",
+    "icone": 11939,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 10,
+   "zone": "general"
+  }
+ },
+ "bouftou_noir": {
+  "stats": {
+   "pv": 9345,
+   "atq": 559,
+   "def": 795,
+   "vit": 97,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Coup de corne",
+    "icone": 11852,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.7,
+     "def": 2.12
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Laine épaisse",
+    "icone": 12220,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Charge du troupeau",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.59,
+     "def": 2.76
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ],
+  "leader": {
+   "stat": "def",
+   "valeur": 15,
+   "zone": "general"
+  }
+ },
+ "dragoss_argile": {
+  "stats": {
+   "pv": 8970,
+   "atq": 917,
+   "def": 627,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Crocs",
+    "icone": 11832,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 4.03
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Écailles",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.68
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Souffle du Dragoss",
+    "icone": 11979,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.83
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "dragoss_calcaire": {
+  "stats": {
+   "pv": 10125,
+   "atq": 606,
+   "def": 861,
+   "vit": 99,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Crocs",
+    "icone": 11847,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.79,
+     "def": 2.24
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Écailles",
+    "icone": 11904,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Souffle du Dragoss",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.68,
+     "def": 2.91
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ],
+  "leader": {
+   "stat": "def",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "dragoss_ardoise": {
+  "stats": {
+   "pv": 12630,
+   "atq": 645,
+   "def": 655,
+   "vit": 102,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Crocs",
+    "icone": 11925,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.68,
+     "pv": 0.16
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Écailles",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Souffle du Dragoss",
+    "icone": 11929,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.12,
+     "pv": 0.11
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ],
+  "leader": {
+   "stat": "pv",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "dragoss_dore": {
+  "stats": {
+   "pv": 10410,
+   "atq": 722,
+   "def": 726,
+   "vit": 103,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Crocs",
+    "icone": 11898,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.7
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Écailles",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Souffle du Dragoss",
+    "icone": 12220,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 13,
+   "zone": "general"
+  }
+ },
+ "dragoss_charbon": {
+  "stats": {
+   "pv": 8970,
+   "atq": 917,
+   "def": 627,
+   "vit": 105,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Crocs",
+    "icone": 11843,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 4.03
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Écailles",
+    "icone": 11896,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.68
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Souffle du Dragoss",
+    "icone": 12218,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.83
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "gelee_royale_fraise": {
+  "stats": {
+   "pv": 8970,
+   "atq": 917,
+   "def": 627,
+   "vit": 106,
+   "tc": 25,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Gelée collante",
+    "icone": 11846,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 4.03
+    },
+    "desc": "Frappe un ennemi."
+   },
+   {
+    "id": "s2",
+    "nom": "Rebond royal",
+    "icone": 11954,
+    "recharge": 3,
+    "cible": "ennemi",
+    "coups": 3,
+    "mult": {
+     "atq": 1.68
+    },
+    "effets": [
+     {
+      "type": "def_baisse",
+      "chance": 25,
+      "tours": 2,
+      "parCoup": true
+     }
+    ],
+    "desc": "Frappe un ennemi 3 fois. Chaque coup a 25 % de chance de réduire sa Défense pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Couronne gélatineuse",
+    "icone": 11882,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 6.83
+    },
+    "desc": "Énorme frappe sur un ennemi."
+   }
+  ],
+  "leader": {
+   "stat": "atq",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "gelee_royale_menthe": {
+  "stats": {
+   "pv": 10410,
+   "atq": 722,
+   "def": 726,
+   "vit": 106,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Gelée collante",
+    "icone": 11844,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.7
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Rebond royal",
+    "icone": 11869,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Couronne gélatineuse",
+    "icone": 11939,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 13,
+   "zone": "general"
+  }
+ },
+ "gelee_royale_bleuet": {
+  "stats": {
+   "pv": 12630,
+   "atq": 645,
+   "def": 655,
+   "vit": 102,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Gelée collante",
+    "icone": 11835,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.68,
+     "pv": 0.16
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec les PV max."
+   },
+   {
+    "id": "s2",
+    "nom": "Rebond royal",
+    "icone": 11941,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.15,
+    "desc": "Soigne les alliés de 15 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Couronne gélatineuse",
+    "icone": 11957,
+    "recharge": 4,
+    "cible": "ennemis",
+    "mult": {
+     "atq": 1.12,
+     "pv": 0.11
+    },
+    "effets": [
+     {
+      "type": "atq_baisse",
+      "chance": 50,
+      "tours": 2
+     }
+    ],
+    "desc": "Frappe tous les ennemis. 50 % de chance de réduire leur Attaque pendant 2 tours."
+   }
+  ],
+  "leader": {
+   "stat": "pv",
+   "valeur": 21,
+   "zone": "general"
+  }
+ },
+ "gelee_royale_citron": {
+  "stats": {
+   "pv": 10410,
+   "atq": 722,
+   "def": 726,
+   "vit": 103,
+   "tc": 15,
+   "dc": 50,
+   "pre": 25,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Gelée collante",
+    "icone": 11849,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 3.7
+    },
+    "effets": [
+     {
+      "type": "lenteur",
+      "chance": 30,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 30 % de chance de le ralentir pendant 1 tour."
+   },
+   {
+    "id": "s2",
+    "nom": "Rebond royal",
+    "icone": 11968,
+    "recharge": 3,
+    "cible": "allies",
+    "soin": 0.18,
+    "desc": "Soigne les alliés de 18 % de leurs PV max."
+   },
+   {
+    "id": "s3",
+    "nom": "Couronne gélatineuse",
+    "icone": 11866,
+    "recharge": 4,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "atq_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "jauge": {
+     "allies": 20
+    },
+    "desc": "Augmente l'Attaque des alliés pendant 2 tours et remplit leur jauge d'attaque de 20 %."
+   }
+  ],
+  "leader": {
+   "stat": "vit",
+   "valeur": 13,
+   "zone": "general"
+  }
+ },
+ "gelee_royale_mure": {
+  "stats": {
+   "pv": 10125,
+   "atq": 606,
+   "def": 861,
+   "vit": 97,
+   "tc": 15,
+   "dc": 50,
+   "pre": 0,
+   "res": 15
+  },
+  "sorts": [
+   {
+    "id": "s1",
+    "nom": "Gelée collante",
+    "icone": 11852,
+    "recharge": 0,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.79,
+     "def": 2.24
+    },
+    "desc": "Frappe un ennemi. Les dégâts montent avec la Défense."
+   },
+   {
+    "id": "s2",
+    "nom": "Rebond royal",
+    "icone": 11904,
+    "recharge": 3,
+    "cible": "allies",
+    "effets": [
+     {
+      "type": "def_hausse",
+      "chance": 100,
+      "tours": 2,
+      "sur": "allies"
+     }
+    ],
+    "desc": "Augmente la Défense des alliés pendant 2 tours."
+   },
+   {
+    "id": "s3",
+    "nom": "Couronne gélatineuse",
+    "icone": 11964,
+    "recharge": 4,
+    "cible": "ennemi",
+    "mult": {
+     "atq": 1.68,
+     "def": 2.91
+    },
+    "effets": [
+     {
+      "type": "etourdi",
+      "chance": 50,
+      "tours": 1
+     }
+    ],
+    "desc": "Frappe un ennemi. 50 % de chance de l'étourdir pendant 1 tour."
+   }
+  ],
+  "leader": {
+   "stat": "def",
+   "valeur": 21,
+   "zone": "general"
+  }
  }
 }
