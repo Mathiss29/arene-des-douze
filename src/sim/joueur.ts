@@ -9,7 +9,8 @@ import { ELEMENTS } from './types';
 import type { Cadeau } from './reception';
 import type { Rune } from './runes';
 
-export const VERSION_SAUVEGARDE = 1;
+/** Version de la sauvegarde : une version plus ancienne est lue et complétée (les champs ajoutés depuis sont facultatifs). */
+export const VERSION_SAUVEGARDE = 2;
 
 export interface MonstrePossede {
   uid: number;
@@ -215,7 +216,7 @@ export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
 export function lireSauvegarde(brut: unknown): Joueur | null {
   if (!brut || typeof brut !== 'object') return null;
   const j = brut as Partial<Joueur>;
-  if (j.version !== VERSION_SAUVEGARDE || !Array.isArray(j.monstres) || !Array.isArray(j.equipe)) return null;
+  if (typeof j.version !== 'number' || j.version < 1 || j.version > VERSION_SAUVEGARDE || !Array.isArray(j.monstres) || !Array.isArray(j.equipe)) return null;
   const monstres = j.monstres.filter((m): m is MonstrePossede => {
     try {
       return !!m && Number.isInteger(m.uid) && !!fiche(m.id) && m.etoiles >= 1 && m.etoiles <= 6 && m.niveau >= 1 && m.niveau <= NIVEAU_MAX[m.etoiles] && m.xp >= 0;

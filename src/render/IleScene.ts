@@ -151,7 +151,8 @@ export class IleScene extends Phaser.Scene {
     // Chemin de l'invocateur (maquette « Chemin : » 9A, comme SW : en haut à gauche) et bestiaire
     const ch = plaque(16, 98, 'Chemin de l\'invocateur', '#ffe08a').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('chemin'));
     const be = plaque(16, 140, 'Bestiaire', '#ffffff').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('bestiaire'));
-    u.add([ch, be]);
+    const op = plaque(16, 182, '⚙ Options', '#c9cfc4').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('options'));
+    u.add([ch, be, op]);
     if (aRecevoirChemin(j)) {
       const px = 16 + ch.width + 2;
       u.add(this.add.circle(px, 98, 11, 0xe8673f).setStrokeStyle(2, 0xffffff));

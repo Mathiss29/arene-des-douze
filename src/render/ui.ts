@@ -84,11 +84,24 @@ export function caseSombre(scene: Phaser.Scene, x: number, y: number, taille: nu
 }
 
 /** Monstre en pied, pieds en (x, y), animation de repos. */
+/** Planche prête ? Sinon (réseau coupé, fichier manquant), on dessine une silhouette au lieu de planter. */
+export function planchePrete(scene: Phaser.Scene, atlas: string): boolean {
+  return scene.textures.exists(atlas) && scene.textures.get(atlas).has('AnimStatique_1_0');
+}
+function silhouette(scene: Phaser.Scene) {
+  if (!scene.textures.exists('silhouette')) {
+    const g = scene.make.graphics({}, false).fillStyle(0x3c4840, 1).fillCircle(40, 30, 22).fillEllipse(40, 74, 56, 60);
+    g.generateTexture('silhouette', 80, 110); g.destroy();
+  }
+  return 'silhouette';
+}
+
 export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: number, zoom = 1, miroir = false) {
   const look = LOOKS[id];
   const meta = (scene.cache.json.get(`${look.atlas}:meta`) as { meta?: { cell?: number[]; origin?: number[] } } | undefined)?.meta;
   const [ox, oy] = origine(meta);
   const k = look.echelle * zoom;
+  if (!planchePrete(scene, look.atlas)) return scene.add.sprite(x, y, silhouette(scene)).setOrigin(0.5, 1).setDepth(y);
   const sp = scene.add.sprite(x, y, look.atlas, 'AnimStatique_1_0').setOrigin(ox, oy).setScale(miroir ? -k : k, k).setDepth(y);
   teinter(sp, id);
   if (scene.anims.exists(`${look.atlas}/AnimStatique_1`)) sp.play(`${look.atlas}/AnimStatique_1`);
@@ -97,7 +110,8 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
 
 /** Portrait recadré dans un cercle ou un carré. Renvoie le sprite et son masque (à détruire avec). */
 export function portrait(scene: Phaser.Scene, id: string, x: number, y: number, taille: number, rond = true, miroir = false, profondeur = 1001) {
-  const sp = scene.add.sprite(x, y, LOOKS[id].atlas, 'AnimStatique_1_0').setDepth(profondeur);
+  const pret = planchePrete(scene, LOOKS[id].atlas);
+  const sp = pret ? scene.add.sprite(x, y, LOOKS[id].atlas, 'AnimStatique_1_0').setDepth(profondeur) : scene.add.sprite(x, y, silhouette(scene)).setDepth(profondeur);
   teinter(sp, id);
   const f = sp.frame;
   const k = (taille * 1.1) / Math.max(f.cutWidth, f.cutHeight);

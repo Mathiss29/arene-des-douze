@@ -8,13 +8,15 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "fumee": "node tools/fumee.mjs"
   },
   "dependencies": {
     "phaser": "3.80.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "playwright": "^1.49.1",
     "typescript": "5.6.3",
     "vite": "5.4.11",
     "vitest": "2.1.5"

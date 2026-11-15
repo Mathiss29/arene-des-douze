@@ -17,7 +17,7 @@ import { LOOKS, teinter } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, caseSombre, chargerUi, monstreEnPied, OR, panneau, portrait, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, chargerUi, monstreEnPied, OR, planchePrete, panneau, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -632,7 +632,8 @@ export class CombatScene extends Phaser.Scene {
       if (!u) { slot.portrait.setVisible(false); return; }
       const look = LOOKS[u.monstre.id];
       slot.cadre.fillStyle(0x22322b).fillCircle(slot.x, 43, slot.r).lineStyle(i === 0 ? 3 : 2.5, u.camp === 'A' ? 0x7ee07a : 0xff6a50).strokeCircle(slot.x, 43, slot.r);
-      slot.portrait.setVisible(true).setTexture(look.atlas, 'AnimStatique_1_0').setOrigin(0.5, 0.45);
+      if (planchePrete(this, look.atlas)) slot.portrait.setVisible(true).setTexture(look.atlas, 'AnimStatique_1_0').setOrigin(0.5, 0.45);
+      else slot.portrait.setVisible(false);
       const fr = slot.portrait.frame;
       const k = (slot.r * 2.3) / Math.max(fr.cutWidth, fr.cutHeight);
       // Portrait cadré sur l'image utile (planches rognées)

@@ -25,6 +25,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # test de fumée : chaque écran s'ouvre dans Chrome sans erreur
+      - run: npx playwright install --with-deps chromium
+      - run: npm run fumee
       - run: npm run build
         env:
           VITE_ASSETS_URL: https://assets.diablofus.com

@@ -15,6 +15,14 @@ import { VitrineScene } from './render/VitrineScene';
 import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
 import { camerasNettes, facteurNettete, textesNets } from './render/nettete';
+import { OptionsScene } from './render/OptionsScene';
+import { noterErreur } from './render/sauvegarde';
+
+// erreurs gardées pour « Signaler un bug » (Options)
+window.addEventListener('error', (e) => noterErreur(`${e.message} @ ${e.filename}:${e.lineno}`));
+window.addEventListener('unhandledrejection', (e) => noterErreur(`promesse : ${String(e.reason)}`));
+const erreurConsole = console.error.bind(console);
+console.error = (...a: unknown[]) => { noterErreur(a.map(String).join(' ')); erreurConsole(...a); };
 
 // Polices de Dofus 3 (Lexend pour l'interface, Rowdies pour les chiffres), chargées avant le premier texte
 await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f) => document.fonts.load(f).catch(() => undefined)));
@@ -23,7 +31,7 @@ await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f)
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };
 const maquette = MAQUETTES[location.hash];
 if (maquette) document.getElementById('jeu')!.style.width = 'calc(100% - min(380px, 42vw))';
-const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, MonstreScene, DonjonsScene, CheminScene, BestiaireScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
+const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, MonstreScene, DonjonsScene, CheminScene, BestiaireScene, OptionsScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
 
 // Netteté : canevas à la taille réelle de l'écran (voir nettete.ts)
 const K = facteurNettete(document.getElementById('jeu')!);
