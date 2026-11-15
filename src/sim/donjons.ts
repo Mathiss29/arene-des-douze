@@ -42,7 +42,7 @@ export const RUNES_NIVEAU: [number, number][] = [[1, 2], [1, 3], [2, 3], [2, 4],
 /** PV du boss multipliés ⚠ (les boss de Cairos tiennent longtemps). */
 export const PV_BOSS = 1.5;
 /** Chances ⚠ : rune, pierre d'âme, pierre parfaite (à partir du niveau 6), symbole (à partir du niveau 3). Pierres rares (choix de Mathis). */
-export const CHANCES = { rune: 75, pierreAme: 8, parfaite: 1, symbole: 25 };
+export const CHANCES = { rune: 75, pierreAme: 3, parfaite: 0.3, symbole: 25 };
 
 export const cleDonjon = (id: string, n: number) => `donjon:${id}-${n}`;
 export function lireCle(cle: string): { donjon: Donjon; n: number } | null {

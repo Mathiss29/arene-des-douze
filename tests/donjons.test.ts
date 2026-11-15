@@ -60,7 +60,7 @@ describe('donjons (comme Cairos)', () => {
     expect(runes.length / 2000).toBeGreaterThan(0.7);
     expect(runes.every((b) => bouftous.sets.includes(b.rune!.set) && b.rune!.etoiles >= 5 && (b.rune!.grade ?? 0) >= 2)).toBe(true);
     expect(butins.filter((b) => b.pierresAme).length / 2000).toBeLessThan(CHANCES.pierreAme / 100 + 0.03);
-    expect(butins.filter((b) => b.parfaites).length / 2000).toBeLessThan(0.03);
+    expect(butins.filter((b) => b.parfaites).length / 2000).toBeLessThan(0.01);
     expect(butins.every((b) => b.premiere?.parfaite === 1)).toBe(true);
     const b = tirerButin(j, s, 1);
     const r = appliquerVictoire(j, s, b, 0).joueur;

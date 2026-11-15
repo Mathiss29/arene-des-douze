@@ -178,7 +178,7 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
   avec « Appel du troupeau » (il appelle deux Bouftons s'il a de la place) et « Charge royale » (tous, 20 % d'étourdir).
 - ✓ Énergie 5/5/6/6/7/7/7/8/8/8 et étoiles du boss 3→5★ (SW) ; niveaux du boss adoucis au début : 8, 12, 16, 22, 28, 34, 40, 48, 56, 65 ⚠.
   Runes invisibles des ennemis à partir du niveau 8. Équilibre simulé : 3★ max finit le B3, 5★ max le B7, le B10 demande une équipe 6★ runée.
-- Butin : runes des sets du donjon (75 %, 1-2★ au B1 → 6★ Rare à Légendaire au B10 ✓), kamas, pierre d'âme 8 %, pierre parfaite 1 %
+- Butin : runes des sets du donjon (75 %, 1-2★ au B1 → 6★ Rare à Légendaire au B10 ✓), kamas, pierre d'âme 3 %, pierre parfaite 0,3 %
   (à partir du B6, rares comme le veut Mathis), symbole du donjon 25 % (à partir du B3, pour fabriquer plus tard).
   Premier passage : rune une étoile au-dessus (B1 à B5) ou pierre parfaite (B6 à B10).
 - Combats à répétition (5C) : « Répéter ×10/20/30 » dans la préparation (aussi pour l'histoire), auto forcé, vitesse ×1/×2/×3 gardée,
