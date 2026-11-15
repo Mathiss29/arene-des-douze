@@ -3,6 +3,7 @@ import { charger, sauver } from './sauvegarde';
 import { peutEvoluer, type Joueur } from '../sim/joueur';
 import { MINE, kamasEnMine, recolterMine } from '../sim/mine';
 import { prochainStage } from '../sim/stages';
+import { aRecevoir, noterMission } from '../sim/missions';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -59,6 +60,7 @@ export class IleScene extends Phaser.Scene {
   private t = 0;
   private glisse: { x: number; y: number; sx: number; sy: number; bouge: boolean } | null = null;
   private pince: { d: number; z: number } | null = null;
+  private pastilleMissions!: Phaser.GameObjects.Container;
 
   constructor() { super('ile'); }
 
@@ -80,7 +82,10 @@ export class IleScene extends Phaser.Scene {
     texturePierreAme(this);
     this.input.addPointer(1);
     // la mine produit dès la première visite de l'île
-    if (this.joueur.mine === undefined) { this.joueur = { ...this.joueur, mine: Date.now() }; sauver(this.joueur); }
+    if (this.joueur.mine === undefined) this.joueur = { ...this.joueur, mine: Date.now() };
+    // mission « Début de la journée »
+    this.joueur = noterMission(this.joueur, 'connexion', 1, Date.now());
+    sauver(this.joueur);
 
     // morceaux vivants : un cadre par morceau dans l'atlas vif0
     const vif = this.textures.get('ile_vif0');
@@ -175,9 +180,20 @@ export class IleScene extends Phaser.Scene {
     // Combattre : ouvre la carte des combats (comme le Zaap)
     const b = bouton(this, W - 110, H - 46, 180, 56, 'Combattre', true, () => this.ouvrir('zaap'), 20);
     u.add([b.fond, b.t]);
+    // Missions du jour (maquette « Missions : » 1A, pastille 9A)
+    const bm = bouton(this, W - 300, H - 46, 160, 50, 'Missions', false, () => this.scene.start('missions'), 20);
+    bm.t.setFontSize(17);
+    this.pastilleMissions = this.add.container(W - 300 + 74, H - 46 - 22, [
+      this.add.circle(0, 0, 11, 0xe8673f).setStrokeStyle(2, 0xffffff),
+      this.add.text(0, 0, '!', { fontFamily: CHIFFRES, fontSize: '15px', color: '#ffffff' }).setOrigin(0.5),
+    ]).setDepth(25);
+    u.add([bm.fond, bm.t, this.pastilleMissions]);
+    this.majPastilleMissions();
     u.add(texte(this, 16, H - 14, 'Glisse pour te déplacer · molette ou deux doigts pour zoomer · touche un bâtiment', 12, '#e9efe6', false, 0, 1)
       .setBackgroundColor('rgba(8,14,11,0.7)').setPadding(8, 4, 8, 4));
   }
+
+  private majPastilleMissions() { this.pastilleMissions.setVisible(aRecevoir(this.joueur, Date.now())); }
 
   private majBourse() {
     this.bourse.setText(`${fmt(this.joueur.kamas)} kamas`);
@@ -196,8 +212,8 @@ export class IleScene extends Phaser.Scene {
   private recolter() {
     const r = recolterMine(this.joueur, Date.now());
     if (!r.kamas) { this.message(`La mine produit ${fmt(MINE.parHeure)} kamas par heure, ${fmt(MINE.max)} au plus. Reviens plus tard !`); return; }
-    this.joueur = r.joueur; sauver(this.joueur);
-    this.majBourse(); this.majMine();
+    this.joueur = noterMission(r.joueur, 'mine', 1, Date.now()); sauver(this.joueur);
+    this.majBourse(); this.majMine(); this.majPastilleMissions();
     const p = this.versEcran(this.D.batiments.mine[0] + this.D.batiments.mine[2] / 2, this.D.batiments.mine[1]);
     const t = texte(this, p.x, p.y, `+${fmt(r.kamas)} kamas`, 22, OR, true).setFontFamily(CHIFFRES);
     this.ui.add(t);

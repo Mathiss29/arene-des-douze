@@ -46,6 +46,8 @@ export interface Joueur {
   places: number;
   /** Ce que le joueur a déjà vu : « zone:astrub », « dif:astrub@1 », « tuto:zaap »… (pastilles « Nouveau ! », textes, tutoriel). */
   vus: string[];
+  /** Missions du jour (jour, avancement, points reçus, coffres ouverts) ; absentes tant qu'aucune mission n'a bougé. */
+  missions?: { jour: string; compte: Record<string, number>; recues: string[]; coffres: number[] };
 }
 
 export const TAILLE_EQUIPE = 4;
@@ -219,5 +221,11 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
     fragments: Math.max(0, Math.floor(Number(j.fragments) || 0)),
     decouverts: [...new Set([...(Array.isArray(j.decouverts) ? j.decouverts.filter((s) => typeof s === 'string') : []), ...monstres.map((m) => m.id)])],
     places: Math.max(PLACES_DEPART, Math.floor(Number(j.places) || 0)),
+    ...(j.missions && typeof j.missions.jour === 'string' ? { missions: {
+      jour: j.missions.jour,
+      compte: Object.fromEntries(Object.entries(j.missions.compte ?? {}).filter(([, n]) => Number.isFinite(n) && n > 0)),
+      recues: Array.isArray(j.missions.recues) ? [...new Set(j.missions.recues.filter((s) => typeof s === 'string'))] : [],
+      coffres: Array.isArray(j.missions.coffres) ? [...new Set(j.missions.coffres.filter((n) => Number.isInteger(n)))] : [],
+    } } : {}),
   };
 }

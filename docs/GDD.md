@@ -156,6 +156,26 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
   Ex. Histoire : finir une zone en Difficile → 50 000 mana ; en Enfer → 30 cristaux. Monstre : invoquer un Eau, un Feu et un Vent → 30 000 mana.
   Cairos : finir le B10 avec seulement des monstres Feu → 150 000 mana. Pour nous : plus tard, après la 0.1 (zones Difficile/Enfer d'abord).
 - Missions de retour (joueurs revenus) : 7 jours de missions à +20 points ; pas pour nous.
+- ✓ Fait (maquette « Missions : » 1A 2B 3A 4B 5A 6B 7A 8C 9A) : bouton Missions en bas de l'île avec pastille « ! », 10 missions toujours
+  les mêmes (4 à +15, 6 à +20, 180 points ; donjon, rune et Kolizéum grisés « Bientôt »), remise à zéro à 6 h (heure de Paris),
+  coffres qui brillent (20 : 5 000 kamas + 3 pierres d'âme · 40 : 5 000 kamas + 5 pierres d'âme · 60 : 10 000 kamas · 80 : 20 énergie +
+  1 pierre parfaite · 100 : 10 000 kamas + 2 fragments ⚠), « Recevoir » par mission et « Tout recevoir ». Code : `src/sim/missions.ts`.
+
+## Envies de Mathis vues dans SW (vidéo du 15 nov. 2026)
+- Réception (boîte aux lettres) : les cadeaux y attendent (6 jours), « Recevoir », « Recevoir en 1 fois », « Recevoir l'énergie » ;
+  onglets Coffre, Guilde, Points sociaux. Utile pour nous : récompenses du Chemin, cadeaux de mise à jour, compensations.
+- Combats à répétition : relancer le même stage jusqu'à 30 fois, récapitulatif du butin (mana, énergie, cristaux, runes), historique,
+  arrêt après le combat en cours ; « Amélioration sélective » des runes gagnées.
+- Combat d'exploration (combats hors ligne) : Cairos, Rift, Raid ; durée au choix 2 h / 125 énergie / 45 combats, 4 h / 250 / 90,
+  8 h / 500 / 180 ; continue hors ligne.
+- Compétences d'invocateur (v8.1.4, à la place des bâtiments de gloire) : Combat (VIT +15 %, dégâts critiques +25 %, ATQ +20 %, DEF +20 %,
+  PV +20 %, ATQ de chaque élément +21 %), Guilde (ATQ, dégâts crit., PV, DEF en guilde), Autres (recharge d'énergie +30 %,
+  stockage d'énergie +3 par niveau jusqu'à +30, tours Arcane, production de mana +50 %, stockage de mana +2 000) ;
+  niveaux achetés avec un objet, « Améliorer » / « Améliorer tout ».
+- Communauté : amis (cadeau quotidien de cœurs = points sociaux, profil, deck, 50 amis, mentor/apprenti), guilde (Guilde contre Guilde,
+  jeu coopératif, boutique de guilde à points : vélins, pièces d'invocation, coffres de runes, Arcenmon… achats limités par semaine/mois,
+  classement). Demande un serveur : après la 0.1.
+- Île plus grande en plusieurs morceaux, bâtiments Entrepôt (800 places), Profil, Défense, Historique de combat.
 
 ## 4. Invocation
 | Objet | Équivalent SW | Résultat |

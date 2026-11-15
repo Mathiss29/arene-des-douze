@@ -3,6 +3,7 @@ import { fiche, monstreCombat } from '../sim/fiches';
 import { apercuNourrir, evoluer, monstre, nourrir, pointsNourriture, trierMonstres, type Joueur, type MonstrePossede } from '../sim/joueur';
 import { ajouterXp, COUT_EVOLUTION, NIVEAU_MAX, NOURRITURE_MAX, pointsRequis, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { Rng } from '../sim/rng';
+import { noterMission } from '../sim/missions';
 import { LISTE_STAGES, stage } from '../sim/stages';
 import { LOOKS } from './looks';
 import { distant } from './assetUrl';
@@ -175,7 +176,7 @@ export class CercleScene extends Phaser.Scene {
   /** Choix 7A : les étoiles s'allument une à une, puis un éclair. */
   private animerEvolution(cx: number, cy: number) {
     const c = this.cibleM()!;
-    this.joueur = evoluer(this.joueur, c.uid, this.nourr);
+    this.joueur = noterMission(evoluer(this.joueur, c.uid, this.nourr), 'ameliorer', 1, Date.now());
     sauver(this.joueur);
     const total = c.etoiles + 1;
     const y = 412, larg = 26;
@@ -210,7 +211,7 @@ export class CercleScene extends Phaser.Scene {
   private animerNourrir(cx: number, cy: number) {
     const c = this.cibleM()!;
     const r = nourrir(this.joueur, c.uid, this.nourr, new Rng(Date.now()));
-    this.joueur = r.joueur;
+    this.joueur = noterMission(r.joueur, 'ameliorer', 1, Date.now());
     sauver(this.joueur);
     this.eclats(cx, cy, [0x7ee07a, 0xffffff], 24);
     const lignes = [`+${fmt(r.xp)} XP`];

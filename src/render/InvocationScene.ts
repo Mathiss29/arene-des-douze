@@ -6,6 +6,7 @@ import {
   type Invoque, type Pierre,
 } from '../sim/invocation';
 import { fiche, monstreCombat } from '../sim/fiches';
+import { noterMission } from '../sim/missions';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
 import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, portrait, texte, texteLeader } from './ui';
@@ -155,7 +156,7 @@ export class InvocationScene extends Phaser.Scene {
 
   private lancer(n: number) {
     const r = invoquer(this.joueur, this.pierre, n, Date.now() & 0x7fffffff);
-    this.joueur = r.joueur;
+    this.joueur = noterMission(r.joueur, 'invoquer', n, Date.now());
     sauver(this.joueur);
     this.etat = 'anim';
     this.dessiner();

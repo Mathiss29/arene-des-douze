@@ -5,6 +5,7 @@ import { monstreCombat } from '../sim/fiches';
 import { monstre, type Joueur } from '../sim/joueur';
 import { appliquerVictoire, cleStage, DIFFICULTES, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, stageOuvert, tirerButin, zone, type Stage } from '../sim/stages';
 import { lancerCombat } from './lancement';
+import { noterMission } from '../sim/missions';
 import { fiche } from '../sim/fiches';
 import { charger, sauver } from './sauvegarde';
 import { NIVEAU_MAX, XP_NIVEAU, type Etoiles } from '../sim/progression';
@@ -738,7 +739,7 @@ export class CombatScene extends Phaser.Scene {
     let butinAffiche: { cle: string; n: string; label: string }[] = [];
     if (victoire) {
       const butin = tirerButin(avant, this.stage, this.graine);
-      apres = appliquerVictoire(avant, this.stage, butin, Date.now()).joueur;
+      apres = noterMission(appliquerVictoire(avant, this.stage, butin, Date.now()).joueur, 'histoire', 1, Date.now());
       this.joueur = apres;
       sauver(apres);
       butinAffiche = [{ cle: 'kamas_tas', n: `+${fmt(butin.kamas)}`, label: 'kamas' }];
