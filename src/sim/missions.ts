@@ -5,7 +5,7 @@
  * Remise à zéro à heure fixe pour tout le monde : 6 h, heure de Paris (choix 4B). Contenus des coffres : les nôtres ⚠.
  * Pur : le temps est passé en argument (ms).
  */
-import type { Joueur } from './joueur';
+import { compter, type Joueur } from './joueur';
 import { changerEnergie } from './energie';
 import { ajouterPierres } from './invocation';
 import { donnerRune } from './inventaire';
@@ -77,7 +77,8 @@ export const finie = (e: EtatMissions, id: IdMission) => compte(e, id) >= missio
 export const points = (e: EtatMissions) => e.recues.reduce((s, id) => s + mission(id).points, 0);
 
 /** Fait avancer une mission (sans effet si elle est déjà finie). */
-export function noterMission(j: Joueur, id: IdMission, n: number, maintenant: number): Joueur {
+export function noterMission(j0: Joueur, id: IdMission, n: number, maintenant: number): Joueur {
+  const j = compter(j0, id, n); // compteur de toute la partie (Chemin de l'invocateur)
   const e = etatMissions(j, maintenant);
   if (n <= 0 || finie(e, id)) return e === j.missions ? j : { ...j, missions: e };
   return { ...j, missions: { ...e, compte: { ...e.compte, [id]: Math.min(mission(id).objectif, (e.compte[id] ?? 0) + n) } } };
@@ -89,14 +90,14 @@ export const peutRecevoir = (e: EtatMissions, id: IdMission) => finie(e, id) && 
 export function recevoirMission(j: Joueur, id: IdMission, maintenant: number): Joueur {
   const e = etatMissions(j, maintenant);
   if (!peutRecevoir(e, id)) throw new Error(`Mission ${id} pas finie ou déjà reçue`);
-  return { ...j, missions: { ...e, recues: [...e.recues, id] } };
+  return compter({ ...j, missions: { ...e, recues: [...e.recues, id] } }, 'missionRecue');
 }
 
 /** « Tout recevoir » (choix 8C) : toutes les missions finies. */
 export function recevoirTout(j: Joueur, maintenant: number): Joueur {
   const e = etatMissions(j, maintenant);
   const ids = MISSIONS.filter((m) => peutRecevoir(e, m.id)).map((m) => m.id);
-  return { ...j, missions: { ...e, recues: [...e.recues, ...ids] } };
+  return compter({ ...j, missions: { ...e, recues: [...e.recues, ...ids] } }, 'missionRecue', ids.length);
 }
 
 export const coffreOuvrable = (e: EtatMissions, i: number) => points(e) >= COFFRES[i].points && !e.coffres.includes(i);
@@ -106,7 +107,7 @@ export function ouvrirCoffre(j: Joueur, i: number, maintenant: number): Joueur {
   const e = etatMissions(j, maintenant);
   if (!COFFRES[i] || !coffreOuvrable(e, i)) throw new Error(`Coffre ${i} fermé`);
   const c = COFFRES[i];
-  let r: Joueur = { ...j, kamas: j.kamas + (c.kamas ?? 0), pierresAme: j.pierresAme + (c.pierresAme ?? 0), fragments: j.fragments + (c.fragments ?? 0), missions: { ...e, coffres: [...e.coffres, i] } };
+  let r: Joueur = { ...compter(j, 'coffre'), kamas: j.kamas + (c.kamas ?? 0), pierresAme: j.pierresAme + (c.pierresAme ?? 0), fragments: j.fragments + (c.fragments ?? 0), missions: { ...e, coffres: [...e.coffres, i] } };
   if (c.parfaites) r = ajouterPierres(r, 'parfaite', c.parfaites);
   if (c.energie) r = changerEnergie(r, c.energie, maintenant);
   if (c.rune) r = donnerRune(r, { etoiles: c.rune }, maintenant).joueur;

@@ -6,6 +6,7 @@ import { prochainStage } from '../sim/stages';
 import { aRecevoir, noterMission } from '../sim/missions';
 import { cadeaux, distribuer } from '../sim/reception';
 import { visite } from '../sim/inventaire';
+import { aRecevoirChemin } from '../sim/chemin';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -147,6 +148,20 @@ export class IleScene extends Phaser.Scene {
     // Réception (maquette « Réception : » 1A, 7B) : sous le titre, avec le nombre de cadeaux
     const rec = plaque(16, 56, 'Réception', '#ffffff').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('reception'));
     u.add(rec);
+    // Chemin de l'invocateur (maquette « Chemin : » 9A, comme SW : en haut à gauche) et bestiaire
+    const ch = plaque(16, 98, 'Chemin de l\'invocateur', '#ffe08a').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('chemin'));
+    const be = plaque(16, 140, 'Bestiaire', '#ffffff').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('bestiaire'));
+    u.add([ch, be]);
+    if (aRecevoirChemin(j)) {
+      const px = 16 + ch.width + 2;
+      u.add(this.add.circle(px, 98, 11, 0xe8673f).setStrokeStyle(2, 0xffffff));
+      u.add(this.add.text(px, 98, '!', { fontFamily: CHIFFRES, fontSize: '15px', color: '#ffffff' }).setOrigin(0.5));
+      // Ganymède félicite (maquette « Chemin : » 7A)
+      const b = texte(this, px + 20, 104, 'Ganymède : bravo, une quête du chemin est terminée !', 13, '#1d1405', true, 0, 0)
+        .setBackgroundColor('#ffe08a').setPadding(10, 5, 10, 5).setShadow(0, 0, '#000', 0);
+      u.add(b);
+      this.tweens.add({ targets: b, alpha: 0, delay: 6000, duration: 800 });
+    }
     const nbCadeaux = cadeaux(j, Date.now()).length;
     if (nbCadeaux) {
       const px = 16 + rec.width + 2, py = 56;

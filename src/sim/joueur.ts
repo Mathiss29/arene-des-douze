@@ -54,6 +54,10 @@ export interface Joueur {
   reception?: Cadeau[];
   /** Cadeaux de mise à jour et codes déjà donnés. */
   cadeauxDonnes?: string[];
+  /** Compteurs depuis le début (invocations, victoires, runes montées…), pour le Chemin de l'invocateur. */
+  compteurs?: Record<string, number>;
+  /** Chemin de l'invocateur : quêtes, coffres de palier et défis déjà reçus. */
+  chemin?: string[];
   /** Symboles des donjons (pour fabriquer plus tard). */
   symboles?: Record<string, number>;
   /** Runes possédées (portées ou non) et prochain numéro. */
@@ -68,6 +72,9 @@ export interface Joueur {
 }
 
 export const TAILLE_EQUIPE = 4;
+
+/** Ajoute n à un compteur de toute la partie. */
+export const compter = (j: Joueur, cle: string, n = 1): Joueur => (n > 0 ? { ...j, compteurs: { ...(j.compteurs ?? {}), [cle]: (j.compteurs?.[cle] ?? 0) + n } } : j);
 
 /** Monstres de départ : trois Pious et un Kwak de Flamme, le Piou Vert en leader. */
 const DEPART = ['piou_vert', 'kwak_de_flamme', 'piou_bleu', 'piou_rouge'];
@@ -251,6 +258,8 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
     ...(Array.isArray(j.cadeauxDonnes) ? { cadeauxDonnes: j.cadeauxDonnes.filter((s) => typeof s === 'string') } : {}),
     ...(Array.isArray(j.runes) ? { runes: j.runes.filter((r) => r && Number.isInteger(r.uid) && typeof r.set === 'string' && Array.isArray(r.sous))
       .map((r) => (r.porteur !== undefined && !uids.has(r.porteur) ? { ...r, porteur: undefined } : r)) } : {}),
+    ...(j.compteurs && typeof j.compteurs === 'object' ? { compteurs: Object.fromEntries(Object.entries(j.compteurs).filter(([, n]) => Number.isFinite(n) && n > 0)) } : {}),
+    ...(Array.isArray(j.chemin) ? { chemin: j.chemin.filter((s) => typeof s === 'string') } : {}),
     ...(Number.isInteger(j.prochainUidRune) ? { prochainUidRune: j.prochainUidRune } : {}),
     ...(j.symboles && typeof j.symboles === 'object' ? { symboles: Object.fromEntries(Object.entries(j.symboles).filter(([, n]) => Number.isInteger(n) && n > 0)) } : {}),
     ...(j.prereglages && typeof j.prereglages === 'object' ? { prereglages: j.prereglages } : {}),

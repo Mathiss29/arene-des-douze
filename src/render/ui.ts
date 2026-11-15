@@ -3,6 +3,9 @@ import type { Element, Leader, Stats } from '../sim/types';
 import { LOOKS, teinter } from './looks';
 import { atlasPlanche, dossierPlanches } from './assetUrl';
 import { origine } from './animations';
+import { fiche } from '../sim/fiches';
+import { PIERRES, type Pierre } from '../sim/invocation';
+import { SETS, type SetRune } from '../sim/runes';
 
 /** Outils d'interface partagés par les écrans (préparation, récompenses, fiches). */
 
@@ -103,4 +106,18 @@ export function portrait(scene: Phaser.Scene, id: string, x: number, y: number, 
   if (rond) m.fillCircle(x, y, taille / 2 - 2); else m.fillRect(x - taille / 2 + 3, y - taille / 2 + 3, taille - 6, taille - 6);
   sp.setMask(m.createGeometryMask());
   return { sp, masque: m };
+}
+
+/** Texte d'un contenu de cadeau ou de récompense (Réception, Chemin de l'invocateur). */
+export function texteContenu(c: { kamas?: number; pierresAme?: number; pierres?: Partial<Record<string, number>>; energie?: number; fragments?: number; monstre?: string; runes?: { etoiles: number; set?: string }[]; choix5?: boolean }): string {
+  const l: string[] = [];
+  if (c.choix5) l.push('Un monstre 5★ au choix');
+  if (c.monstre) l.push(`${fiche(c.monstre).nom} ${'★'.repeat(fiche(c.monstre).etoiles)}`);
+  if (c.kamas) l.push(`${fmt(c.kamas)} kamas`);
+  if (c.pierresAme) l.push(`${c.pierresAme} pierre${c.pierresAme > 1 ? 's' : ''} d'âme`);
+  for (const [p, n] of Object.entries(c.pierres ?? {})) if (n) l.push(`${PIERRES[p as Pierre].nom}${n > 1 ? ` ×${n}` : ''}`);
+  if (c.energie) l.push(`${c.energie} énergie`);
+  if (c.fragments) l.push(`${c.fragments} fragment${c.fragments > 1 ? 's' : ''}`);
+  if (c.runes?.length) l.push(`${c.runes.length} rune${c.runes.length > 1 ? 's' : ''} ${c.runes[0].etoiles}★${c.runes[0].set ? ` (${SETS[c.runes[0].set as SetRune].dieu})` : ''}`);
+  return l.join(' · ');
 }

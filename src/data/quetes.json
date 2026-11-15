@@ -1,0 +1,975 @@
+{
+ "paliers": [
+  {
+   "id": "novice",
+   "nom": "Novice",
+   "coffre": {
+    "pierres": {
+     "parfaite": 1
+    },
+    "kamas": 20000
+   },
+   "quetes": [
+    {
+     "id": "n1",
+     "titre": "Gagne le stage 1 d'Astrub",
+     "condition": {
+      "type": "stage",
+      "id": "astrub-1"
+     },
+     "recompense": {
+      "pierresAme": 1
+     },
+     "ecran": "zaap",
+     "desc": "Tout commence à Astrub ! Touche « Combattre », puis le premier stage."
+    },
+    {
+     "id": "n2",
+     "titre": "Récolte la mine de kamas",
+     "condition": {
+      "type": "compteur",
+      "cle": "mine",
+      "n": 1
+     },
+     "recompense": {
+      "kamas": 1000
+     },
+     "ecran": "ile",
+     "desc": "La mine produit des kamas même quand tu n'es pas là. Touche-la sur l'île pour les récolter."
+    },
+    {
+     "id": "n3",
+     "titre": "Gagne le stage 3 d'Astrub",
+     "condition": {
+      "type": "stage",
+      "id": "astrub-3"
+     },
+     "recompense": {
+      "kamas": 2000
+     },
+     "ecran": "zaap",
+     "desc": "Les Scarafeuilles se cachent plus loin. Garde un œil sur les éléments : Feu bat Air, Air bat Eau, Eau bat Feu."
+    },
+    {
+     "id": "n4",
+     "titre": "Nourris un monstre au Cercle d'amélioration",
+     "condition": {
+      "type": "compteur",
+      "cle": "ameliorer",
+      "n": 1
+     },
+     "recompense": {
+      "pierresAme": 3
+     },
+     "ecran": "cercle",
+     "desc": "Au Cercle d'amélioration, donne des monstres en trop à un autre pour qu'il gagne de l'XP."
+    },
+    {
+     "id": "n5",
+     "titre": "Invoque un monstre",
+     "condition": {
+      "type": "compteur",
+      "cle": "invoquer",
+      "n": 1
+     },
+     "recompense": {
+      "kamas": 2000
+     },
+     "ecran": "invocation",
+     "desc": "Une pierre d'âme et un peu de kamas suffisent : file au Cercle d'invocation !"
+    },
+    {
+     "id": "n6",
+     "titre": "Reçois un cadeau à la Réception",
+     "condition": {
+      "type": "compteur",
+      "cle": "cadeau",
+      "n": 1
+     },
+     "recompense": {
+      "energie": 20
+     },
+     "ecran": "reception",
+     "desc": "Les cadeaux t'attendent à la Réception, en haut à gauche de l'île."
+    },
+    {
+     "id": "n7",
+     "titre": "Gagne le stage 5 d'Astrub",
+     "condition": {
+      "type": "stage",
+      "id": "astrub-5"
+     },
+     "recompense": {
+      "energie": 20
+     },
+     "ecran": "zaap",
+     "desc": "Les combats coûtent de l'énergie, qui revient d'elle-même : 1 toutes les 5 minutes."
+    },
+    {
+     "id": "n8",
+     "titre": "Fais évoluer un monstre en 2★",
+     "condition": {
+      "type": "evolue",
+      "n": 2
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "cercle",
+     "desc": "Un monstre au niveau max peut gagner une étoile au Cercle, en sacrifiant des monstres du même nombre d'étoiles."
+    },
+    {
+     "id": "n9",
+     "titre": "Équipe une rune",
+     "condition": {
+      "type": "runesPortees",
+      "n": 1
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 3,
+        "set": "iop"
+       }
+      ]
+     },
+     "ecran": "cercle",
+     "desc": "Les runes rendent tes monstres bien plus forts. Au Cercle, touche « ⬢ Runes » sur un monstre."
+    },
+    {
+     "id": "n10",
+     "titre": "Monte une rune à +3",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 3
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "cercle",
+     "desc": "À +3, une rune gagne une nouvelle sous-stat ou en renforce une. Ça ne rate jamais !"
+    },
+    {
+     "id": "n11",
+     "titre": "Reçois les points d'une mission du jour",
+     "condition": {
+      "type": "compteur",
+      "cle": "missionRecue",
+      "n": 1
+     },
+     "recompense": {
+      "pierresAme": 2
+     },
+     "ecran": "missions",
+     "desc": "Chaque jour, les missions rapportent des points et des coffres. Le bouton « Missions » est en bas de l'île."
+    },
+    {
+     "id": "n12",
+     "titre": "Ouvre un coffre des missions du jour",
+     "condition": {
+      "type": "compteur",
+      "cle": "coffre",
+      "n": 1
+     },
+     "recompense": {
+      "kamas": 3000
+     },
+     "ecran": "missions",
+     "desc": "À 20 points, le premier coffre des missions s'ouvre."
+    },
+    {
+     "id": "n13",
+     "titre": "Fais équipe à quatre",
+     "condition": {
+      "type": "equipe",
+      "n": 4
+     },
+     "recompense": {
+      "kamas": 2000
+     },
+     "ecran": "zaap",
+     "desc": "Quatre monstres valent mieux que trois. Le premier de l'équipe est le leader."
+    },
+    {
+     "id": "n14",
+     "titre": "Découvre 10 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 10
+     },
+     "recompense": {
+      "pierresAme": 3
+     },
+     "ecran": "bestiaire",
+     "desc": "Chaque nouveau monstre rejoint ton bestiaire."
+    },
+    {
+     "id": "n15",
+     "titre": "Invoque 10 fois",
+     "condition": {
+      "type": "compteur",
+      "cle": "invoquer",
+      "n": 10
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "invocation",
+     "desc": "Plus tu invoques, plus tu as de chances de tomber sur un 3★ ou mieux."
+    },
+    {
+     "id": "n16",
+     "titre": "Gagne 20 combats d'histoire",
+     "condition": {
+      "type": "compteur",
+      "cle": "histoire",
+      "n": 20
+     },
+     "recompense": {
+      "energie": 30
+     },
+     "ecran": "zaap",
+     "desc": "Rejoue les stages pour l'XP, les kamas et les runes. Le bouton « Répéter » fait ça tout seul !"
+    },
+    {
+     "id": "n17",
+     "titre": "Fais évoluer un monstre en 3★",
+     "condition": {
+      "type": "evolue",
+      "n": 3
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "cercle",
+     "desc": "Un 3★ au niveau max devient vite un pilier de l'équipe."
+    },
+    {
+     "id": "n18",
+     "titre": "Finis Astrub en Normal",
+     "condition": {
+      "type": "zone",
+      "zone": "astrub",
+      "dif": 0
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 1
+      }
+     },
+     "ecran": "zaap",
+     "desc": "Le Scarafeuille Noir t'attend au stage 7. Le battre ouvre la difficulté suivante et le Donjon des Bouftous."
+    }
+   ]
+  },
+  {
+   "id": "intermediaire",
+   "nom": "Intermédiaire",
+   "coffre": {
+    "pierres": {
+     "parfaite": 2
+    },
+    "kamas": 50000
+   },
+   "quetes": [
+    {
+     "id": "i1",
+     "titre": "Gagne le niveau 1 du Donjon des Bouftous",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 1
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 3
+       },
+       {
+        "etoiles": 3
+       }
+      ]
+     },
+     "ecran": "donjons",
+     "desc": "Le Donjon des Bouftous est sur la carte du Zaap. Ses runes sont parmi les meilleures !"
+    },
+    {
+     "id": "i2",
+     "titre": "Gagne le niveau 3 du donjon",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 3
+     },
+     "recompense": {
+      "kamas": 10000
+     },
+     "ecran": "donjons",
+     "desc": "À chaque niveau, le Bouftou Royal grossit et ses runes ont plus d'étoiles."
+    },
+    {
+     "id": "i3",
+     "titre": "Monte une rune à +6",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 6
+     },
+     "recompense": {
+      "kamas": 10000
+     },
+     "ecran": "cercle",
+     "desc": "Une rune à +6 a déjà deux sous-stats de plus qu'à +0."
+    },
+    {
+     "id": "i4",
+     "titre": "Équipe 6 runes sur un monstre",
+     "condition": {
+      "type": "runesPortees",
+      "n": 6
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 4
+       }
+      ]
+     },
+     "ecran": "cercle",
+     "desc": "Six emplacements, six runes : remplis-les tous."
+    },
+    {
+     "id": "i5",
+     "titre": "Active un set de 4 runes",
+     "condition": {
+      "type": "set4"
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 4
+       }
+      ]
+     },
+     "ecran": "cercle",
+     "desc": "Quatre runes du même set donnent un gros bonus : Fatal, Rapide, Violent, Vampire…"
+    },
+    {
+     "id": "i6",
+     "titre": "Finis Astrub en Difficile",
+     "condition": {
+      "type": "zone",
+      "zone": "astrub",
+      "dif": 1
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 1
+      }
+     },
+     "ecran": "zaap",
+     "desc": "En Difficile, les ennemis portent des runes. Prépare bien ton équipe."
+    },
+    {
+     "id": "i7",
+     "titre": "Fais évoluer un monstre en 4★",
+     "condition": {
+      "type": "evolue",
+      "n": 4
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 1
+      }
+     },
+     "ecran": "cercle",
+     "desc": "Un 4★ au niveau 30 ouvre la voie vers les étoiles du haut."
+    },
+    {
+     "id": "i8",
+     "titre": "Monte un monstre 3★ au niveau max",
+     "condition": {
+      "type": "niveauMax",
+      "etoiles": 3
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "cercle",
+     "desc": "Un monstre au niveau max peut évoluer."
+    },
+    {
+     "id": "i9",
+     "titre": "Gagne le niveau 5 du donjon",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 5
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 4
+       },
+       {
+        "etoiles": 4
+       },
+       {
+        "etoiles": 4
+       }
+      ]
+     },
+     "ecran": "donjons",
+     "desc": "Au niveau 5, le Bouftou Royal n'est plus un débutant."
+    },
+    {
+     "id": "i10",
+     "titre": "Monte 10 fois une rune",
+     "condition": {
+      "type": "compteur",
+      "cle": "rune",
+      "n": 10
+     },
+     "recompense": {
+      "kamas": 15000
+     },
+     "ecran": "cercle",
+     "desc": "Chaque montée compte, même d'un seul palier."
+    },
+    {
+     "id": "i11",
+     "titre": "Gagne 10 combats de donjon",
+     "condition": {
+      "type": "compteur",
+      "cle": "donjon",
+      "n": 10
+     },
+     "recompense": {
+      "energie": 30
+     },
+     "ecran": "donjons",
+     "desc": "Les combats à répétition font gagner du temps dans le donjon."
+    },
+    {
+     "id": "i12",
+     "titre": "Découvre 20 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 20
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "bestiaire",
+     "desc": "Le bestiaire se remplit : as-tu trouvé les Bonta et Brâkmar ?"
+    },
+    {
+     "id": "i13",
+     "titre": "Récolte la mine 20 fois",
+     "condition": {
+      "type": "compteur",
+      "cle": "mine",
+      "n": 20
+     },
+     "recompense": {
+      "pierresAme": 10
+     },
+     "ecran": "ile",
+     "desc": "Pense à passer par la mine : elle se remplit puis s'arrête."
+    },
+    {
+     "id": "i14",
+     "titre": "Gagne le niveau 7 du donjon",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 7
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 5
+       }
+      ]
+     },
+     "ecran": "donjons",
+     "desc": "Les runes 5★ commencent à tomber pour de bon."
+    }
+   ]
+  },
+  {
+   "id": "avance",
+   "nom": "Avancé",
+   "coffre": {
+    "pierres": {
+     "transcendante": 1
+    }
+   },
+   "quetes": [
+    {
+     "id": "a1",
+     "titre": "Monte une rune à +9",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 9
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 5
+       }
+      ]
+     },
+     "ecran": "cercle",
+     "desc": "À +9, ta rune est presque complète."
+    },
+    {
+     "id": "a2",
+     "titre": "Monte une rune à +12",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 12
+     },
+     "recompense": {
+      "kamas": 30000
+     },
+     "ecran": "cercle",
+     "desc": "À +12, toutes les sous-stats sont là."
+    },
+    {
+     "id": "a3",
+     "titre": "Gagne le niveau 8 du donjon",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 8
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 1
+      }
+     },
+     "ecran": "donjons",
+     "desc": "Au niveau 8, les runes 6★ peuvent tomber."
+    },
+    {
+     "id": "a4",
+     "titre": "Fais évoluer un monstre en 5★",
+     "condition": {
+      "type": "evolue",
+      "n": 5
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 2
+      }
+     },
+     "ecran": "cercle",
+     "desc": "Un 5★, c'est du sérieux."
+    },
+    {
+     "id": "a5",
+     "titre": "Finis Astrub en Enfer",
+     "condition": {
+      "type": "zone",
+      "zone": "astrub",
+      "dif": 2
+     },
+     "recompense": {
+      "choix5": true
+     },
+     "ecran": "zaap",
+     "desc": "L'Enfer d'Astrub, c'est le dernier défi de la zone. Au bout : un monstre 5★ de ton choix !"
+    },
+    {
+     "id": "a6",
+     "titre": "Monte une rune à +15",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 15
+     },
+     "recompense": {
+      "runes": [
+       {
+        "etoiles": 6
+       }
+      ]
+     },
+     "ecran": "cercle",
+     "desc": "Une rune à +15 donne tout ce qu'elle a."
+    },
+    {
+     "id": "a7",
+     "titre": "Gagne le niveau 10 du donjon",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 10
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 2
+      }
+     },
+     "ecran": "donjons",
+     "desc": "Le Bouftou Royal au sommet de sa forme. Il faut une équipe 6★ bien runée."
+    },
+    {
+     "id": "a8",
+     "titre": "Monte un monstre 5★ au niveau max",
+     "condition": {
+      "type": "niveauMax",
+      "etoiles": 5
+     },
+     "recompense": {
+      "pierres": {
+       "parfaite": 1
+      }
+     },
+     "ecran": "cercle",
+     "desc": "Niveau 35 : prêt pour la dernière étoile."
+    },
+    {
+     "id": "a9",
+     "titre": "Découvre 30 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 30
+     },
+     "recompense": {
+      "pierresAme": 10
+     },
+     "ecran": "bestiaire",
+     "desc": "Plus que quelques monstres pour remplir le bestiaire de la 0.1."
+    },
+    {
+     "id": "a10",
+     "titre": "Fais évoluer un monstre en 6★",
+     "condition": {
+      "type": "evolue",
+      "n": 6
+     },
+     "recompense": {
+      "pierres": {
+       "legendaire": 1
+      }
+     },
+     "ecran": "cercle",
+     "desc": "Le sommet : un monstre 6★."
+    }
+   ]
+  }
+ ],
+ "defis": [
+  {
+   "id": "donjon",
+   "nom": "Donjon des Bouftous",
+   "recompense": {
+    "monstre": "chef_de_guerre_bouftou"
+   },
+   "etapes": [
+    {
+     "id": "dd1",
+     "titre": "Gagne le niveau 1",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 1
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "donjons",
+     "desc": ""
+    },
+    {
+     "id": "dd2",
+     "titre": "Gagne le niveau 3",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 3
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "donjons",
+     "desc": ""
+    },
+    {
+     "id": "dd3",
+     "titre": "Gagne le niveau 5",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 5
+     },
+     "recompense": {
+      "pierresAme": 2
+     },
+     "ecran": "donjons",
+     "desc": ""
+    },
+    {
+     "id": "dd4",
+     "titre": "Gagne le niveau 7",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 7
+     },
+     "recompense": {
+      "pierresAme": 3
+     },
+     "ecran": "donjons",
+     "desc": ""
+    },
+    {
+     "id": "dd5",
+     "titre": "Gagne le niveau 10",
+     "condition": {
+      "type": "donjon",
+      "donjon": "bouftous",
+      "niveau": 10
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "donjons",
+     "desc": ""
+    }
+   ]
+  },
+  {
+   "id": "runes",
+   "nom": "Runes",
+   "recompense": {
+    "runes": [
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 1
+     },
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 2
+     },
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 3
+     },
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 4
+     },
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 5
+     },
+     {
+      "etoiles": 4,
+      "set": "iop",
+      "emplacement": 6
+     }
+    ]
+   },
+   "etapes": [
+    {
+     "id": "dr1",
+     "titre": "Équipe 6 runes sur un monstre",
+     "condition": {
+      "type": "runesPortees",
+      "n": 6
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "dr2",
+     "titre": "Monte 5 fois une rune",
+     "condition": {
+      "type": "compteur",
+      "cle": "rune",
+      "n": 5
+     },
+     "recompense": {
+      "kamas": 5000
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "dr3",
+     "titre": "Monte une rune à +6",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 6
+     },
+     "recompense": {
+      "kamas": 8000
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "dr4",
+     "titre": "Monte une rune à +9",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 9
+     },
+     "recompense": {
+      "kamas": 10000
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "dr5",
+     "titre": "Monte une rune à +12",
+     "condition": {
+      "type": "runeNiveau",
+      "n": 12
+     },
+     "recompense": {
+      "kamas": 15000
+     },
+     "ecran": "cercle",
+     "desc": ""
+    }
+   ]
+  },
+  {
+   "id": "evolution",
+   "nom": "Évolution",
+   "recompense": {
+    "pierres": {
+     "parfaite": 2
+    }
+   },
+   "etapes": [
+    {
+     "id": "de1",
+     "titre": "Fais évoluer un monstre en 2★",
+     "condition": {
+      "type": "evolue",
+      "n": 2
+     },
+     "recompense": {
+      "pierresAme": 2
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "de2",
+     "titre": "… en 3★",
+     "condition": {
+      "type": "evolue",
+      "n": 3
+     },
+     "recompense": {
+      "pierresAme": 3
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "de3",
+     "titre": "… en 4★",
+     "condition": {
+      "type": "evolue",
+      "n": 4
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "cercle",
+     "desc": ""
+    },
+    {
+     "id": "de4",
+     "titre": "… en 5★",
+     "condition": {
+      "type": "evolue",
+      "n": 5
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "cercle",
+     "desc": ""
+    }
+   ]
+  },
+  {
+   "id": "collection",
+   "nom": "Collection",
+   "recompense": {
+    "pierres": {
+     "legendaire": 1
+    }
+   },
+   "etapes": [
+    {
+     "id": "dc1",
+     "titre": "Découvre 10 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 10
+     },
+     "recompense": {
+      "kamas": 3000
+     },
+     "ecran": "bestiaire",
+     "desc": ""
+    },
+    {
+     "id": "dc2",
+     "titre": "Découvre 20 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 20
+     },
+     "recompense": {
+      "kamas": 6000
+     },
+     "ecran": "bestiaire",
+     "desc": ""
+    },
+    {
+     "id": "dc3",
+     "titre": "Découvre 30 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 30
+     },
+     "recompense": {
+      "pierresAme": 5
+     },
+     "ecran": "bestiaire",
+     "desc": ""
+    },
+    {
+     "id": "dc4",
+     "titre": "Découvre 40 monstres",
+     "condition": {
+      "type": "decouverts",
+      "n": 40
+     },
+     "recompense": {
+      "pierresAme": 10
+     },
+     "ecran": "bestiaire",
+     "desc": ""
+    }
+   ]
+  }
+ ]
+}

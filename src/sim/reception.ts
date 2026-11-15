@@ -5,7 +5,7 @@
  * « Tout recevoir » laisse l'énergie de côté, « Recevoir l'énergie » la prend (5C). Pur : le temps est passé en argument (ms).
  */
 import type { Joueur } from './joueur';
-import { ajouterMonstre } from './joueur';
+import { ajouterMonstre, compter } from './joueur';
 import { changerEnergie } from './energie';
 import { ajouterPierres, placesLibres, type Pierre } from './invocation';
 import CADEAUX from '../data/cadeaux.json';
@@ -56,7 +56,8 @@ export function envoyer(j: Joueur, id: string, titre: string, contenu: Contenu, 
 /** Raison pour laquelle un cadeau ne peut pas être reçu maintenant (4A : un monstre attend qu'il y ait de la place). */
 export const refusCadeau = (j: Joueur, c: Cadeau): 'places' | undefined => (c.contenu.monstre && placesLibres(j) < 1 ? 'places' : undefined);
 
-function appliquer(j: Joueur, c: Contenu, maintenant: number): Joueur {
+/** Donne le contenu d'un cadeau (aussi pour le Chemin de l'invocateur). */
+export function appliquerContenu(j: Joueur, c: Contenu, maintenant: number): Joueur {
   let r: Joueur = { ...j, kamas: j.kamas + (c.kamas ?? 0), pierresAme: j.pierresAme + (c.pierresAme ?? 0), fragments: j.fragments + (c.fragments ?? 0) };
   for (const [p, n] of Object.entries(c.pierres ?? {})) if (n) r = ajouterPierres(r, p as Pierre, n);
   if (c.energie) r = changerEnergie(r, c.energie, maintenant);
@@ -69,7 +70,7 @@ export function recevoir(j: Joueur, id: string, maintenant: number): Joueur {
   const liste = cadeaux(j, maintenant), c = liste.find((x) => x.id === id);
   if (!c) throw new Error(`Cadeau ${id} introuvable`);
   if (refusCadeau(j, c)) throw new Error('Collection pleine');
-  return appliquer({ ...j, reception: liste.filter((x) => x !== c) }, c.contenu, maintenant);
+  return compter(appliquerContenu({ ...j, reception: liste.filter((x) => x !== c) }, c.contenu, maintenant), 'cadeau');
 }
 
 /** « Tout recevoir » : tout sauf l'énergie, et les monstres tant qu'il y a de la place. */
