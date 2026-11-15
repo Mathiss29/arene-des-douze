@@ -161,6 +161,13 @@ onglets Progression et Défis (un défi par contenu, comme celui du Castel du G�
   coffres qui brillent (20 : 5 000 kamas + 3 pierres d'âme · 40 : 5 000 kamas + 5 pierres d'âme · 60 : 10 000 kamas · 80 : 20 énergie +
   1 pierre parfaite · 100 : 10 000 kamas + 2 fragments ⚠), « Recevoir » par mission et « Tout recevoir ». Code : `src/sim/missions.ts`.
 
+## Réception (maquette « Réception : » 1A 2C 3B 4A 5C 6C 7B, ✓ fait le 15 nov. 2026)
+- Bouton « Réception » en haut à gauche de l'île avec le nombre de cadeaux, « Nouveau » sur ceux pas encore vus.
+- Cadeaux ordinaires 7 jours (SW : environ 6 ✓), monstres et pierres sans limite.
+- Y passent : cadeaux de mise à jour (`src/data/cadeaux.json`, donnés une fois), codes à taper (ex. DOUZE01 pour Discord),
+  récompenses de zone, monstres gagnés quand la collection est pleine (ils attendent qu'il y ait de la place).
+- « Tout recevoir » laisse l'énergie de côté, « Recevoir l'énergie » la prend (comme SW). Code : `src/sim/reception.ts`.
+
 ## Envies de Mathis vues dans SW (vidéo du 15 nov. 2026)
 - Réception (boîte aux lettres) : les cadeaux y attendent (6 jours), « Recevoir », « Recevoir en 1 fois », « Recevoir l'énergie » ;
   onglets Coffre, Guilde, Points sociaux. Utile pour nous : récompenses du Chemin, cadeaux de mise à jour, compensations.

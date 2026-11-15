@@ -6,6 +6,7 @@ import { CHANCE_BONUS_XP, COUT_EVOLUTION, COUT_NOURRIR, NIVEAU_MAX, NOURRITURE_M
 import type { Rng } from './rng';
 import { fiche } from './fiches';
 import { ELEMENTS } from './types';
+import type { Cadeau } from './reception';
 
 export const VERSION_SAUVEGARDE = 1;
 
@@ -48,6 +49,10 @@ export interface Joueur {
   vus: string[];
   /** Missions du jour (jour, avancement, points reçus, coffres ouverts) ; absentes tant qu'aucune mission n'a bougé. */
   missions?: { jour: string; compte: Record<string, number>; recues: string[]; coffres: number[] };
+  /** Réception : cadeaux qui attendent (voir reception.ts). */
+  reception?: Cadeau[];
+  /** Cadeaux de mise à jour et codes déjà donnés. */
+  cadeauxDonnes?: string[];
 }
 
 export const TAILLE_EQUIPE = 4;
@@ -227,5 +232,8 @@ export function lireSauvegarde(brut: unknown): Joueur | null {
       recues: Array.isArray(j.missions.recues) ? [...new Set(j.missions.recues.filter((s) => typeof s === 'string'))] : [],
       coffres: Array.isArray(j.missions.coffres) ? [...new Set(j.missions.coffres.filter((n) => Number.isInteger(n)))] : [],
     } } : {}),
+    ...(Array.isArray(j.reception) ? { reception: j.reception.filter((c) => c && typeof c.id === 'string' && typeof c.titre === 'string' && c.contenu && typeof c.contenu === 'object' && Number.isFinite(c.arrive))
+      .map((c): Cadeau => ({ id: c.id, titre: c.titre, contenu: c.contenu, arrive: c.arrive, ...(Number.isFinite(c.expire) ? { expire: c.expire } : {}), ...(c.vu ? { vu: true } : {}) })) } : {}),
+    ...(Array.isArray(j.cadeauxDonnes) ? { cadeauxDonnes: j.cadeauxDonnes.filter((s) => typeof s === 'string') } : {}),
   };
 }

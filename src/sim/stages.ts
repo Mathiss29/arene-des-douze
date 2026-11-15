@@ -3,6 +3,8 @@ import ZONES_JSON from '../data/zones.json';
 import { monstreCombat } from './fiches';
 import { ajouterMonstre, donnerXp, type Joueur } from './joueur';
 import { changerEnergie, ENERGIE } from './energie';
+import { envoyer } from './reception';
+import { placesLibres } from './invocation';
 import { NIVEAU_MAX, type Etoiles } from './progression';
 import { Rng } from './rng';
 import type { MonstreCombat } from './types';
@@ -157,7 +159,9 @@ export function appliquerVictoire(j: Joueur, s: Stage, b: Butin, maintenant: num
     stagesFinis: joueur.stagesFinis.includes(s.id) ? joueur.stagesFinis : [...joueur.stagesFinis, s.id],
   };
   if (b.energie) r = changerEnergie(r, b.energie, maintenant);
-  if (b.monstre) r = ajouterMonstre(r, b.monstre).joueur;
-  if (b.zone) r = { ...ajouterMonstre(r, b.zone.id).joueur, recompensesZones: [...r.recompensesZones, s.zone] };
+  // monstre gagné : dans la collection, ou à la Réception si elle est pleine (maquette « Réception : » 3B, 4A)
+  if (b.monstre) r = placesLibres(r) > 0 ? ajouterMonstre(r, b.monstre).joueur : envoyer(r, `butin:${s.id}:${maintenant}`, `Monstre gagné : ${s.id} (collection pleine)`, { monstre: b.monstre }, maintenant);
+  // récompense de zone : envoyée à la Réception
+  if (b.zone) r = { ...envoyer(r, `zone:${s.zone}`, `Récompense de zone : ${zone(s.zone).nom}`, { monstre: b.zone.id }, maintenant), recompensesZones: [...r.recompensesZones, s.zone] };
   return { joueur: r, niveaux };
 }

@@ -1,3 +1,4 @@
+import { cadeaux, recevoir } from '../src/sim/reception';
 import { describe, expect, it } from 'vitest';
 import { lireSauvegarde, nouveauJoueur, type Joueur } from '../src/sim/joueur';
 import { ENERGIE, avantProchaine, changerEnergie, energie } from '../src/sim/energie';
@@ -42,9 +43,10 @@ describe('Zones et difficultés (SW : 7 stages, Normal → Difficile → Enfer)'
     for (let i = 0; i < 6; i++) j = gagner(j, astrub.stages[i]);
     const b = tirerButin(j, stage('astrub-7'), 3);
     expect(b.zone).toEqual(astrub.recompense);
-    const avant = j.monstres.length;
     j = appliquerVictoire(j, stage('astrub-7'), b, 0).joueur;
-    expect(j.monstres.length).toBeGreaterThanOrEqual(avant + 1);
+    // la récompense arrive à la Réception (maquette « Réception : » 3B)
+    expect(cadeaux(j, 0).some((c) => c.id === 'zone:astrub' && c.contenu.monstre === astrub.recompense!.id)).toBe(true);
+    j = recevoir(j, 'zone:astrub', 0);
     expect(j.monstres.some((m) => m.id === astrub.recompense!.id)).toBe(true);
     expect(j.recompensesZones).toContain('astrub');
     expect(tirerButin(j, stage('astrub-7'), 3).zone).toBeUndefined();

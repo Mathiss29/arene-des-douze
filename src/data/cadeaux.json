@@ -1,0 +1,13 @@
+[
+ {
+  "id": "bienvenue-0.1",
+  "titre": "Ganymède : bienvenue dans l'Arène des Douze !",
+  "contenu": { "pierresAme": 10, "kamas": 20000 }
+ },
+ {
+  "id": "code-discord-0.1",
+  "titre": "Code Discord : merci de tester la 0.1 !",
+  "code": "DOUZE01",
+  "contenu": { "pierres": { "parfaite": 1 }, "energie": 30 }
+ }
+]

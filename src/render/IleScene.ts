@@ -4,6 +4,7 @@ import { peutEvoluer, type Joueur } from '../sim/joueur';
 import { MINE, kamasEnMine, recolterMine } from '../sim/mine';
 import { prochainStage } from '../sim/stages';
 import { aRecevoir, noterMission } from '../sim/missions';
+import { cadeaux, distribuer } from '../sim/reception';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -84,7 +85,7 @@ export class IleScene extends Phaser.Scene {
     // la mine produit dès la première visite de l'île
     if (this.joueur.mine === undefined) this.joueur = { ...this.joueur, mine: Date.now() };
     // mission « Début de la journée »
-    this.joueur = noterMission(this.joueur, 'connexion', 1, Date.now());
+    this.joueur = distribuer(noterMission(this.joueur, 'connexion', 1, Date.now()), Date.now());
     sauver(this.joueur);
 
     // morceaux vivants : un cadre par morceau dans l'atlas vif0
@@ -142,6 +143,15 @@ export class IleScene extends Phaser.Scene {
     const plaque = (x: number, y: number, t: string, couleur = '#ffffff', ox = 0) =>
       texte(this, x, y, t, 15, couleur, true, ox, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
     u.add(plaque(16, 14, 'Incarnam', '#ffe08a'));
+    // Réception (maquette « Réception : » 1A, 7B) : sous le titre, avec le nombre de cadeaux
+    const rec = plaque(16, 56, 'Réception', '#ffffff').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('reception'));
+    u.add(rec);
+    const nbCadeaux = cadeaux(j, Date.now()).length;
+    if (nbCadeaux) {
+      const px = 16 + rec.width + 2, py = 56;
+      u.add(this.add.circle(px, py, 12, 0xe8673f).setStrokeStyle(2, 0xffffff));
+      u.add(this.add.text(px, py, String(nbCadeaux), { fontFamily: CHIFFRES, fontSize: '13px', color: '#ffffff' }).setOrigin(0.5));
+    }
     this.bourse = plaque(W - 16, 14, '', '#ffe08a', 1);
     this.pierres = plaque(W - 16, 14, `${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, '#d9b3ff', 1);
     u.add([this.bourse, this.pierres]);
