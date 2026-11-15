@@ -231,14 +231,18 @@ Maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A (14 nov. 2026) :
   Sadida = Désespoir (4, 25 % d'étourdir au premier coup ✓ RELOADED), Iop = Rage (4, dégâts crit. +40 %), Sram = Fatal (4, ATQ +35 %),
   Eniripsa = Vampire (4, 35 % des dégâts en PV), Sacrieur = Vengeance (2, 15 % de contre-attaque à 75 %),
   Féca = Bouclier (2, bouclier de 15 % des PV à l'équipe, 3 tours), Crâ = Concentration (2, précision +20 %),
-  Pandawa = Endurance (2, résistance +20 %), Osamodas = Combat (2, ATQ des alliés +8 %), Enutrof = Énergie (2, PV +15 %) ⚠ choix provisoire.
+  Pandawa = Endurance (2, résistance +20 %), Osamodas = Combat (2, ATQ des alliés +8 %), Enutrof = Prospection (2, kamas gagnés +20 %, propre au jeu).
+- Plus de 12 sets (maquette « Sets : » 1B 2C 3C) : d'autres classes de Dofus d'abord, puis des monstres et des lieux.
+  Déjà là : Roublard = Lame (2, taux critique +12 %), Zobal = Garde (2, DEF +15 %), Steamer = Énergie (2, PV +15 %).
+  Avec les donjons : Eliotrope = Volonté, Ouginak = Némésis, Huppermage = Destruction, Forgelance = Intangible.
+  Plusieurs donjons (choix de Mathis), chacun avec ses sets, comme les donjons de Cairos.
 - Sources : zones (set de la zone : Astrub Iop ; Normal 20 % 1-3★, Difficile 30 % 2-4★, Enfer 40 % 3-5★ ⚠), coffre des missions
-  à 60 points (1 rune 4★), Réception (6 runes 3★ Fatal et Énergie offertes au départ), donjon (6★) à venir.
+  à 60 points (1 rune 4★), Réception (6 runes 3★ Fatal et Énergie (Steamer) offertes au départ), donjon (6★) à venir.
 - Écran : fiche du monstre, onglet Runes (depuis le Cercle d'amélioration et la préparation d'équipe) : 6 emplacements autour du monstre,
   stats avec le bonus des runes, montée animée à chaque palier, inventaire par emplacement, vente sélective (étoiles et grade),
   3 préréglages par monstre. Prix de vente ⚠ les nôtres.
 - Ennemis : runes invisibles ⚠ (rien en Normal, puis +12 % de PV/ATQ/DEF par difficulté et un peu par stage, VIT, crit., rés., préc.).
-- Plus tard : Intangible, Lame, Garde, Némésis, Volonté, Destruction et les sets de soutien du Royaume spirituel.
+- Plus tard : les sets de soutien du Royaume spirituel (Sceau, Détermination, Amélioration, Précision, Tolérance).
 
 ## 6. Économie
 Kamas (le mana de SW), Énergie, Pierres d'âme, Ogrines (les cristaux de SW, gagnées en jouant uniquement), Essences, Jetons de Kolizéum. ⏳ Montants.

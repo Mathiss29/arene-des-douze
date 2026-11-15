@@ -5,7 +5,7 @@ import { ajouterMonstre, donnerXp, type Joueur } from './joueur';
 import { changerEnergie, ENERGIE } from './energie';
 import { envoyer } from './reception';
 import { placesLibres } from './invocation';
-import { avecRunes, runesEnnemies, SETS, type EtoilesRune, type SetRune } from './runes';
+import { avecRunes, runesEnnemies, setsActifs, SETS, type EtoilesRune, type SetRune } from './runes';
 import { donnerRune } from './inventaire';
 import { NIVEAU_MAX, type Etoiles } from './progression';
 import { Rng } from './rng';
@@ -155,6 +155,9 @@ export function tirerButin(j: Joueur, s: Stage, graine: number): Butin {
   };
   if (rng.chance(CHANCE_ENERGIE)) b.energie = 1 + Math.floor(rng.suivant() * 3);
   if (rng.chance(CHANCE_MONSTRE)) b.monstre = s.ennemis[Math.floor(rng.suivant() * s.ennemis.length)].id;
+  // set Prospection (Enutrof) : +20 % de kamas par set porté dans l'équipe
+  const prospection = j.equipe.reduce((n, uid) => n + (setsActifs((j.runes ?? []).filter((r) => r.porteur === uid)).enutrof ?? 0), 0);
+  b.kamas = Math.round(b.kamas * (1 + 0.2 * prospection));
   const z = zone(s.zone);
   const rz = RUNES_ZONE[s.dif], set = setDeZone(z);
   if (set && rng.chance(rz.chance)) b.rune = { etoiles: (rz.min + Math.floor(rng.suivant() * 3)) as EtoilesRune, set, graine: Math.floor(rng.suivant() * 2 ** 31) };

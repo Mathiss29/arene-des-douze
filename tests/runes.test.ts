@@ -9,7 +9,7 @@ import {
   ameliorer, appliquerPrereglage, coutEquiper, donnerRune, enregistrerPrereglage, equiper, retirerRune, retraitGratuit, runesDe,
   selection, vendreRunes, visite,
 } from '../src/sim/inventaire';
-import { equipeJoueur } from '../src/sim/stages';
+import { equipeJoueur, stage, tirerButin } from '../src/sim/stages';
 
 const JOUR = 86_400_000, T = 1_000 * JOUR;
 const rune = (p: Partial<Rune> & { set: SetRune; emplacement: Rune['emplacement'] }, uid = 1): Rune =>
@@ -45,8 +45,8 @@ describe('runes (fidèles à SW)', () => {
 
   it('sets : 2 ou 4 pièces, bonus en % de la base', () => {
     const l = [rune({ set: 'sram', emplacement: 1 }, 1), rune({ set: 'sram', emplacement: 2 }, 2), rune({ set: 'sram', emplacement: 3 }, 3), rune({ set: 'sram', emplacement: 4 }, 4),
-      rune({ set: 'enutrof', emplacement: 5 }, 5), rune({ set: 'enutrof', emplacement: 6 }, 6)];
-    expect(setsActifs(l)).toEqual({ sram: 1, enutrof: 1 });
+      rune({ set: 'steamer', emplacement: 5 }, 5), rune({ set: 'steamer', emplacement: 6 }, 6)];
+    expect(setsActifs(l)).toEqual({ sram: 1, steamer: 1 });
     expect(setsActifs(l.slice(0, 3))).toEqual({});
     const base = { pv: 10000, atq: 1000, def: 500, vit: 100, tc: 15, dc: 50, pre: 0, res: 15 };
     const b = bonusRunes(base, l);
@@ -56,8 +56,19 @@ describe('runes (fidèles à SW)', () => {
     expect(b.def).toBe(22);
   });
 
+  it('Lame, Garde et Prospection', () => {
+    const base = { pv: 10000, atq: 1000, def: 500, vit: 100, tc: 15, dc: 50, pre: 0, res: 15 };
+    const deux = (s: SetRune) => [rune({ set: s, emplacement: 1 }, 1), rune({ set: s, emplacement: 3 }, 2)];
+    expect(bonusRunes(base, deux('roublard')).tc).toBe(12);
+    expect(bonusRunes(base, deux('zobal')).def).toBe(22 + 75);
+    let j: Joueur = nouveauJoueur();
+    const s = stage('astrub-1'), sans = tirerButin(j, s, 5).kamas;
+    for (const [i, e] of ([1, 3] as const).entries()) { j = donnerRune(j, { etoiles: 1, set: 'enutrof', emplacement: e }, i).joueur; j = equiper(j, j.runes![i].uid, j.equipe[0], 0); }
+    expect(tirerButin(j, s, 5).kamas).toBe(Math.round(sans * 1.2));
+  });
+
   it('combat : un monstre runé est plus fort, et le combat reste déterministe', () => {
-    const l = [1, 2, 3, 4, 5, 6].map((e, i) => creerRune(i + 1, { etoiles: 6, grade: 4, set: e <= 4 ? 'sram' : 'enutrof', emplacement: e as Rune['emplacement'] }, new Rng(e)))
+    const l = [1, 2, 3, 4, 5, 6].map((e, i) => creerRune(i + 1, { etoiles: 6, grade: 4, set: e <= 4 ? 'sram' : 'steamer', emplacement: e as Rune['emplacement'] }, new Rng(e)))
       .map((r) => monter(r, 15, new Rng(r.uid)).rune);
     const m = avecRunes(monstreCombat('piou_vert'), l);
     expect(m.stats.atq).toBeGreaterThan(monstreCombat('piou_vert').stats.atq * 1.5);

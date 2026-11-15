@@ -6,14 +6,16 @@
  *   effets des sets, coût du retrait par étoile.
  * ✓ RELOADED (2023) : plus d'échec, montée instantanée à prix fixe ; le grade d'origine reste affiché.
  * ⚠ Coûts de montée : ceux d'une tentative avant RELOADED (wiki) ; prix de vente : les nôtres.
- * Sets : les 12 dieux du Monde des Douze (GDD) ; Enutrof = Énergie (PV +15 %), choix provisoire.
+ * Sets (maquette « Sets : » 1B 2C 3C) : les 12 dieux, puis d'autres classes de Dofus, puis des monstres et des lieux.
+ * Enutrof = Prospection (propre au jeu) ; Roublard = Lame, Zobal = Garde, Steamer = Énergie.
  * Ne dépend que des types : joueur.ts peut l'importer.
  */
 import { Rng } from './rng';
 import type { MonstreCombat, Stats } from './types';
 
 export type StatRune = 'pv_fixe' | 'pv' | 'atq_fixe' | 'atq' | 'def_fixe' | 'def' | 'vit' | 'tc' | 'dc' | 'res' | 'pre';
-export type SetRune = 'ecaflip' | 'xelor' | 'sadida' | 'iop' | 'sram' | 'eniripsa' | 'sacrieur' | 'feca' | 'cra' | 'pandawa' | 'osamodas' | 'enutrof';
+export type SetRune = 'ecaflip' | 'xelor' | 'sadida' | 'iop' | 'sram' | 'eniripsa' | 'sacrieur' | 'feca' | 'cra' | 'pandawa' | 'osamodas' | 'enutrof'
+  | 'roublard' | 'zobal' | 'steamer';
 export type EtoilesRune = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface SousStat { stat: StatRune; valeur: number; montees: number }
@@ -51,7 +53,10 @@ export const SETS: Record<SetRune, InfoSet> = {
   cra: { nom: 'Concentration', dieu: 'Crâ', pieces: 2, effet: 'Précision +20 %' },
   pandawa: { nom: 'Endurance', dieu: 'Pandawa', pieces: 2, effet: 'Résistance +20 %' },
   osamodas: { nom: 'Combat', dieu: 'Osamodas', pieces: 2, effet: 'ATQ des alliés +8 %' },
-  enutrof: { nom: 'Énergie', dieu: 'Enutrof', pieces: 2, effet: 'PV +15 %' },
+  enutrof: { nom: 'Prospection', dieu: 'Enutrof', pieces: 2, effet: 'Kamas gagnés en combat +20 %' },
+  roublard: { nom: 'Lame', dieu: 'Roublard', pieces: 2, effet: 'Taux critique +12 %' },
+  zobal: { nom: 'Garde', dieu: 'Zobal', pieces: 2, effet: 'DEF +15 %' },
+  steamer: { nom: 'Énergie', dieu: 'Steamer', pieces: 2, effet: 'PV +15 %' },
 };
 export const LISTE_SETS = Object.keys(SETS) as SetRune[];
 
@@ -193,7 +198,9 @@ export function bonusRunes(base: Stats, runes: Rune[]): Stats {
   b.dc += (sets.iop ?? 0) * 40;
   b.pre += (sets.cra ?? 0) * 20;
   b.res += (sets.pandawa ?? 0) * 20;
-  b.pv += ((sets.enutrof ?? 0) * base.pv * 15) / 100;
+  b.pv += ((sets.steamer ?? 0) * base.pv * 15) / 100;
+  b.def += ((sets.zobal ?? 0) * base.def * 15) / 100;
+  b.tc += (sets.roublard ?? 0) * 12;
   return { pv: Math.round(b.pv), atq: Math.round(b.atq), def: Math.round(b.def), vit: Math.round(b.vit), tc: b.tc, dc: b.dc, pre: b.pre, res: b.res };
 }
 
