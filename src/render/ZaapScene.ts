@@ -47,7 +47,7 @@ export class ZaapScene extends Phaser.Scene {
   }
 
   preload() {
-    chargerUi(this, [...new Set(ZONES.flatMap((z) => [...z.stages.flatMap((s) => stage(s).ennemis.map((e) => e.id)), ...(z.recompense ? [z.recompense.id] : [])]))]);
+    chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('ile_ciel')) this.load.image('ile_ciel', 'assets/ile/ciel.webp');
     for (const n of ['astrub', 'madrestam', 'bastion', 'frigost', 'incarnam', 'mapItemFight_2', 'mapItemBoss_2', 'mapItemStart', 'lock_big', 'mapSelector'])
       if (!this.textures.exists(`zaap_${n}`)) this.load.image(`zaap_${n}`, `assets/zaap/${n}.webp`);

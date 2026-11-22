@@ -25,7 +25,7 @@ export class BestiaireScene extends Phaser.Scene {
   init() { this.joueur = charger(); this.page = 0; this.choisi = null; this.calque = []; }
 
   preload() {
-    chargerUi(this, TOUS.map((m) => m.id));
+    chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
   }
 

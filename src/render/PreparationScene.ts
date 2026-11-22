@@ -9,7 +9,7 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerUi, COULEUR, fmt, H, hex, monstreEnPied, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
+import { bouton, caseSombre, chargerPuis, chargerUi, COULEUR, fmt, H, hex, monstreEnPied, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
 
 /**
  * Préparation d'équipe (maquette « Écrans : » 1B 2B 3B 4A 5A 6A) : collection à gauche, ennemis et équipe à droite.
@@ -48,8 +48,8 @@ export class PreparationScene extends Phaser.Scene {
     this.load.once('complete', () => t.destroy());
     const cle = `arene:${this.stage.arene}`;
     if (!this.textures.exists(cle)) this.load.image(cle, distant(this.stage.arene));
-    const ids = [...this.joueur.monstres.map((m) => m.id), ...this.stage.ennemis.map((e) => e.id)];
-    chargerUi(this, ids);
+    // portraits en vignettes ; la planche d'un monstre n'est chargée qu'en ouvrant sa fiche
+    chargerUi(this, []);
     for (const id of new Set(this.joueur.monstres.map((m) => m.id))) {
       for (const s of monstreCombat(id).sorts) if (s.icone && !this.textures.exists(`sort_${s.icone}`)) this.load.image(`sort_${s.icone}`, `assets/ui/sorts/sort_${s.icone}.png`);
     }
@@ -63,7 +63,6 @@ export class PreparationScene extends Phaser.Scene {
     const s = W / 2300;
     this.add.image(-520 * s, -600 * s, `arene:${this.stage.arene}`).setOrigin(0).setScale(s);
     this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.6).setDepth(1);
-    for (const id of new Set([...this.joueur.monstres.map((m) => m.id), ...this.stage.ennemis.map((e) => e.id)])) creerAnimations(this, LOOKS[id].atlas);
     this.dessiner();
   }
 
@@ -303,6 +302,10 @@ export class PreparationScene extends Phaser.Scene {
   }
 
   private ouvrirFiche(m: MonstrePossede) {
+    chargerPuis(this, [m.id], () => { creerAnimations(this, LOOKS[m.id].atlas); this.ficheChargee(m); });
+  }
+
+  private ficheChargee(m: MonstrePossede) {
     this.fermerFiche();
     const k = <T extends { destroy(): void }>(o: T): T => { this.calqueFiche.push(o); return o; };
     const D = 5000;

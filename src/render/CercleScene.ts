@@ -10,7 +10,7 @@ import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { preparerTextures } from './effets';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, texte, W } from './ui';
+import { bouton, caseSombre, chargerPuis, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, texte, W } from './ui';
 
 /**
  * Cercle d'amélioration (maquette « Évolution : » 1A…9A) : bâtiment de l'île où l'on nourrit (XP) et fait évoluer les monstres.
@@ -52,7 +52,8 @@ export class CercleScene extends Phaser.Scene {
   preload() {
     const arene = stage(this.retour).arene;
     if (!this.textures.exists(`arene:${arene}`)) this.load.image(`arene:${arene}`, distant(arene));
-    chargerUi(this, this.joueur.monstres.map((m) => m.id));
+    // portraits en vignettes ; la planche du monstre choisi est chargée quand on le choisit
+    chargerUi(this, []);
   }
 
   create() {
@@ -297,6 +298,7 @@ export class CercleScene extends Phaser.Scene {
 
     // Monstre choisi
     this.g(this.add.ellipse(640, 380, 190, 52, COULEUR[f.element], 0.2).setStrokeStyle(3, COULEUR[f.element]).setDepth(999));
+    if (!this.textures.exists(LOOKS[c.id].atlas)) chargerPuis(this, [c.id], () => { creerAnimations(this, LOOKS[c.id].atlas); if (this.cible === c.uid) this.dessiner(); });
     this.sujet = this.g(monstreEnPied(this, c.id, 640, 380, 1.35).setDepth(1001));
     this.t(640, 396, this.etoiles(c.etoiles), 24, '#ffcf4a').setData('etoiles', true);
     this.t(640, 428, `${f.nom}`, 16, '#ffffff', true);

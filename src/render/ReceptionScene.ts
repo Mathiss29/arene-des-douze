@@ -29,7 +29,7 @@ export class ReceptionScene extends Phaser.Scene {
   }
 
   preload() {
-    chargerUi(this, cadeaux(this.joueur, Date.now()).flatMap((c) => (c.contenu.monstre ? [c.contenu.monstre] : [])));
+    chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
   }
 

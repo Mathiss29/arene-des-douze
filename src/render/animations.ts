@@ -7,6 +7,7 @@ export const FPS = 30;
  * Renvoie les noms d'animations trouvés.
  */
 export function creerAnimations(scene: Phaser.Scene, cle: string): string[] {
+  if (!scene.textures.exists(cle)) return []; // planche pas (encore) chargée
   const groupes = new Map<string, { nom: string; i: number }[]>();
   for (const nom of scene.textures.get(cle).getFrameNames()) {
     const m = /^(.*)_(\d+)$/.exec(nom);

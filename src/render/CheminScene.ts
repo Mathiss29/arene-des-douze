@@ -33,7 +33,7 @@ export class CheminScene extends Phaser.Scene {
   }
 
   preload() {
-    chargerUi(this, [...CHOIX_5, 'chef_de_guerre_bouftou']);
+    chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('pnj_ganymede')) this.load.image('pnj_ganymede', 'assets/ui/pnj_ganymede.webp');
     if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
   }

@@ -32,7 +32,7 @@ export class DonjonsScene extends Phaser.Scene {
   }
 
   preload() {
-    chargerUi(this, DONJONS.flatMap((d) => (d.boss ? [d.boss] : [])));
+    chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('zaap_frigost')) this.load.image('zaap_frigost', 'assets/zaap/frigost.webp');
   }
 

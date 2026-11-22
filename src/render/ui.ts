@@ -32,6 +32,8 @@ const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal',
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
   for (const f of IMAGES_UI) if (!scene.textures.exists(f)) scene.load.image(f, `assets/ui/${f}.png`);
+  // vignettes de tous les monstres (280 Ko) : les portraits n'ont pas besoin des planches (plusieurs Mo chacune)
+  if (!scene.textures.exists('vignettes')) scene.load.atlas('vignettes', 'assets/ui/vignettes.webp', 'assets/ui/vignettes.json');
   for (const id of new Set(ids)) {
     const a = LOOKS[id].atlas;
     if (!scene.textures.exists(a)) scene.load.multiatlas(a, atlasPlanche(a), dossierPlanches);
@@ -108,10 +110,31 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
   return sp;
 }
 
-/** Portrait recadré dans un cercle ou un carré. Renvoie le sprite et son masque (à détruire avec). */
+/**
+ * Charge des planches à la demande (fiche, monstre en pied) puis appelle `puis` ; tout de suite si elles sont déjà là.
+ * Les écrans ne préchargent plus les planches de toute la collection (le Chemin chargeait 17 Mo, le bestiaire 70 Mo).
+ */
+const TENTEES = new Set<string>();
+export function chargerPuis(scene: Phaser.Scene, ids: Iterable<string>, puis: () => void) {
+  const manque = [...new Set(ids)].filter((id) => !scene.textures.exists(LOOKS[id].atlas) && !TENTEES.has(LOOKS[id].atlas));
+  if (!manque.length) {
+    // déjà là : tout de suite ; déjà tentée sans succès : rien (pas de boucle)
+    if ([...ids].every((id) => scene.textures.exists(LOOKS[id].atlas))) puis();
+    return;
+  }
+  for (const id of manque) TENTEES.add(LOOKS[id].atlas); // une seule tentative : pas de boucle si le réseau échoue
+  chargerUi(scene, manque);
+  scene.load.once('complete', () => { if (scene.sys.isActive()) puis(); });
+  scene.load.start();
+}
+
+/** Portrait recadré dans un cercle ou un carré (vignette légère, sinon la planche). Renvoie le sprite et son masque (à détruire avec). */
 export function portrait(scene: Phaser.Scene, id: string, x: number, y: number, taille: number, rond = true, miroir = false, profondeur = 1001) {
-  const pret = planchePrete(scene, LOOKS[id].atlas);
-  const sp = pret ? scene.add.sprite(x, y, LOOKS[id].atlas, 'AnimStatique_1_0').setDepth(profondeur) : scene.add.sprite(x, y, silhouette(scene)).setDepth(profondeur);
+  const atlas = LOOKS[id].atlas;
+  const vignette = scene.textures.exists('vignettes') && scene.textures.get('vignettes').has(atlas);
+  const pret = !vignette && planchePrete(scene, atlas);
+  const sp = vignette ? scene.add.sprite(x, y, 'vignettes', atlas).setDepth(profondeur)
+    : pret ? scene.add.sprite(x, y, atlas, 'AnimStatique_1_0').setDepth(profondeur) : scene.add.sprite(x, y, silhouette(scene)).setDepth(profondeur);
   teinter(sp, id);
   const f = sp.frame;
   const k = (taille * 1.1) / Math.max(f.cutWidth, f.cutHeight);
