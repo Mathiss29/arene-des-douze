@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { charger, dernieresErreurs, effacer, exporter, importer, sauver } from './sauvegarde';
 import { VERSION_JEU } from '../version';
+import { reglerVolume, volumeMusique } from './musique';
 import { H, OR, POLICE, W, bouton, panneau, texte } from './ui';
 
 /**
@@ -32,14 +33,21 @@ export class OptionsScene extends Phaser.Scene {
       texte(this, 380, y + 12, aide, 12, '#93a89b', false, 0, 0.5).setWordWrapWidth(360);
       bouton(this, 830, y, 170, 42, lib, vert, action);
     };
-    ligne(210, 'Exporter ma partie', 'Copie un code à garder ou à coller sur un autre appareil.', 'Copier le code', true, () => this.exporter());
-    ligne(290, 'Importer une partie', 'Colle un code : il remplace la partie de cet appareil.', 'Coller un code', false, () => this.importer());
-    ligne(370, 'Signaler un bug', 'Copie un rapport (version, appareil, erreurs) à coller sur le Discord.', 'Copier le rapport', false, () => this.signaler());
-    ligne(450, 'Plein écran', 'Conseillé sur téléphone, en mode paysage.', 'Plein écran', false, () => {
+    ligne(196, 'Exporter ma partie', 'Copie un code à garder ou à coller sur un autre appareil.', 'Copier le code', true, () => this.exporter());
+    ligne(264, 'Importer une partie', 'Colle un code : il remplace la partie de cet appareil.', 'Coller un code', false, () => this.importer());
+    ligne(332, 'Signaler un bug', 'Copie un rapport (version, appareil, erreurs) à coller sur le Discord.', 'Copier le rapport', false, () => this.signaler());
+    ligne(400, 'Plein écran', 'Conseillé sur téléphone, en mode paysage.', 'Plein écran', false, () => {
       if (this.scale.isFullscreen) this.scale.stopFullscreen(); else this.scale.startFullscreen();
     });
-    ligne(530, 'Recommencer', 'Efface la partie (une copie de secours est gardée).', 'Recommencer', false, () => this.recommencer());
-    texte(this, W / 2, 630, 'Les images des monstres viennent de Dofus 3 (Ankama). Jeu fait par des fans, inspiré de Summoners War.', 11, '#6f7a6c', false, 0.5, 0.5);
+    const libVolume = () => { const v = volumeMusique(); return v === 0 ? 'Coupée' : `${Math.round(v * 100)} %`; };
+    const bv = bouton(this, 830, 468, 170, 42, libVolume(), false, () => {
+      const v = volumeMusique(), suite = v >= 1 ? 0 : v === 0 ? 0.3 : v < 0.6 ? 0.6 : 1;
+      reglerVolume(suite); bv.t.setText(libVolume());
+    });
+    texte(this, 380, 456, 'Musique', 16, '#ffffff', true, 0, 0.5);
+    texte(this, 380, 480, 'Touche pour changer le volume : 30 %, 60 %, 100 %, coupée.', 12, '#93a89b', false, 0, 0.5);
+    ligne(536, 'Recommencer', 'Efface la partie (une copie de secours est gardée).', 'Recommencer', false, () => this.recommencer());
+    texte(this, W / 2, 630, 'Monstres : Dofus 3 (Ankama) · musique faite avec Suno · fan game inspiré de Summoners War', 11, '#6f7a6c', false, 0.5, 0.5);
     void OR;
   }
 

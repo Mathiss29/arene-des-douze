@@ -7,6 +7,7 @@ import { aRecevoir, noterMission } from '../sim/missions';
 import { cadeaux, distribuer } from '../sim/reception';
 import { visite } from '../sim/inventaire';
 import { aRecevoirChemin } from '../sim/chemin';
+import { jouerMusique } from './musique';
 import { Particules, type SysData } from './particules';
 import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
 
@@ -134,6 +135,7 @@ export class IleScene extends Phaser.Scene {
 
     this.interface();
     this.bienvenue();
+    jouerMusique(this, 'incarnam');
     this.controles();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.input.off('wheel'));
   }
