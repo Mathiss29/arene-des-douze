@@ -7,7 +7,13 @@ import Phaser from 'phaser';
  * Sur navigateur, le son ne démarre qu'après une première touche ou un clic : Phaser attend ce moment tout seul.
  */
 const CLE_VOLUME = 'arene-des-douze:volume-musique';
-export const PISTES: Record<string, string> = { incarnam: 'assets/musique/incarnam.mp3' };
+export const PISTES: Record<string, string> = {
+  incarnam: 'assets/musique/incarnam.mp3', // « Waltz de Magie »
+  combat: 'assets/musique/combat.mp3', // « Heroic Charge »
+};
+
+/** Piste de chaque écran : la musique de combat en combat, celle d'Incarnam ailleurs. */
+export const pisteDe = (scene: string) => (scene === 'combat' ? 'combat' : 'incarnam');
 
 let courante: Phaser.Sound.BaseSound | null = null;
 let nomCourant = '';
@@ -28,17 +34,39 @@ export function jouerMusique(scene: Phaser.Scene, nom: string) {
   nomCourant = nom;
   const cle = `musique_${nom}`;
   const lancer = () => {
-    if (nomCourant !== nom || !scene.sys.game) return;
+    if (nomCourant !== nom) return;
+    const sons = scene.sys.game.sound;
     const ancienne = courante;
-    if (ancienne) scene.tweens.add({ targets: ancienne, volume: 0, duration: 1200, onComplete: () => ancienne.destroy() });
-    const s = scene.sound.add(cle, { loop: true, volume: 0 });
+    if (ancienne) fondu(ancienne, 0, 1200, () => ancienne.destroy());
+    const s = sons.add(cle, { loop: true }) as Phaser.Sound.WebAudioSound;
+    s.setVolume(0);
     courante = s;
-    const fondu = () => scene.tweens.add({ targets: s, volume: volumeMusique(), duration: 2000 });
-    if (scene.sound.locked) scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => { s.play(); fondu(); });
-    else { s.play(); fondu(); }
+    const partir = () => { s.play(); fondu(s, volumeMusique(), 2000); };
+    if (sons.locked) sons.once(Phaser.Sound.Events.UNLOCKED, partir); else partir();
   };
-  if (scene.cache.audio.exists(cle)) return lancer();
-  scene.load.audio(cle, url);
-  scene.load.once(`filecomplete-audio-${cle}`, lancer);
-  scene.load.start();
+  if (scene.sys.game.cache.audio.exists(cle)) return lancer();
+  // chargement hors du chargeur des scènes (il est partagé avec leurs planches et leurs événements « complete »)
+  const son = scene.sys.game.sound as Phaser.Sound.WebAudioSoundManager;
+  if (EN_COURS.has(cle)) return;
+  EN_COURS.add(cle);
+  fetch(url).then((r) => r.arrayBuffer()).then((buf) => {
+    if (son.decodeAudio) {
+      const fini = (k: string) => { if (k !== cle) return; son.off(Phaser.Sound.Events.DECODED, fini); EN_COURS.delete(cle); lancer(); };
+      son.on(Phaser.Sound.Events.DECODED, fini);
+      son.decodeAudio(cle, buf);
+    }
+  }).catch(() => EN_COURS.delete(cle));
+}
+
+const EN_COURS = new Set<string>();
+
+/** Fondu indépendant des scènes (une scène arrêtée n'anime plus ses tweens). */
+function fondu(son: Phaser.Sound.BaseSound, cible: number, ms: number, fin?: () => void) {
+  const s = son as Phaser.Sound.WebAudioSound, depart = s.volume, t0 = performance.now();
+  const id = setInterval(() => {
+    const k = Math.min(1, (performance.now() - t0) / ms);
+    if (!s.manager) { clearInterval(id); return; }
+    s.setVolume(depart + (cible - depart) * k);
+    if (k >= 1) { clearInterval(id); fin?.(); }
+  }, 50);
 }

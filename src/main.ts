@@ -16,6 +16,7 @@ import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
 import { camerasNettes, facteurNettete, textesNets } from './render/nettete';
 import { OptionsScene } from './render/OptionsScene';
+import { jouerMusique, pisteDe } from './render/musique';
 import { noterErreur } from './render/sauvegarde';
 
 // erreurs gardées pour « Signaler un bug » (Options)
@@ -52,3 +53,8 @@ const jeu = new Phaser.Game({
 camerasNettes(jeu, K);
 
 (window as unknown as { game: Phaser.Game }).game = jeu;
+
+// Musique : chaque écran lance sa piste en s'ouvrant (fondu ; rien ne change si c'est déjà la bonne). Pas dans les maquettes.
+if (!maquette) jeu.events.once(Phaser.Core.Events.READY, () => {
+  for (const s of jeu.scene.getScenes(false)) s.events.on(Phaser.Scenes.Events.CREATE, () => jouerMusique(s, pisteDe(s.scene.key)));
+});
