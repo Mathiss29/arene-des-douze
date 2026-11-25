@@ -141,8 +141,8 @@ export function carteMonstre(scene: Phaser.Scene, m: { id: string; etoiles: numb
   const zone = t - 36 * u - 46 * u, cy = y - t / 2 + 64 * u + zone / 2;
   const p = portrait(scene, m.id, x, cy, zone * 1.12, false, false, 1001);
   o.push(p.sp, p.masque);
-  // monstre jamais eu (bestiaire) : silhouette sombre sur un fond éteint
-  if (options.inconnu) { p.sp.setTintFill(0x0e120c); o.push(scene.add.rectangle(x, y + 23 * u, t - 40 * u, t - 86 * u, 0x12160f, 0.72).setDepth(1000.5)); }
+  // monstre jamais eu (collection) : visible mais éteint, comme dans SW
+  if (options.inconnu) { p.sp.setTint(0x9aa095); o.push(scene.add.rectangle(x, y, t - 30 * u, t - 30 * u, 0x0b0d0a, 0.42).setDepth(1001.5)); }
   const pas = Math.min(30 * u, (t - 52 * u) / m.etoiles), te = 30 * u;
   for (let i = 0; i < m.etoiles; i++) o.push(scene.add.image(x + (i - (m.etoiles - 1) / 2) * pas, y - t / 2 + 41 * u, 'etoile').setDisplaySize(te, te).setDepth(1003));
   if (m.niveau !== undefined) {

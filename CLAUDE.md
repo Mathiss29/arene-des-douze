@@ -23,7 +23,7 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   puis combat (`CombatScene.ts`, récompenses à la fin), Cercle d'amélioration (`CercleScene.ts`), Cercle d'invocation (`InvocationScene.ts`, règles dans `src/sim/invocation.ts`), vitrine avec `#vitrine`.
   Autres écrans : missions du jour (`MissionsScene`, `src/sim/missions.ts`), Réception (`ReceptionScene`, `reception.ts`, cadeaux et codes dans `src/data/cadeaux.json`),
   « Gérer » les runes d'un monstre, disposé comme SW (`MonstreScene` : Avant / Après et « Appliquer » à gauche, filtres set / places en fleur / stat principale / deux sous-stats en haut, inventaire en grille avec tri en bas, fiche de rune en fenêtre ; `runes.ts`, `inventaire.ts`) ; la roue est dans l'onglet Runes de l'écran Monstres, donjons façon Cairos (`DonjonsScene`, `donjons.ts`, `src/data/donjons.json`),
-  Chemin de l'invocateur (`CheminScene`, `chemin.ts`, quêtes dans `src/data/quetes.json`), bestiaire (`BestiaireScene`), options (`OptionsScene`).
+  Chemin de l'invocateur (`CheminScene`, `chemin.ts`, quêtes dans `src/data/quetes.json`), collection de monstres façon SW (`BestiaireScene` : un élément à la fois par cinq gemmes, huit colonnes, monstres jamais eus éteints, « Chercher »), options (`OptionsScene`).
   Test de fumée de tous les écrans : `npm run fumee` (Chrome sans tête, lancé aussi avant chaque mise en ligne).
   Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).
   Écran « Monstres » façon SW (`MonstresScene`, clé `monstres` : grille ou vue détail animée, onglets Info / Sorts / Runes / Éveil), ouvert par la plaque « Monstres » de l'île.
