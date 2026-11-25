@@ -10,7 +10,7 @@ import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
 import { VERT, bandeauPierre, carteMonstre, chargerIdentite, decorVivant, eclatEntree, emblemeGrave, etoiles, hexagoneStats, pastille, runeMedaillon } from './identite';
 import {
-  COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerPuis, chargerUi, fmt, hex, monstreEnPied, panneau, texte, texteLeader,
+  COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerPuis, chargerUi, fmt, hex, monstreEnPied, panneau, poseNette, texte, texteLeader,
 } from './ui';
 
 /**
@@ -148,20 +148,30 @@ export class MonstresScene extends Phaser.Scene {
       const sp = this.g(monstreEnPied(this, m.id, 350, 470, 1).setDepth(1001));
       const gr = Math.min(300 / (sp.frame.cutHeight * Math.abs(sp.scaleY)), 1.5 / Math.abs(sp.scaleY));
       sp.setScale(sp.scaleX * gr, sp.scaleY * gr);
+      // la pose nette (rendue en grand) remplace le sprite de la planche, flou une fois agrandi ; le sprite ne sert qu'aux attaques
+      const pose = poseNette(this, m.id, sp, () => { if (this.vue === 'detail' && this.uid === m.uid && this.scene.isActive()) { this.entree = 0; this.dessiner(); } });
+      if (pose) this.g(pose);
+      const acteur: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image = pose ?? sp;
       // au repos la planche n'a qu'une image : une respiration légère donne vie au monstre
-      const ex = sp.scaleX, ey = sp.scaleY;
-      const respirer = () => { if (sp.active) this.tweens.add({ targets: sp, scaleX: ex * 1.015, scaleY: ey * 0.975, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); };
+      const ex = acteur.scaleX, ey = acteur.scaleY, x0 = acteur.x;
+      const respirer = () => { if (acteur.active) this.tweens.add({ targets: acteur, scaleX: ex * 1.015, scaleY: ey * 0.975, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); };
       if (entree) {
         // entrée en scène : il arrive du côté d'où l'on vient, avec un rebond et un éclat de son élément
-        sp.setX(350 + entree * 380).setAlpha(0).setScale(ex * 0.8, ey * 0.8);
-        this.tweens.add({ targets: sp, x: 350, alpha: 1, scaleX: ex, scaleY: ey, duration: 480, ease: 'Back.easeOut', onComplete: respirer });
-        this.time.delayedCall(140, () => { if (sp.active) eclatEntree(this, 350, 380, COULEUR[f.element]); });
+        acteur.setX(x0 + entree * 380).setAlpha(0).setScale(ex * 0.8, ey * 0.8);
+        this.tweens.add({ targets: acteur, x: x0, alpha: 1, scaleX: ex, scaleY: ey, duration: 480, ease: 'Back.easeOut', onComplete: respirer });
+        this.time.delayedCall(140, () => { if (acteur.active) eclatEntree(this, 350, 380, COULEUR[f.element]); });
       } else respirer();
       const attaques = [0, 1, 2, 3].map((n) => `${atlas}/AnimAttaque${n}_1`).filter((n) => this.anims.exists(n));
       let k = 0;
-      sp.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
-        if (!attaques.length || !sp.active || Math.abs(p.upX - p.downX) > 20) return;
-        sp.play(attaques[k++ % attaques.length]).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { if (sp.active) sp.play(`${atlas}/AnimStatique_1`); });
+      acteur.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
+        if (!attaques.length || !sp.active || Math.abs(p.upX - p.downX) > 20 || (pose && !pose.visible)) return;
+        // l'attaque se joue sur la planche animée, puis la pose nette revient
+        if (pose) { pose.setVisible(false); sp.setVisible(true).setAlpha(1); }
+        sp.play(attaques[k++ % attaques.length]).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          if (!sp.active) return;
+          sp.play(`${atlas}/AnimStatique_1`);
+          if (pose?.active) { sp.setVisible(false); pose.setVisible(true); }
+        });
       });
     }
     { const pl = bouton(this, 350, 528, 440, 46, '', false, () => undefined, 1002); pl.fond.disableInteractive(); this.g(pl.fond); this.g(pl.t); }

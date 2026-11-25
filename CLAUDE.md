@@ -17,6 +17,8 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Les atlas JSON sont copiés dans `public/assets/sprites/` ; les AVIF restent sur le R2 de Diablofus
   (en dév, relayés par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
+  Monstre affiché en grand (écran Monstres, Stèle) : `poseNette()` (`ui.ts`) pose par-dessus le sprite la pose de repos rendue en grand,
+  `public/assets/poses/<atlas>.webp` (faite hors dépôt : `ANIMS=AnimStatique_1:1 SCALE=8 FORMAT_PLANCHE=PNG monster_planche.py <squelette>`, squelette = champ `look` de `monstersdataroot`) ; sinon la planche agrandie est floue.
 - Écrans : île d'Incarnam par défaut (`src/render/IleScene.ts` : trois caméras ciel / île / interface, images et positions dans
   `public/assets/ile/`, faites hors dépôt par `ile_vivante.py`), carte des combats (`ZaapScene.ts`, par le Zaap ou « Combattre » : zones, stages, difficultés),
   préparation d'équipe (`PreparationScene.ts`)

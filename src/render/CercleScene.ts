@@ -8,7 +8,7 @@ import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
 import { preparerTextures } from './effets';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerPuis, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, POLICE, texte, W } from './ui';
+import { bouton, caseSombre, chargerPuis, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, poseNette, POLICE, texte, W } from './ui';
 import { VERT, bandeauPierre, carteMonstre, chargerIdentite, decorVivant, etoiles as etoilesDessinees } from './identite';
 
 /**
@@ -375,6 +375,8 @@ export class CercleScene extends Phaser.Scene {
     const gr = Math.min(230 / (sp.frame.cutHeight * Math.abs(sp.scaleY)), 1.5 / Math.abs(sp.scaleY));
     sp.setScale(sp.scaleX * gr, sp.scaleY * gr);
     this.sujet = sp;
+    const pose = poseNette(this, c.id, sp, () => { if (this.cible === c.uid && !this.occupe && this.scene.isActive()) this.dessiner(); });
+    if (pose) this.g(pose);
     const ru = bouton(this, 96, 470, 152, 40, 'Runes', false, () => { if (!this.occupe) this.scene.start('monstre', { uid: c.uid, retour: { scene: 'cercle', data: { cible: c.uid } } }); });
     ru.t.setFontSize(14); this.g(ru.fond); this.g(ru.t);
 

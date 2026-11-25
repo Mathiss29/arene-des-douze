@@ -144,6 +144,33 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
 }
 
 /**
+ * Pose nette d'un monstre affiché en grand : les planches sont dessinées petites (pour le combat) et deviennent floues une fois
+ * agrandies ; `public/assets/poses/<atlas>.webp` est la même pose de repos rendue en grand depuis le squelette de Dofus 3.
+ * Pose l'image exactement sur le sprite `sp` (déjà placé et mis à l'échelle), puis cache le sprite. Tant que l'image n'est pas
+ * chargée, renvoie null et appelle `quandPrete` à l'arrivée (pour redessiner).
+ */
+export function poseNette(scene: Phaser.Scene, id: string, sp: Phaser.GameObjects.Sprite, quandPrete?: () => void): Phaser.GameObjects.Image | null {
+  const atlas = LOOKS[id].atlas, cle = `pose:${atlas}`;
+  if (!scene.textures.exists(atlas)) return null;
+  if (!scene.textures.exists(cle)) {
+    if (scene.load.isLoading() && scene.load.list.getArray().concat(scene.load.inflight.getArray()).some((f) => f.key === cle)) return null;
+    scene.load.image(cle, `assets/poses/${atlas}.webp`);
+    scene.load.once(`filecomplete-image-${cle}`, () => quandPrete?.());
+    scene.load.start();
+    return null;
+  }
+  const f = sp.frame, sx = Math.abs(sp.scaleX), sy = Math.abs(sp.scaleY);
+  const bas = sp.y + (f.y + f.cutHeight - sp.originY * f.realHeight) * sy;
+  const centre = sp.x + (f.x + f.cutWidth / 2 - sp.originX * f.realWidth) * sx * (sp.scaleX < 0 ? -1 : 1);
+  const img = scene.add.image(centre, bas, cle).setOrigin(0.5, 1).setDepth(sp.depth);
+  const k = (f.cutHeight * sy) / img.height;
+  img.setScale(sp.scaleX < 0 ? -k : k, k);
+  teinter(img as unknown as Phaser.GameObjects.Sprite, id);
+  sp.setVisible(false);
+  return img;
+}
+
+/**
  * Charge des planches à la demande (fiche, monstre en pied) puis appelle `puis` ; tout de suite si elles sont déjà là.
  * Les écrans ne préchargent plus les planches de toute la collection (le Chemin chargeait 17 Mo, le bestiaire 70 Mo).
  */
