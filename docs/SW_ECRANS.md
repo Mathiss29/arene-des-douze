@@ -69,3 +69,48 @@ Les images restent hors dépôt.
 - Bandeau : mon équipe (5 cases en deux rangées) « VS » le boss avec son niveau.
 - En bas : la collection en deux rangées défilantes, bouton de tri à gauche ; à droite « ⚡9 GO » et « Annuler ».
 - Tri/Recherche : tri (Grade max.), nom, type (4 icônes), grade (★1 à ★6), attribut (5), marqueur ; cases à cocher, « OK ».
+
+## Combat (Tribunal d'ascension, 1er étage) — deuxième vidéo
+- Avant le combat : avertissement si des monstres n'ont pas toutes leurs runes (« Procéder au combat ? Oui / Non », case « Ne plus montrer aujourd'hui ») ;
+  bouton « Déroulement auto (E10) » sous « GO ».
+- Écran de chargement : nom du mode et de la difficulté, classement, illustration, astuce en bas.
+- Début de vague : bandeau sombre au milieu « Tribunal d'asc. 1e étage — 1 / 3 ». « Stage 1 » en haut à droite.
+- Alliés en bas (de dos, en ligne), ennemis en haut ; au-dessus de chaque monstre : pastille ronde du niveau puis barre de PV verte,
+  et la jauge d'attaque dessous. Flèche verte ou rouge au-dessus des ennemis (avantage ou désavantage d'élément) quand on choisit une cible.
+- Le nom du sort s'affiche en grand avec son icône quand il est lancé ; les effets (« Résistance », « Augmente ATQ ») s'écrivent au-dessus des monstres.
+- Bas gauche : roue dentée, vitesse « ×3 », lecture / pause (auto). Bas droite : les icônes de sorts du monstre qui joue (recharge en chiffre dessus).
+- Victoire : « VICTORY » doré, nom du stage, « Récompense » : mana, énergie, cristaux ; puis chaque monstre avec « +525 XP » ou « MAX LEVEL » ;
+  l'objet gagné s'ouvre en fenêtre (nom ×1, description, « Montant actuel : 105 / 50 », OK).
+- Tribunal d'asc. : tour dessinée avec les étages en cadenas, « Récompense pour avoir terminé », « Reset dans 19 j », Difficulté Normal ▾,
+  boutons Stratégie / Infos / Classement.
+
+## Collection : fiche d'un monstre
+- Fenêtre centrée : titre = gemme d'élément, nom, étoiles ; flèches gauche / droite pour passer au monstre voisin.
+- À gauche : « Infos du monstre », « Aperçu des compétences », « Métamorphose » ; type (« Attaque »), « Max Lv. 40 », PV, ATQ, DEF, VIT.
+- Au centre : le monstre en pied sur un cercle. À droite : portrait de la forme éveillée, puis les icônes des sorts (« LEADER » sur le premier) ;
+  toucher un sort ouvre sa description (« Réutilisable dans 4 tour(s) »).
+- En bas : les cinq gemmes d'élément pour passer aux autres éléments de la même famille.
+- « Infos du monstre » : onglets Discussion, Communauté, Utilisation, Statistiques.
+
+## Le chemin de l'invocateur
+- Colonne de gauche : Progression (Novice, Intermédiaire, Avancé), Défis, Spécial, Aide aux joueurs de retour, Cadeau spécial.
+- Progression : en tête « Réc. d'accomplissement » avec une jauge (55/55) et sa récompense ; les missions sont des cartes en ligne qu'on fait
+  glisser (tampon « CLEAR », titre, (n/N), récompenses, bouton « Terminé ») ; en bas, une guide en pied explique la mission choisie.
+- Spécial : « Terminez les missions pour obtenir le monstre 4★ naturel de votre choix ! », le monstre sur un socle lumineux,
+  « Liste des missions », jauge 80 %, bouton « Invoquer ».
+- Joueurs de retour : calendrier de 7 jours de cadeaux (« CLEAR » sur les jours passés).
+
+## Compétences d'invocateur (bâtiment de l'île)
+- Boutons du bâtiment : Compétence, Profil, Défense, Historique de combat, Entrepôt, Info, Modifier.
+- Fenêtre « Comp. d'invocateur » : onglets Combat, Guilde, Autres ; à gauche la liste (icône, « MAX Lv », nom et bonus), à droite la description
+  et le tableau niveau par niveau ; boutons « Améliorer tout » et « Améliorer ».
+- Combat : Vitesse d'attaque +15 % (Lv.1 +1,0 %, Lv.2 +2,0 %, Lv.3 +2,5 %, Lv.4 +3,0 %, Lv.5 +4,0 %, Lv.6 +5,0 %, Lv.7 +5,5 %, Lv.8 +6,0 %, Lv.9 +7,0 %…),
+  Dégâts critiques +25 %, Puissance d'attaque +20 % (Lv.3 +3 % … Lv.13 +13 %…), Défense +20 % (+1 % par niveau au début), PV +20 %,
+  Puissance d'attaque Feu / Eau / Vent / Lumière / Ténèbres +21 % chacune.
+- Guilde : Puis. d'att., DGTS CRIT +25 %, PV +20 %, Défense +20 % de guilde. Autres : Vit. d'att. des Tours Arcane +20 %,
+  Vit. de prod. des p. de mana +50 %, Stock. max de p. de mana +2000, Stockage d'énergie max (+3 par niveau, +30 au Lv.10).
+
+## Écran Monstres, onglet Compétence
+- Les icônes des sorts en ligne (« 5/5 », « 6/6 » = niveau du sort, « LEADER » sur l'aptitude de leader) ; dessous, le nom du sort,
+  sa description et la liste des gains par niveau (« Lv.2 Dégâts +10 % », « Lv.4 Tour de temps de pause −1 », « Lv.3 Taux d'effet nocif +10 % »).
+- Onglet Info : bouton de partage, « + » d'XP, type (« Support »), trois boutons ronds à droite.

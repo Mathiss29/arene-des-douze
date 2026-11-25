@@ -120,6 +120,14 @@ export class BestiaireScene extends Phaser.Scene {
     this.gs(etoiles(this, X + 154, 132, f.etoiles, 16, 0));
     this.g(texte(this, X + 154, 158, `${NOM_ELEMENT[f.element]} · ${NOM_TYPE[f.type]}`, 13, hex(COULEUR[f.element]), true, 0, 0.5));
     this.g(texte(this, X + 154, 180, vu ? `Éveillé : ${f.nomEveil}` : 'Pas encore obtenu', 12, vu ? '#93a89b' : '#d9a35a', vu ? false : true, 0, 0.5));
+    // comme dans SW : les gemmes des autres éléments de la même famille, pour passer de l'un à l'autre
+    const famille = TOUS.filter((m) => m.famille === f.famille).sort((a, b) => ELEMENTS.indexOf(a.element) - ELEMENTS.indexOf(b.element));
+    if (famille.length > 1) famille.forEach((m, i) => {
+      const x = X + L - 30 - (famille.length - 1 - i) * 30, on = m.id === id;
+      this.g(this.add.circle(x, 180, on ? 12 : 10, 0x10130d).setStrokeStyle(on ? 2.5 : 1.5, on ? 0xd8ff5a : 0x6f7862).setDepth(1001));
+      this.g(this.add.circle(x, 180, on ? 8 : 6.5, m.element === 'bonta' ? 0xfff1b8 : COULEUR[m.element]).setDepth(1002));
+      this.g(this.add.zone(x, 180, 28, 28).setDepth(1003).setInteractive({ useHandCursor: true })).on('pointerdown', () => { this.choisi = m.id; this.element = m.element; this.page = 0; this.dessiner(); });
+    });
     // profil à 6★ niveau 40
     this.gs(hexagoneStats(this, X + 96, 290, 50, [st.pv / 14000, st.atq / 950, st.def / 800, (st.vit - 80) / 50, st.tc / 100, st.res / 100], ['PV', 'ATQ', 'DEF', 'VIT', 'CRIT', 'RÉS'], COULEUR[f.element]));
     ([['PV', st.pv], ['ATQ', st.atq], ['DEF', st.def], ['VIT', st.vit]] as const).forEach(([n, v], i) => {
