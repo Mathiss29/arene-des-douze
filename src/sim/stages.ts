@@ -1,3 +1,4 @@
+import { sortsDe } from './competences';
 import STAGES from '../data/stages.json';
 import ZONES_JSON from '../data/zones.json';
 import { monstreCombat } from './fiches';
@@ -131,7 +132,7 @@ export function vaguesEnnemies(s: Stage): { equipeB: MonstreCombat[]; vaguesSuiv
 export function equipeJoueur(j: Joueur): MonstreCombat[] {
   return j.equipe.map((uid) => {
     const m = j.monstres.find((x) => x.uid === uid)!;
-    return avecRunes(monstreCombat(m.id, m.etoiles, m.niveau), (j.runes ?? []).filter((r) => r.porteur === uid));
+    return avecRunes(monstreCombat(m.id, m.etoiles, m.niveau, sortsDe(m)), (j.runes ?? []).filter((r) => r.porteur === uid));
   });
 }
 

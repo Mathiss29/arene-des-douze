@@ -42,6 +42,7 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
 - État du joueur : `src/sim/joueur.ts` (pur) ; sauvegarde locale sous la clé `arene-des-douze:joueur` (`src/render/sauvegarde.ts`).
   Zones, stages, difficultés et butin : `src/data/zones.json`, `src/data/stages.json`, `src/sim/stages.ts` (clé « astrub-3@1 » = stage 3 en Difficile) ;
   énergie : `src/sim/energie.ts`. Pour repartir de zéro : `localStorage.removeItem('arene-des-douze:joueur')`.
+- Niveaux de compétence : `src/sim/competences.ts` (gains par niveau déduits de la forme du sort, `sortsDe()` pour le combat ; la nourriture de la même famille monte un sort au hasard).
 - Fiches de combat (stats 6★ niveau 40, sorts, leader) dans `src/data/fiches.json` (celles des familles 2 à 5★ sont provisoires, faites par `familles.py` hors dépôt) ;
   couleurs refaites (élément qui manque dans Dofus) : `teinte` dans `looks.ts`, appliquée par `teinter()` (ColorMatrix WebGL) ; l'animation jouée par chaque sort dans `looks.ts` (`animSorts`).
 - Maquettes jouables dans le jeu : adresse `#maquette-<nom>` (ex. `#maquette-eveils`), scène dans `src/render/maquettes/`,

@@ -344,3 +344,10 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 - ✓ Gestion des runes (vidéo SW du 25/11/2026) : onglet Rune du monstre = roue des 6 places, effet de set, bouton « Gérer », mes runes par set avec leur nombre ; écran « Gérer » = stats du monstre, runes Avant / Après, coût de déséquipement, « Appliquer » ; filtres : set (tuiles avec compteur), places en fleur, propriété principale, deux propriétés secondaires ; tri : grade, propriété secondaire, niveau d'amélioration, obtenu… ; inventaire en grille avec le portrait du porteur.
 
 - Combat (choix de Mathis, 25/11/2026) : pas de liste d'ordre des tours ; l'ordre se lit sur la jauge d'attaque sous la barre de PV de chaque monstre, comme dans SW (remplace le choix 4B de la planche n° 2).
+
+## Niveaux de compétence (`src/sim/competences.ts`)
+
+- ✓ Chaque sort a un niveau maximum ; chaque niveau donne un gain précis (dégâts, taux d'effet, recharge −1) — onglet Compétence de SW, vidéo du 25/11/2026.
+- ✓ Un monstre de la même famille donné en nourriture (amélioration ou évolution) monte une compétence d'un niveau (confirmé par Mathis). Le Devilmon n'existe pas encore chez nous.
+- ⚠ Le sort qui monte est tiré au hasard parmi ceux qui ne sont pas au maximum (souvenir de SW, pas revérifié).
+- ⚠ Table des gains : la nôtre, déduite de la forme du sort. Sort de base : +5 %, +5 % (ou taux d'effet +10 %), +10 %, +10 % de dégâts. Sort à recharge : +10 %, +10 % (ou taux d'effet +10 %), +10 %, puis recharge −1 si elle vaut 3 ou plus. Soin ou bouclier : +10 %, +10 %.

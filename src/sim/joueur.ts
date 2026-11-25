@@ -5,6 +5,7 @@
 import { CHANCE_BONUS_XP, COUT_EVOLUTION, COUT_NOURRIR, NIVEAU_MAX, NOURRITURE_MAX, POINTS_NOURRITURE, XP_NIVEAU, ajouterXp, pointsRequis, xpDonnee, type Etoiles } from './progression';
 import type { Rng } from './rng';
 import { fiche } from './fiches';
+import { memeFamille, monterCompetences } from './competences';
 import { ELEMENTS } from './types';
 import type { Cadeau } from './reception';
 import type { Rune } from './runes';
@@ -19,6 +20,8 @@ export interface MonstrePossede {
   niveau: number;
   /** XP accumulée dans le niveau en cours. */
   xp: number;
+  /** Niveau de chaque sort (absent = 1 partout) ; voir `competences.ts`. */
+  sorts?: number[];
 }
 
 export interface Joueur {
@@ -190,7 +193,17 @@ export function basculerVerrou(j: Joueur, uid: number): Joueur {
   return { ...j, verrous: v.includes(uid) ? v.filter((u) => u !== uid) : [...v, uid] };
 }
 
-export function nourrir(j: Joueur, uid: number, nourriture: number[], rng: Rng): { joueur: Joueur; xp: number; bonus: boolean; niveaux: number } {
+/** ✓ Chaque monstre de la même famille donné en nourriture monte une compétence d'un niveau (au hasard parmi celles qui peuvent monter). */
+function avecCompetences(j: Joueur, uid: number, nourriture: number[], rng: Rng): { joueur: Joueur; montes: number[] } {
+  const m = monstre(j, uid);
+  const fois = nourriture.filter((u) => memeFamille(monstre(j, u).id, m.id)).length;
+  if (!fois) return { joueur: j, montes: [] };
+  const r = monterCompetences(m, fois, rng);
+  if (!r.montes.length) return { joueur: j, montes: [] };
+  return { joueur: { ...j, monstres: j.monstres.map((x) => (x.uid === uid ? { ...x, sorts: r.sorts } : x)) }, montes: r.montes };
+}
+
+export function nourrir(j: Joueur, uid: number, nourriture: number[], rng: Rng): { joueur: Joueur; xp: number; bonus: boolean; niveaux: number; competences: number[] } {
   monstre(j, uid); // vérifie qu'il existe
   if (!nourriture.length || nourriture.length > NOURRITURE_MAX) throw new Error(`De 1 à ${NOURRITURE_MAX} monstres`);
   if (new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
@@ -200,14 +213,17 @@ export function nourrir(j: Joueur, uid: number, nourriture: number[], rng: Rng):
   const bonus = rng.suivant() < CHANCE_BONUS_XP;
   const xp = bonus ? Math.round(base * 1.5) : base;
   const r = donnerXp({ ...j, kamas: j.kamas - kamas }, [uid], xp);
-  return { joueur: sacrifier(r.joueur, nourriture, uid), xp, bonus, niveaux: r.niveaux[uid] ?? 0 };
+  const c = avecCompetences(r.joueur, uid, nourriture, rng);
+  return { joueur: sacrifier(c.joueur, nourriture, uid), xp, bonus, niveaux: r.niveaux[uid] ?? 0, competences: c.montes };
 }
 
 /**
  * ✓ Évolution façon SW actuel (RELOADED) : pas de condition de niveau ; la nourriture (autant ou moins d'étoiles)
  * apporte des points ; on paie des kamas ; le monstre gagne une étoile et garde son niveau.
  */
-export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
+export function evoluer(j0: Joueur, uid: number, nourriture: number[], rng?: Rng): Joueur {
+  // la nourriture de la même famille monte aussi les compétences pendant une évolution
+  const j = rng ? avecCompetences(j0, uid, nourriture, rng).joueur : j0;
   const m = monstre(j, uid);
   if (m.etoiles >= 6) throw new Error('Déjà 6★');
   const e = m.etoiles as 1 | 2 | 3 | 4 | 5;

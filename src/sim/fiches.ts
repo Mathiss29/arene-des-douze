@@ -14,13 +14,13 @@ const PAR_ID = new Map((MONSTRES as FicheMonstre[]).map((m) => [m.id, m]));
 const COMBAT = FICHES as unknown as Record<string, FicheCombat>;
 
 /** Monstre prêt pour le combat, à un nombre d'étoiles et un niveau donnés (par défaut : ses étoiles naturelles, niveau max). */
-export function monstreCombat(id: string, etoiles?: Etoiles, niveau?: number): MonstreCombat {
+export function monstreCombat(id: string, etoiles?: Etoiles, niveau?: number, sorts?: Sort[]): MonstreCombat {
   const m = PAR_ID.get(id);
   const f = COMBAT[id];
   if (!m || !f) throw new Error(`Monstre inconnu : ${id}`);
   const e = etoiles ?? (m.etoiles as Etoiles);
   const n = niveau ?? NIVEAU_MAX[e];
-  return { id, nom: m.nom, element: m.element, stats: statsAuNiveau(f.stats, e, n), sorts: f.sorts, leader: f.leader, etoiles: e, niveau: n };
+  return { id, nom: m.nom, element: m.element, stats: statsAuNiveau(f.stats, e, n), sorts: sorts ?? f.sorts, leader: f.leader, etoiles: e, niveau: n };
 }
 
 export const fiche = (id: string): FicheMonstre => PAR_ID.get(id)!;

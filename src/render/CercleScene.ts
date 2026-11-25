@@ -3,6 +3,7 @@ import { fiche, monstreCombat } from '../sim/fiches';
 import { apercuNourrir, evoluer, monstre, nourrir, pointsNourriture, trierMonstres, type Joueur, type MonstrePossede } from '../sim/joueur';
 import { ajouterXp, COUT_EVOLUTION, NIVEAU_MAX, NOURRITURE_MAX, pointsRequis, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { Rng } from '../sim/rng';
+import { competencesAuMax, memeFamille, niveauxDe } from '../sim/competences';
 import { noterMission } from '../sim/missions';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
@@ -88,7 +89,9 @@ export class CercleScene extends Phaser.Scene {
   private verrou(m: MonstrePossede): string | null {
     if (this.joueur.equipe.includes(m.uid)) return 'Monstre de ton équipe : retire-le de l\'équipe pour le donner.';
     if ((this.joueur.verrous ?? []).includes(m.uid)) return 'Monstre verrouillé : retire son cadenas dans l\'écran Monstres pour le donner.';
-    if (this.onglet === 'xp' && m.etoiles >= 3) return 'Les 3★ et plus sont gardés pour l\'évolution.';
+    // les 3★ et plus sont gardés pour l'évolution, sauf ceux de la même famille : ils montent une compétence
+    const c = this.cibleM();
+    if (this.onglet === 'xp' && m.etoiles >= 3 && !(c && memeFamille(m.id, c.id) && !competencesAuMax(c))) return 'Les 3★ et plus sont gardés pour l\'évolution.';
     return null;
   }
 
@@ -161,7 +164,9 @@ export class CercleScene extends Phaser.Scene {
     const c = this.cibleM();
     if (!c || !this.nourr.length) return false;
     // au niveau max, l'XP serait perdue : on ne laisse pas payer pour rien
-    if (this.onglet === 'xp') return c.niveau < NIVEAU_MAX[c.etoiles as Etoiles] && this.joueur.kamas >= apercuNourrir(this.joueur, this.nourr).kamas;
+    // … sauf si la nourriture est de sa famille et qu'une compétence peut encore monter
+    const competence = !competencesAuMax(c) && this.nourr.some((u) => memeFamille(monstre(this.joueur, u).id, c.id));
+    if (this.onglet === 'xp') return (c.niveau < NIVEAU_MAX[c.etoiles as Etoiles] || competence) && this.joueur.kamas >= apercuNourrir(this.joueur, this.nourr).kamas;
     if (c.etoiles >= 6) return false;
     const e = c.etoiles as 1 | 2 | 3 | 4 | 5;
     return pointsNourriture(this.joueur, this.nourr) >= pointsRequis(e) && this.joueur.kamas >= COUT_EVOLUTION[e];
@@ -215,7 +220,9 @@ export class CercleScene extends Phaser.Scene {
   /** Choix 7A : les étoiles s'allument une à une, puis un éclair. */
   private animerEvolution(cx: number, cy: number) {
     const c = this.cibleM()!;
-    this.joueur = noterMission(evoluer(this.joueur, c.uid, this.nourr), 'ameliorer', 1, Date.now());
+    const avant = niveauxDe(c);
+    this.joueur = noterMission(evoluer(this.joueur, c.uid, this.nourr, new Rng(Date.now())), 'ameliorer', 1, Date.now());
+    const gagnes = niveauxDe(monstre(this.joueur, c.uid)).reduce((n, v, i) => n + v - avant[i], 0);
     sauver(this.joueur);
     const total = c.etoiles + 1;
     const y = 452, larg = 26;
@@ -234,7 +241,7 @@ export class CercleScene extends Phaser.Scene {
       this.cameras.main.flash(450, 255, 246, 200);
       this.eclats(cx, cy, [0xfff6c8, COULEUR[fiche(c.id).element], 0xffffff], 40);
       const nom = fiche(c.id).nom;
-      const ban = this.add.text(CX, 186, `${nom} passe à ${this.etoiles(total)} !`, { fontFamily: CHIFFRES, fontSize: '30px', color: '#ffcf4a', resolution: 2 })
+      const ban = this.add.text(CX, 186, `${nom} passe à ${this.etoiles(total)} !${gagnes ? `\nCompétence +${gagnes}` : ''}`, { fontFamily: CHIFFRES, fontSize: '30px', color: '#ffcf4a', resolution: 2 })
         .setOrigin(0.5).setStroke('#3a2400', 6).setDepth(3002).setAlpha(0);
       this.tweens.add({ targets: ban, alpha: 1, y: 176, duration: 300 });
       this.tweens.add({ targets: ban, alpha: 0, delay: 1800, duration: 400, onComplete: () => ban.destroy() });
@@ -256,6 +263,8 @@ export class CercleScene extends Phaser.Scene {
     const lignes = [`+${fmt(r.xp)} XP`];
     if (r.bonus) lignes.push('Bonus ×1,5 !');
     if (r.niveaux > 0) lignes.push(r.niveaux > 1 ? `+${r.niveaux} NIVEAUX !` : 'NIVEAU SUPÉRIEUR !');
+    const sorts = monstreCombat(c.id).sorts;
+    for (const i of r.competences) lignes.push(`Compétence +1 : ${sorts[i].nom}`);
     lignes.forEach((l, i) => {
       const t = this.add.text(cx, cy - 40 - i * 30, l, { fontFamily: CHIFFRES, fontSize: i === 0 ? '24px' : '20px', color: i === 0 ? '#ffffff' : l.startsWith('Bonus') ? '#ffcf4a' : '#7ee07a', resolution: 2 })
         .setOrigin(0.5).setStroke('#10380e', 5).setDepth(3002).setScale(0.4);
@@ -340,7 +349,7 @@ export class CercleScene extends Phaser.Scene {
       this.t(gx + 78, 110, apres.niveau >= NIVEAU_MAX[e] ? `${apres.niveau} (max)` : String(apres.niveau), 15, apres.niveau > c.niveau ? '#7ee07a' : '#ffffff', true, 0, 0.5);
       this.t(gx + gw, 110, this.nourr.length ? `+${fmt(ap.xp)} XP` : `${NOM_TYPE[f.type]}`, 13, this.nourr.length ? '#7ee07a' : '#93a89b', true, 1, 0.5);
       jauge(part(apres.niveau, apres.xp), VERT, `${Math.round(part(apres.niveau, apres.xp) * 1000) / 10} %`);
-      this.t(CX, 156, c.niveau >= NIVEAU_MAX[e] ? 'Déjà au niveau max : fais-le évoluer pour aller plus loin.' : '20 % de chances de recevoir ×1,5', 11, c.niveau >= NIVEAU_MAX[e] ? '#ffcf4a' : '#93a89b', false, 0.5, 0.5);
+      this.t(CX, 156, c.niveau >= NIVEAU_MAX[e] ? 'Niveau max : fais-le évoluer, ou donne-lui un monstre de sa famille pour monter une compétence.' : '20 % de chances de recevoir ×1,5', 11, c.niveau >= NIVEAU_MAX[e] ? '#ffcf4a' : '#93a89b', false, 0.5, 0.5);
     } else if (e >= 6) {
       this.t(CX, 126, 'Déjà 6★ : niveau d\'évolution maximal.', 15, '#ffcf4a', true, 0.5, 0.5);
     } else {
@@ -446,6 +455,8 @@ export class CercleScene extends Phaser.Scene {
       for (const o of carteMonstre(this, m, fiche(m.id).element, x, y, 80, { choisie: pris, equipe: j.equipe.includes(m.uid), verrou: (j.verrous ?? []).includes(m.uid) })) { this.g(o); (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(((o as unknown as { depth: number }).depth ?? 1000) + 2100); }
       if (refus) this.g(this.add.rectangle(x, y, 72, 72, 0x0b0d0a, 0.62).setDepth(3120));
       if (pris) this.t(x + 24, y - 24, '✔', 20, '#d8ff5a', true, 0.5, 0.5).setDepth(3122);
+      // même famille : le donner monte une compétence
+      if (!refus && memeFamille(m.id, c.id) && !competencesAuMax(c)) this.t(x, y + 46, 'Compétence +1', 9.5, '#ffe08a', true, 0.5, 0.5).setDepth(3122);
       this.g(this.add.zone(x, y, 80, 80).setDepth(3125).setInteractive({ useHandCursor: true })).on('pointerdown', () => this.clicCollection(m));
     });
     if (this.alerte) this.t(X + L / 2, Y + HT - 86, this.alerte, 13, '#ff8a7a', true, 0.5, 0.5).setDepth(3130).setBackgroundColor('rgba(0,0,0,0.75)').setPadding(10, 4, 10, 4);

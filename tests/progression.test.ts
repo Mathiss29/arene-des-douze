@@ -1,3 +1,5 @@
+import { monterCompetences, niveauMax, niveauxDe, sortAuNiveau } from '../src/sim/competences';
+import { monstreCombat } from '../src/sim/fiches';
 import { describe, expect, it } from 'vitest';
 import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoiles } from '../src/sim/progression';
 import { pointsRequis, xpDonnee } from '../src/sim/progression';
@@ -190,5 +192,23 @@ describe('boss au-delà du niveau 40', () => {
     expect(partStats(6, 40)).toBe(1);
     expect(partStats(6, 65)).toBeGreaterThan(1.1);
     expect(ajouterXp(6, 40, 0, 1e9).niveau).toBe(40);
+  });
+
+  it('compétences : un monstre de la même famille donné monte un sort, jusqu\'au maximum ; le sort monté est plus fort', () => {
+    const base = nouveauJoueur();
+    const j = { ...base, kamas: 1e9, monstres: [...base.monstres, { uid: 50, id: 'dragoss_argile', etoiles: 5 as const, niveau: 1, xp: 0 }, { uid: 51, id: 'dragoss_charbon', etoiles: 3 as const, niveau: 1, xp: 0 }, { uid: 52, id: 'larve_verte', etoiles: 3 as const, niveau: 1, xp: 0 }] };
+    const r = nourrir(j, 50, [51, 52], new Rng(3));
+    expect(r.competences.length).toBe(1);   // seule la nourriture de la famille compte
+    const m = monstre(r.joueur, 50);
+    expect(niveauxDe(m).reduce((a, b) => a + b, 0)).toBe(niveauxDe({ id: 'dragoss_argile' }).length + 1);
+    const s = monstreCombat('dragoss_argile').sorts[2];
+    expect(niveauMax(s)).toBe(5);
+    expect(sortAuNiveau(s, 5).recharge).toBe(s.recharge - 1);
+    expect(sortAuNiveau(s, 5).mult!.atq).toBeCloseTo(s.mult!.atq! * 1.3);
+    expect(sortAuNiveau(s, 1)).toBe(s);
+    // jamais au-delà du maximum
+    const plein = monterCompetences({ id: 'dragoss_argile' }, 99, new Rng(1));
+    expect(plein.sorts).toEqual(monstreCombat('dragoss_argile').sorts.map(niveauMax));
+    expect(monterCompetences({ id: 'dragoss_argile', sorts: plein.sorts }, 1, new Rng(1)).montes).toEqual([]);
   });
 });

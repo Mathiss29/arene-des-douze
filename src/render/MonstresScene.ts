@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { charger, sauver } from './sauvegarde';
 import { basculerVerrou, verrouille, type Joueur, type MonstrePossede } from '../sim/joueur';
 import { fiche, monstreCombat } from '../sim/fiches';
+import { gainsDe, niveauxDe, sortAuNiveau, texteGain } from '../sim/competences';
 import { NIVEAU_MAX, XP_NIVEAU } from '../sim/progression';
 import { SETS, avecRunes, setsActifs, type SetRune } from '../sim/runes';
 import { runesDe } from '../sim/inventaire';
@@ -297,15 +298,28 @@ export class MonstresScene extends Phaser.Scene {
       if (!parSet.length) this.g(texte(this, X + L / 2, Y + 400, 'Aucune rune pour l\'instant. Elles tombent dans les zones,\nles coffres des missions et les donjons.', 12.5, '#93a89b', false, 0.5, 0.5).setAlign('center'));
     } else {
       let y = Y + 104;
-      for (const s of monstreCombat(m.id, m.etoiles, m.niveau).sorts) {
+      // comme l'onglet Compétence de SW : niveau de chaque sort, description, gains par niveau (acquis en vert)
+      const bruts = monstreCombat(m.id).sorts, niv = niveauxDe(m);
+      this.g(texte(this, X + L - 24, Y + 104, 'Donne un monstre de sa famille pour monter une compétence.', 10.5, '#93a89b', false, 1, 0.5));
+      y += 14;
+      bruts.forEach((s, i) => {
+        const gains = gainsDe(s), max = gains.length + 1;
         if (s.icone && this.textures.exists(`sort_${s.icone}`)) {
-          this.g(this.add.image(X + 50, y + 26, `sort_${s.icone}`).setDisplaySize(52, 52).setDepth(1001));
-          this.g(this.add.rectangle(X + 50, y + 26, 54, 54).setStrokeStyle(2, 0x6f7862).setDepth(1002));
+          this.g(this.add.image(X + 46, y + 24, `sort_${s.icone}`).setDisplaySize(46, 46).setDepth(1001));
+          this.g(this.add.rectangle(X + 46, y + 24, 48, 48).setStrokeStyle(2, 0x6f7862).setDepth(1002));
+          if (max > 1) { this.g(this.add.rectangle(X + 46, y + 44, 34, 15, 0x10130d, 0.95).setStrokeStyle(1, 0x6f7862).setDepth(1003)); this.g(texte(this, X + 46, y + 44, `${niv[i]}/${max}`, 10.5, niv[i] >= max ? '#ffe08a' : '#ffffff', true, 0.5, 0.5).setDepth(1004)); }
         }
-        this.g(texte(this, X + 88, y + 2, `${s.nom}${s.recharge ? `  ·  recharge ${s.recharge}` : ''}`, 16, '#ffffff', true, 0, 0));
-        const d = this.g(texte(this, X + 88, y + 26, s.desc ?? '', 13, '#c9cfc4', false, 0, 0).setWordWrapWidth(L - 116));
-        y += Math.max(70, 40 + d.height);
-      }
+        const r = sortAuNiveau(s, niv[i]).recharge;
+        this.g(texte(this, X + 80, y, `${s.nom}${r ? `  ·  recharge ${r}` : ''}`, 14.5, '#ffffff', true, 0, 0));
+        const d = this.g(texte(this, X + 80, y + 20, s.desc ?? '', 11.5, '#c9cfc4', false, 0, 0).setWordWrapWidth(L - 106));
+        let yy = y + 24 + d.height;
+        gains.forEach((g, k) => {
+          const acquis = niv[i] >= k + 2;
+          this.g(texte(this, X + 80 + (k % 2) * 148, yy + Math.floor(k / 2) * 14, `Niv. ${k + 2}  ${texteGain(g, s)}`, 10, acquis ? '#7fd05a' : '#6f7a6c', acquis, 0, 0));
+        });
+        yy += Math.ceil(gains.length / 2) * 14;
+        y = Math.max(y + 62, yy + 10);
+      });
     }
     void OR; void H; void hex;
   }
