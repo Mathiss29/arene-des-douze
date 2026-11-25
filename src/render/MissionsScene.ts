@@ -5,7 +5,7 @@ import {
   COFFRES, MISSIONS, avantRemise, coffreOuvrable, compte, etatMissions, finie, ouvrirCoffre, peutRecevoir, points, recevoirMission, recevoirTout,
   type Coffre,
 } from '../sim/missions';
-import { H, OR, POLICE, W, bouton, chargerUi, fmt, panneau, texte } from './ui';
+import { H, OR, POLICE, W, bouton, chargerUi, fmt, panneau, texte, titreFenetre } from './ui';
 
 /**
  * Missions du jour (maquette « Missions : » 1A 2B 3A 4B 5A 6B 7A 8C 9A) : barre de 100 points et 5 coffres,
@@ -44,7 +44,7 @@ export class MissionsScene extends Phaser.Scene {
     this.calque = [];
     const now = Date.now(), e = etatMissions(this.joueur, now), pts = points(e);
     this.g(panneau(this, X0, 60, LARG, 640));
-    this.g(texte(this, X0 + 24, 76, 'Missions du jour', 22, '#ffffff', true, 0, 0));
+    for (const o of titreFenetre(this, W / 2, 64, 520, 'Missions du jour')) this.g(o);
     const r = avantRemise(now), h = Math.floor(r / 3_600_000), m = Math.floor((r % 3_600_000) / 60_000);
     this.g(texte(this, X0 + LARG - 24, 82, `Nouvelles missions dans ${h} h ${String(m).padStart(2, '0')}`, 13, '#c9cfc4', false, 1, 0));
 

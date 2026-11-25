@@ -143,7 +143,7 @@ export class CercleScene extends Phaser.Scene {
     const D = 6000;
     const fermer = () => objets.forEach((o) => o.destroy());
     objets.push(this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.7).setDepth(D).setInteractive());
-    objets.push(panneau(this, 390, 230, 500, 230, D + 1).lineStyle(2, 0xe3b54c).strokeRoundedRect(390, 230, 500, 230, 14));
+    objets.push(panneau(this, 390, 230, 500, 230, D + 1));
     const c = this.cibleM()!;
     objets.push(texte(this, 640, 252, `${this.onglet === 'xp' ? 'Nourrir' : 'Faire évoluer'} ${fiche(c.id).nom} ?`, 20, '#ffe08a', true).setDepth(D + 2));
     objets.push(texte(this, 640, 292, 'Ces monstres disparaîtront :', 14, '#cfdccf').setDepth(D + 2));

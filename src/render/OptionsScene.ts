@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { charger, dernieresErreurs, effacer, exporter, importer, sauver } from './sauvegarde';
 import { VERSION_JEU } from '../version';
 import { reglerVolume, volumeMusique } from './musique';
-import { H, OR, POLICE, W, bouton, panneau, texte } from './ui';
+import { H, OR, POLICE, W, bouton, chargerUi, panneau, texte } from './ui';
 
 /**
  * Options : version du jeu, export et import de la sauvegarde (un code à copier), « Signaler un bug » (copie un rapport
@@ -16,7 +16,7 @@ export class OptionsScene extends Phaser.Scene {
 
   init() { this.confirmer = false; }
 
-  preload() { if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp'); }
+  preload() { chargerUi(this, []); if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp'); }
 
   create() {
     const fond = this.add.image(W / 2, H / 2, 'zaap_incarnam').setTint(0x5a6450);

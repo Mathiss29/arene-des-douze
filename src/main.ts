@@ -26,7 +26,7 @@ const erreurConsole = console.error.bind(console);
 console.error = (...a: unknown[]) => { noterErreur(a.map(String).join(' ')); erreurConsole(...a); };
 
 // Polices de Dofus 3 (Lexend pour l'interface, Rowdies pour les chiffres), chargées avant le premier texte
-await Promise.all(['400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f) => document.fonts.load(f).catch(() => undefined)));
+await Promise.all(['400 16px Fredoka', '600 16px Fredoka', '400 16px Lexend', '600 16px Lexend', '16px Rowdies'].map((f) => document.fonts.load(f).catch(() => undefined)));
 
 // #vitrine : vitrine des planches ; #maquette-<nom> : maquette jouable avec son panneau de questions ; sinon l'île d'Incarnam
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };

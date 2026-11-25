@@ -11,7 +11,8 @@ import { SETS, type SetRune } from '../sim/runes';
 
 export const W = 1280;
 export const H = 720;
-export const POLICE = 'Lexend, sans-serif';
+/** Direction artistique (maquettes « DA : » et « Planche : » 1A 2A, nov. 2026) : Fredoka, cadres et boutons de Dofus 3. */
+export const POLICE = 'Fredoka, Lexend, sans-serif';
 export const CHIFFRES = 'Rowdies, Lexend, sans-serif';
 export const OR = '#e3b54c';
 export const COULEUR: Record<Element, number> = { feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xf4e8a8, brakmar: 0xa965de };
@@ -27,7 +28,7 @@ const NOM_ZONE: Record<string, string> = { general: 'général', arene: 'Arène'
 export const texteLeader = (l: Leader) => `+${l.valeur} % de ${NOM_STAT[l.stat]} (${NOM_ZONE[l.zone] ?? l.zone})`;
 export const nomStat = (s: keyof Stats) => NOM_STAT[s];
 
-const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over'];
+const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over', 'btn_green_pressed', 'block_border_double', 'headerBgStone', 'slot_dark_background_full'];
 
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
@@ -56,21 +57,41 @@ export function texte(scene: Phaser.Scene, x: number, y: number, t: string, tail
     .setOrigin(ox, oy).setShadow(0, 1, '#000', 3, false, true).setDepth(1000);
 }
 
-export function panneau(scene: Phaser.Scene, x: number, y: number, w: number, h: number, profondeur = 900) {
-  return scene.add.graphics().setDepth(profondeur)
-    .fillStyle(0x0f1814, 0.94).fillRoundedRect(x, y, w, h, 14).lineStyle(2, 0x5d6f52).strokeRoundedRect(x, y, w, h, 14);
+export function panneau(scene: Phaser.Scene, x: number, y: number, w: number, h: number, profondeur = 900): Phaser.GameObjects.Container | Phaser.GameObjects.Graphics {
+  // cadre double de Dofus 3 sur un fond sombre ; sans la texture (écran qui ne charge pas l'interface), l'ancien cadre dessiné
+  if (!scene.textures.exists('block_border_double')) {
+    return scene.add.graphics().setDepth(profondeur)
+      .fillStyle(0x0f1814, 0.94).fillRoundedRect(x, y, w, h, 14).lineStyle(2, 0x5d6f52).strokeRoundedRect(x, y, w, h, 14);
+  }
+  const fond = scene.add.rectangle(6, 6, w - 12, h - 12, 0x0f1814, 0.95).setOrigin(0);
+  const cadre = scene.add.nineslice(0, 0, 'block_border_double', undefined, w, h, 26, 26, 26, 26).setOrigin(0);
+  return scene.add.container(x, y, [fond, cadre]).setDepth(profondeur);
 }
 
-/** Bouton vert (action principale) ou sombre. Renvoie le fond et le texte (pour les détruire ou les griser). */
+/** Bandeau de titre en pierre (Dofus 3), centré en haut d'une fenêtre. Renvoie les deux objets (à détruire avec le calque). */
+export function titreFenetre(scene: Phaser.Scene, x: number, y: number, largeur: number, titre: string, profondeur = 1000) {
+  const bandeau = scene.add.image(x, y, 'headerBgStone').setDisplaySize(largeur, 58).setDepth(profondeur);
+  const t = scene.add.text(x, y - 3, titre, { fontFamily: POLICE, fontSize: '23px', fontStyle: '600', color: '#ffe9b0' })
+    .setOrigin(0.5).setShadow(0, 2, '#000000', 2, false, true).setDepth(profondeur + 1);
+  return [bandeau, t] as const;
+}
+
+/** Bouton vert anis de Dofus 3 (action principale) ou sombre. Renvoie le fond et le texte (pour les détruire ou les griser). */
 export function bouton(scene: Phaser.Scene, x: number, y: number, w: number, h: number, libelle: string, vert: boolean, action: () => void, profondeur = 1001) {
-  const fond: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle = vert
-    ? scene.add.nineslice(x, y, 'btn_green_normal', undefined, w, h, 12, 12, 10, 10).setDepth(profondeur)
-    : scene.add.rectangle(x, y, w, h, 0x2a3a32).setStrokeStyle(1.5, 0x5d6f52).setDepth(profondeur);
-  const t = scene.add.text(x, y, libelle, { fontFamily: POLICE, fontSize: vert ? '19px' : '14px', fontStyle: '600', color: '#ffffff' })
-    .setOrigin(0.5).setShadow(0, 2, '#1f4a12', 2, false, true).setDepth(profondeur + 1);
+  const repos = vert ? 'btn_green_normal' : 'slot_dark_background_full';
+  const dessine = scene.textures.exists(repos);
+  const fond: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle = dessine
+    ? scene.add.nineslice(x, y, repos, undefined, w, h, 12, 12, 10, 10).setDepth(profondeur)
+    : scene.add.rectangle(x, y, w, h, vert ? 0xa8d91a : 0x2a3a32).setStrokeStyle(1.5, 0x5d6f52).setDepth(profondeur);
+  const t = scene.add.text(x, y, libelle, { fontFamily: POLICE, fontSize: vert ? '19px' : '15px', fontStyle: '600', color: vert ? '#26330a' : '#e6efdc' })
+    .setOrigin(0.5).setDepth(profondeur + 1);
+  if (vert) t.setShadow(0, 1, '#e9ff8a', 0, false, true); else t.setShadow(0, 2, '#000000', 2, false, true);
   fond.setInteractive({ useHandCursor: true }).on('pointerdown', action);
-  if (fond instanceof Phaser.GameObjects.NineSlice) fond.on('pointerover', () => fond.setTexture('btn_green_over')).on('pointerout', () => fond.setTexture('btn_green_normal'));
-  else fond.on('pointerover', () => fond.setFillStyle(0x34483e)).on('pointerout', () => fond.setFillStyle(0x2a3a32));
+  if (fond instanceof Phaser.GameObjects.NineSlice) {
+    if (vert) fond.on('pointerover', () => fond.setTexture('btn_green_over')).on('pointerout', () => { if (fond.active && t.active) { fond.setTexture(repos); t.setY(y); } })
+      .on('pointerdown', () => { if (fond.active && t.active) { fond.setTexture('btn_green_pressed'); t.setY(y + 2); } }).on('pointerup', () => { if (fond.active && t.active) { fond.setTexture('btn_green_over'); t.setY(y); } });
+    else fond.on('pointerover', () => fond.setTint(0xcfe0c8)).on('pointerout', () => fond.clearTint());
+  }
   return { fond, t, griser() { fond.disableInteractive().setAlpha(0.45); t.setAlpha(0.6); } };
 }
 
