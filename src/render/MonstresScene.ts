@@ -161,17 +161,14 @@ export class MonstresScene extends Phaser.Scene {
         this.tweens.add({ targets: acteur, x: x0, alpha: 1, scaleX: ex, scaleY: ey, duration: 480, ease: 'Back.easeOut', onComplete: respirer });
         this.time.delayedCall(140, () => { if (acteur.active) eclatEntree(this, 350, 380, COULEUR[f.element]); });
       } else respirer();
-      const attaques = [0, 1, 2, 3].map((n) => `${atlas}/AnimAttaque${n}_1`).filter((n) => this.anims.exists(n));
-      let k = 0;
+      // au toucher : un petit bond (la planche animée serait floue à cette taille)
+      let saute = false;
       acteur.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
-        if (!attaques.length || !sp.active || Math.abs(p.upX - p.downX) > 20 || (pose && !pose.visible)) return;
-        // l'attaque se joue sur la planche animée, puis la pose nette revient
-        if (pose) { pose.setVisible(false); sp.setVisible(true).setAlpha(1); }
-        sp.play(attaques[k++ % attaques.length]).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-          if (!sp.active) return;
-          sp.play(`${atlas}/AnimStatique_1`);
-          if (pose?.active) { sp.setVisible(false); pose.setVisible(true); }
-        });
+        if (saute || !acteur.active || Math.abs(p.upX - p.downX) > 20) return;
+        saute = true;
+        const y0 = acteur.y;
+        this.tweens.add({ targets: acteur, y: y0 - 46, duration: 170, ease: 'Quad.easeOut', yoyo: true, onComplete: () => { saute = false; } });
+        this.tweens.add({ targets: acteur, angle: { from: -5, to: 5 }, duration: 85, yoyo: true, repeat: 1, onComplete: () => { if (acteur.active) acteur.setAngle(0); } });
       });
     }
     { const pl = bouton(this, 350, 528, 440, 46, '', false, () => undefined, 1002); pl.fond.disableInteractive(); this.g(pl.fond); this.g(pl.t); }

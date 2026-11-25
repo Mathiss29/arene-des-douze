@@ -9,7 +9,7 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerPuis, chargerUi, COULEUR, fmt, H, hex, monstreEnPied, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
+import { bouton, caseSombre, chargerPuis, chargerUi, COULEUR, fmt, H, hex, monstreNet, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
 
 /**
  * Préparation d'équipe (maquette « Écrans : » 1B 2B 3B 4A 5A 6A) : collection à gauche, ennemis et équipe à droite.
@@ -322,7 +322,7 @@ export class PreparationScene extends Phaser.Scene {
 
     // Portrait en pied
     k(this.add.ellipse(X + 170, Y + 360, 170, 50, COULEUR[f.element], 0.18).setStrokeStyle(3, COULEUR[f.element]).setDepth(D + 1));
-    k(monstreEnPied(this, m.id, X + 170, Y + 360, 1.5).setDepth(D + 2));
+    monstreNet(this, m.id, X + 170, Y + 360, 1.5, (o) => k(o.setDepth(D + 2)));
     tx(X + 170, Y + 26, f.nom, 22, '#ffe08a', true, 0.5);
     tx(X + 170, Y + 58, this.etoiles(m.etoiles), 18, '#ffcf4a', false, 0.5);
     tx(X + 170, Y + 400, `Niv. ${m.niveau} / ${NIVEAU_MAX[m.etoiles as Etoiles]}`, 15, '#ffffff', true, 0.5);

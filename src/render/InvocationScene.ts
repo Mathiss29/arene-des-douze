@@ -9,7 +9,7 @@ import { fiche, monstreCombat } from '../sim/fiches';
 import { noterMission } from '../sim/missions';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
-import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, portrait, texte, texteLeader } from './ui';
+import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, poseNette, portrait, texte, texteLeader } from './ui';
 
 /**
  * Cercle d'invocation (maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A) : le Summonhenge de SW.
@@ -205,9 +205,13 @@ export class InvocationScene extends Phaser.Scene {
       const m = inv[0], f = fiche(m.id), lum = LUMIERE(m.etoiles);
       this.garder(this.add.circle(CX, CY - 20, 150, lum, 0.25).setBlendMode(Phaser.BlendModes.ADD).setDepth(1500));
       const sp = this.garder(monstreEnPied(this, m.id, CX, CY + 70, 1.7).setDepth(1600));
-      sp.setScale(0.1 * Math.sign(sp.scaleX), 0.1);
-      const k = LOOKS[m.id].echelle * 1.7;
-      this.tweens.add({ targets: sp, scaleX: k, scaleY: k, duration: 500, ease: 'Back.easeOut' });
+      // la pose nette remplace le sprite de la planche (flou une fois agrandi) ; si elle arrive après, elle prend sa place à la fin de l'apparition
+      const tard = () => this.time.delayedCall(520, () => { if (sp.active) { const p = poseNette(this, m.id, sp); if (p) this.garder(p); } });
+      const pose = poseNette(this, m.id, sp, tard);
+      if (pose) this.garder(pose);
+      const acteur = pose ?? sp, kx = acteur.scaleX, ky = acteur.scaleY;
+      acteur.setScale(kx * 0.06, ky * 0.06);
+      this.tweens.add({ targets: acteur, scaleX: kx, scaleY: ky, duration: 500, ease: 'Back.easeOut' });
       // étoiles qui s'allument une à une
       const y = CY + 110;
       for (let i = 0; i < m.etoiles; i++) {

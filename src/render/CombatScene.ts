@@ -17,7 +17,7 @@ import { LOOKS, teinter } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, caseSombre, chargerUi, monstreEnPied, OR, planchePrete, panneau, portrait, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, chargerUi, monstreNet, OR, planchePrete, panneau, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -811,8 +811,7 @@ export class CombatScene extends Phaser.Scene {
       const x = xs[i] + decal, y = 360;
       const ko = !this.combat.unites.find((u) => u.camp === 'A' && u.place === i)?.vivant;
       this.add.ellipse(x, y, 130, 40, i === 0 ? 0xffcf4a : 0x000000, i === 0 ? 0.25 : 0.45).setStrokeStyle(i === 0 ? 3 : 0, 0xffcf4a).setDepth(D + 1);
-      const sp = monstreEnPied(this, a.id, x, y, 1.15).setDepth(D + 2);
-      if (ko && !victoire) sp.setTint(0x666666);
+      monstreNet(this, a.id, x, y, 1.15, (o) => { o.setDepth(D + 2); if (ko && !victoire) o.setTint(0x666666); });
       const nom = this.combat.unites.find((u) => u.camp === 'A' && u.monstre.id === a.id)?.monstre.nom ?? a.id;
       t(x, y + 24, `${i === 0 ? '♛ ' : ''}${nom}`, 14, '#ffffff', true);
       const niv = t(x, y + 44, `Niv. ${a.niveau}${victoire ? ` · +${fmt(XP_GAIN(this.stage))} XP` : ''}`, 12, '#cfdccf');

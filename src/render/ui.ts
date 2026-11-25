@@ -143,6 +143,15 @@ export function monstreEnPied(scene: Phaser.Scene, id: string, x: number, y: num
   return sp;
 }
 
+/** Monstre en pied et net : le sprite de la planche, remplacé par sa pose nette dès qu'elle est chargée. `garder` reçoit chaque objet créé. */
+export function monstreNet(scene: Phaser.Scene, id: string, x: number, y: number, zoom: number, garder: (o: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image) => void, miroir = false) {
+  const sp = monstreEnPied(scene, id, x, y, zoom, miroir);
+  garder(sp);
+  const poser = () => { if (!sp.active || !scene.scene.isActive()) return; const p = poseNette(scene, id, sp, poser); if (p) garder(p); };
+  poser();
+  return sp;
+}
+
 /**
  * Pose nette d'un monstre affiché en grand : les planches sont dessinées petites (pour le combat) et deviennent floues une fois
  * agrandies ; `public/assets/poses/<atlas>.webp` est la même pose de repos rendue en grand depuis le squelette de Dofus 3.
