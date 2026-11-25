@@ -90,7 +90,7 @@ export class InvocationScene extends Phaser.Scene {
       const y = 142 + i * 64, on = p === this.pierre, n = nombre(j, p);
       const g = this.garder(this.add.graphics().setDepth(1000));
       g.fillStyle(on ? 0x2f3a16 : 0x161b13).fillRoundedRect(PX + 24, y - 28, PL - 48, 56, 8).lineStyle(on ? 2.5 : 1.5, on ? 0xb9e61c : 0x4a5a3c).strokeRoundedRect(PX + 24, y - 28, PL - 48, 56, 8);
-      this.garder(this.add.image(PX + 58, y, `pierre_${p}`).setDisplaySize(42, 42).setDepth(1001).setAlpha(n ? 1 : 0.4));
+      this.garder(this.add.image(PX + 58, y, `pierre_${p}`).setDisplaySize(52, 52).setDepth(1001).setAlpha(n ? 1 : 0.45));
       const ch = PIERRES[p].chances.map(([e]) => e);
       this.t(PX + 90, y - 20, `${PIERRES[p].nom} (${ch[0]}${ch.length > 1 ? `-${ch[ch.length - 1]}` : ''}★)`, 14, n ? '#ffffff' : '#7d8a80', true, 0, 0, 1001);
       this.t(PX + 90, y + 2, PIERRES[p].elements.map((e) => NOM_ELEMENT[e]).join(', '), 11, '#93a89b', false, 0, 0, 1001);
@@ -105,7 +105,7 @@ export class InvocationScene extends Phaser.Scene {
       this.garder(b.fond); this.garder(b.t);
     }
     // la pierre choisie, au-dessus du cercle
-    this.garder(this.add.image(CX - 86, 92, `pierre_${this.pierre}`).setDisplaySize(40, 40).setDepth(1001));
+    this.garder(this.add.image(CX - 86, 92, `pierre_${this.pierre}`).setDisplaySize(56, 56).setDepth(1001));
     this.t(CX - 58, 92, `${PIERRES[this.pierre].nom}  ×${nombre(j, this.pierre)}`, 16, '#ffffff', true, 0, 0.5, 1001);
 
     // chances de la pierre choisie, sous le cercle

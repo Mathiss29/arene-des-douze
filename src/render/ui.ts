@@ -33,6 +33,8 @@ const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal',
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
   for (const f of IMAGES_UI) if (!scene.textures.exists(f)) scene.load.image(f, `assets/ui/${f}.png`);
+  // pierres d'invocation (images fournies par Mathis, 256 px) : elles remplacent les gemmes dessinées par le jeu
+  for (const k of ['ame', 'parfaite', 'feu', 'eau', 'air', 'lumiere', 'legendaire', 'transcendante']) if (!scene.textures.exists(`pierre_${k}`)) scene.load.image(`pierre_${k}`, `assets/ui/pierres/${k}.webp`);
   // vignettes de tous les monstres (280 Ko) : les portraits n'ont pas besoin des planches (plusieurs Mo chacune)
   if (!scene.textures.exists('vignettes')) scene.load.atlas('vignettes', 'assets/ui/vignettes.webp', 'assets/ui/vignettes.json');
   for (const id of new Set(ids)) {
