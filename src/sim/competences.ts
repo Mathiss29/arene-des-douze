@@ -54,6 +54,16 @@ export function sortAuNiveau(s: Sort, niveau: number): Sort {
   if (eff && s.jauge?.cible && s.jauge.cible.chance < 100) r.jauge = { ...s.jauge, cible: { ...s.jauge.cible, chance: Math.min(100, s.jauge.cible.chance + eff) } };
   if (soin !== 1 && s.soin) r.soin = s.soin * soin;
   if (soin !== 1 && s.bouclier) r.bouclier = { ...s.bouclier, part: s.bouclier.part * soin };
+  // la description suit le niveau : taux d'effet, soin ou bouclier réels, et le bonus de dégâts acquis
+  const sd = s as Sort & { desc?: string };
+  if (sd.desc) {
+    const pc = (v: number) => String(Math.round(v * 10) / 10).replace('.', ',');
+    let d = sd.desc;
+    if (eff) d = d.replace(/(\d+) % de chance/g, (_, n) => `${Math.min(100, Number(n) + eff)} % de chance`);
+    if (soin !== 1) d = d.replace(/(\d+(?:,\d+)?) % de (leurs|ses) PV max/g, (_, n, qui) => `${pc(Number(String(n).replace(',', '.')) * soin)} % de ${qui} PV max`);
+    if (deg !== 1) d += ` (dégâts +${Math.round((deg - 1) * 100)} %)`;
+    (r as Sort & { desc?: string }).desc = d;
+  }
   return r;
 }
 

@@ -206,6 +206,12 @@ describe('boss au-delà du niveau 40', () => {
     expect(sortAuNiveau(s, 5).recharge).toBe(s.recharge - 1);
     expect(sortAuNiveau(s, 5).mult!.atq).toBeCloseTo(s.mult!.atq! * 1.3);
     expect(sortAuNiveau(s, 1)).toBe(s);
+    // la description suit le niveau
+    const ecailles = monstreCombat('dragoss_argile').sorts[1];
+    expect(sortAuNiveau(ecailles, 3).effets![0].chance).toBe(35);
+    expect((sortAuNiveau(ecailles, 3) as { desc?: string }).desc).toContain('35 % de chance');
+    expect((sortAuNiveau(ecailles, 3) as { desc?: string }).desc).toContain('(dégâts +10 %)');
+    expect((sortAuNiveau(s, 5) as { desc?: string }).desc).toContain('(dégâts +30 %)');
     // jamais au-delà du maximum
     const plein = monterCompetences({ id: 'dragoss_argile' }, 99, new Rng(1));
     expect(plein.sorts).toEqual(monstreCombat('dragoss_argile').sorts.map(niveauMax));

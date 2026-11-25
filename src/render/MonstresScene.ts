@@ -309,9 +309,9 @@ export class MonstresScene extends Phaser.Scene {
           this.g(this.add.rectangle(X + 46, y + 24, 48, 48).setStrokeStyle(2, 0x6f7862).setDepth(1002));
           if (max > 1) { this.g(this.add.rectangle(X + 46, y + 44, 34, 15, 0x10130d, 0.95).setStrokeStyle(1, 0x6f7862).setDepth(1003)); this.g(texte(this, X + 46, y + 44, `${niv[i]}/${max}`, 10.5, niv[i] >= max ? '#ffe08a' : '#ffffff', true, 0.5, 0.5).setDepth(1004)); }
         }
-        const r = sortAuNiveau(s, niv[i]).recharge;
+        const auNiveau = sortAuNiveau(s, niv[i]), r = auNiveau.recharge;
         this.g(texte(this, X + 80, y, `${s.nom}${r ? `  ·  recharge ${r}` : ''}`, 14.5, '#ffffff', true, 0, 0));
-        const d = this.g(texte(this, X + 80, y + 20, s.desc ?? '', 11.5, '#c9cfc4', false, 0, 0).setWordWrapWidth(L - 106));
+        const d = this.g(texte(this, X + 80, y + 20, auNiveau.desc ?? '', 11.5, '#c9cfc4', false, 0, 0).setWordWrapWidth(L - 106));
         let yy = y + 24 + d.height;
         gains.forEach((g, k) => {
           const acquis = niv[i] >= k + 2;
