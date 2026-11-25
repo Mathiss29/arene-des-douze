@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import { fiche } from '../sim/fiches';
@@ -7,7 +8,7 @@ import {
   CHANCES, DONJONS, NB_NIVEAUX, NIVEAUX, RUNES_NIVEAU, cleDonjon, donjonOuvert, niveauFini, niveauOuvert, niveauxFinis, nomZone, type Donjon,
 } from '../sim/donjons';
 import { SETS } from '../sim/runes';
-import { H, OR, POLICE, W, bouton, chargerUi, panneau, portrait, texte } from './ui';
+import { OR, POLICE, W, bouton, chargerUi, panneau, portrait, texte } from './ui';
 
 /**
  * Donjons (maquette « Donjons : » 1C 2B 3C 4C 5C 6C 7A 8A) : comme le Donjon de Cairos de SW, un seul lieu,
@@ -33,16 +34,13 @@ export class DonjonsScene extends Phaser.Scene {
 
   preload() {
     chargerUi(this, []); // portraits : vignettes seulement
-    if (!this.textures.exists('zaap_frigost')) this.load.image('zaap_frigost', 'assets/zaap/frigost.webp');
+    chargerIdentite(this);
   }
 
   create() {
-    const fond = this.add.image(W / 2, H / 2, 'zaap_frigost').setTint(0x4a5248);
-    fond.setScale(Math.max(W / fond.width, H / fond.height));
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.5);
-    const ret = texte(this, 16, 14, '‹ Carte', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('zaap'));
-    texte(this, ret.x + ret.width + 10, 14, 'Donjons', 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    decorVivant(this);
+    bandeauPierre(this, 'Carte', () => this.scene.start('zaap'));
+    texte(this, W / 2, 25, 'Donjons', 21, '#eef2e4', true, 0.5, 0.5).setDepth(2001);
     this.dessiner();
   }
 

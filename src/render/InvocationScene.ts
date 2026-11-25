@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger, sauver } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import {
@@ -38,14 +39,15 @@ export class InvocationScene extends Phaser.Scene {
 
   preload() {
     chargerUi(this, []);
-    if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
+    chargerIdentite(this);
   }
 
   create() {
     for (const p of ORDRE_PIERRES) this.texturePierre(p);
-    const fond = this.add.image(W / 2, H / 2, 'zaap_incarnam').setTint(0x50586a);
-    fond.setScale(Math.max(W / fond.width, H / fond.height));
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050812, 0.35);
+    // décor de pierre vivant, teinté du bleu du cercle
+    decorVivant(this, CX).teinter(0x7ab4ff);
+    bandeauPierre(this, 'Incarnam', () => this.etat === 'repos' && this.scene.start('ile'));
+    texte(this, W / 2, 25, 'Cercle d\'invocation', 21, '#eef2e4', true, 0.5, 0.5).setDepth(2001);
     // le cercle : trois anneaux et des runes qui tournent
     const r = [220, 175, 120];
     r.forEach((rr, i) => {
@@ -70,19 +72,13 @@ export class InvocationScene extends Phaser.Scene {
   private t(x: number, y: number, s: string, taille = 14, couleur = '#e9efe6', gras = false, ox = 0.5, oy = 0, prof = 1000) {
     return this.garder(texte(this, x, y, s, taille, couleur, gras, ox, oy).setDepth(prof));
   }
-  private plaque(x: number, y: number, s: string, couleur = '#ffffff', ox = 0) {
-    return this.t(x, y, s, 15, couleur, true, ox, 0).setBackgroundColor('rgba(8,14,11,0.86)').setPadding(12, 7, 12, 7);
-  }
 
   private vider() { for (const o of this.calque) o.destroy(); this.calque = []; }
 
   private dessiner() {
     this.vider();
     const j = this.joueur;
-    const ret = this.plaque(16, 14, '‹ Incarnam', '#ffe08a');
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.etat === 'repos' && this.scene.start('ile'));
-    this.plaque(W / 2, 14, 'Cercle d\'invocation', '#ffffff', 0.5);
-    this.plaque(W - 16, 14, `${fmt(j.kamas)} kamas`, '#ffe08a', 1);
+    this.garder(texte(this, W - 18, 25, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0.5).setDepth(2001));
     if (this.etat !== 'repos') return;
 
     // pierres, en colonne à gauche (1A)

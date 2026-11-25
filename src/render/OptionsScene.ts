@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
+import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger, dernieresErreurs, effacer, exporter, importer, sauver } from './sauvegarde';
 import { VERSION_JEU } from '../version';
 import { reglerVolume, volumeMusique } from './musique';
-import { H, OR, POLICE, W, bouton, chargerUi, panneau, texte } from './ui';
+import { OR, POLICE, W, bouton, chargerUi, panneau, texte } from './ui';
 
 /**
  * Options : version du jeu, export et import de la sauvegarde (un code à copier), « Signaler un bug » (copie un rapport
@@ -16,14 +17,12 @@ export class OptionsScene extends Phaser.Scene {
 
   init() { this.confirmer = false; }
 
-  preload() { chargerUi(this, []); if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp'); }
+  preload() { chargerUi(this, []); chargerIdentite(this); }
 
   create() {
-    const fond = this.add.image(W / 2, H / 2, 'zaap_incarnam').setTint(0x5a6450);
-    fond.setScale(Math.max(W / fond.width, H / fond.height));
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.5);
-    const ret = texte(this, 16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('ile'));
+    decorVivant(this);
+    bandeauPierre(this, 'Incarnam', () => this.scene.start('ile'));
+    texte(this, W / 2, 25, 'Options', 21, '#eef2e4', true, 0.5, 0.5).setDepth(2001);
     panneau(this, 340, 80, 600, 580);
     texte(this, W / 2, 104, 'Options', 24, '#ffffff', true, 0.5, 0);
     texte(this, W / 2, 140, `Arène des Douze · version ${VERSION_JEU} · fan game gratuit, sans achat`, 13, '#93a89b', false, 0.5, 0);

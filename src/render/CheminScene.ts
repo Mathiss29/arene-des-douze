@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger, sauver } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import {
@@ -35,16 +36,13 @@ export class CheminScene extends Phaser.Scene {
   preload() {
     chargerUi(this, []); // portraits : vignettes seulement
     if (!this.textures.exists('pnj_ganymede')) this.load.image('pnj_ganymede', 'assets/ui/pnj_ganymede.webp');
-    if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
+    chargerIdentite(this);
   }
 
   create() {
-    const fond = this.add.image(W / 2, H / 2, 'zaap_incarnam').setTint(0x5a6450);
-    fond.setScale(Math.max(W / fond.width, H / fond.height));
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.45);
-    const ret = texte(this, 16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('ile'));
-    texte(this, ret.x + ret.width + 10, 14, 'Chemin de l\'invocateur', 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    decorVivant(this);
+    bandeauPierre(this, 'Incarnam', () => this.scene.start('ile'));
+    texte(this, W / 2, 25, 'Chemin de l\'invocateur', 21, '#eef2e4', true, 0.5, 0.5).setDepth(2001);
     this.dessiner();
   }
 

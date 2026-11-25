@@ -195,8 +195,9 @@ export class CombatScene extends Phaser.Scene {
 
   private creerInterface() {
     // Frise d'initiative (haut, au centre) : l'acteur puis les 7 prochains tours
-    const n = 8;
-    const fond = this.add.graphics().setDepth(3000);
+    // choix de Mathis (25/11/2026) : pas de frise d'ordre des tours, l'ordre se lit sur la jauge d'attaque de chaque monstre, comme dans SW
+    const n = 0;
+    const fond = this.add.graphics().setDepth(3000).setVisible(false);
     const larg = 64 + (n - 1) * 54 + 24;
     fond.fillStyle(0x08100c, 0.8).fillRoundedRect(W / 2 - larg / 2, 8, larg, 70, 35).lineStyle(1.5, 0xc9a24a).strokeRoundedRect(W / 2 - larg / 2, 8, larg, 70, 35);
     let x = W / 2 - larg / 2 + 12;
@@ -615,16 +616,19 @@ export class CombatScene extends Phaser.Scene {
     g.fillStyle(u.camp === 'A' ? 0x5cc95a : 0xe0503c).fillRoundedRect(bx, y + 31, l * pv, 8, 2);
     const bouclier = u.effets.find((x) => x.type === 'bouclier');
     if (bouclier) g.fillStyle(0xffffff, 0.6).fillRect(bx, y + 31, Math.min(l, (l * bouclier.valeur) / u.stats.pv), 3);
-    g.fillStyle(0x000000, 0.7).fillRect(bx - 1, y + 41, l + 2, 5);
-    g.fillStyle(0xf0c04e).fillRect(bx, y + 42, (l * Math.min(100, u.jauge)) / 100, 3);
+    // jauge d'attaque : bien lisible, elle remplace la frise ; pleine (dorée vive) quand le monstre va jouer
+    g.fillStyle(0x000000, 0.75).fillRoundedRect(bx - 1, y + 41, l + 2, 8, 2);
+    const ja = Math.min(100, u.jauge) / 100;
+    if (ja > 0) g.fillStyle(ja >= 1 ? 0xffe36a : 0x4ab8f0).fillRoundedRect(bx, y + 42, Math.max(3, l * ja), 6, 2);
 
     // Effets en cours
     const txt = u.effets.map((x) => `${COURT_EFFET[x.type]}${x.type === 'poison' && x.valeur > 1 ? '×' + x.valeur : ''} ${x.tours}`).join('  ');
-    vue.effets.setText(txt).setVisible(txt.length > 0).setPosition(x, y + 49);
+    vue.effets.setText(txt).setVisible(txt.length > 0).setPosition(x, y + 52);
   }
 
   private majFrise() {
     const c = this.combat;
+    if (!this.frise.length) return;
     const ordre = [c.acteur, ...c.ordrePrevu(this.frise.length - 1)].filter((u): u is Unite => !!u);
     this.frise.forEach((slot, i) => {
       const u = ordre[i];

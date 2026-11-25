@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
+import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger, sauver } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import {
   COFFRES, MISSIONS, avantRemise, coffreOuvrable, compte, etatMissions, finie, ouvrirCoffre, peutRecevoir, points, recevoirMission, recevoirTout,
   type Coffre,
 } from '../sim/missions';
-import { H, OR, POLICE, W, bouton, chargerUi, fmt, panneau, texte, titreFenetre } from './ui';
+import { OR, POLICE, W, bouton, chargerUi, fmt, panneau, texte, titreFenetre } from './ui';
 
 /**
  * Missions du jour (maquette « Missions : » 1A 2B 3A 4B 5A 6B 7A 8C 9A) : barre de 100 points et 5 coffres,
@@ -24,15 +25,12 @@ export class MissionsScene extends Phaser.Scene {
 
   preload() {
     chargerUi(this, []);
-    if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
+    chargerIdentite(this);
   }
 
   create() {
-    const fond = this.add.image(W / 2, H / 2, 'zaap_incarnam').setTint(0x5a6450);
-    fond.setScale(Math.max(W / fond.width, H / fond.height));
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.45);
-    const ret = texte(this, 16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.scene.start('ile'));
+    decorVivant(this);
+    bandeauPierre(this, 'Incarnam', () => this.scene.start('ile'));
     this.dessiner();
     this.time.addEvent({ delay: 30_000, loop: true, callback: () => this.dessiner() });
   }
