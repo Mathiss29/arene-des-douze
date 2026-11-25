@@ -8,7 +8,7 @@ import { creerAnimations, origine } from './animations';
 const FICHES = MONSTRES as FicheMonstre[];
 
 const COULEUR_ELEMENT: Record<string, number> = {
-  feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xf4e8a8, brakmar: 0xa965de,
+  feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xfff1b8, brakmar: 0xa965de,
 };
 const NOM_ELEMENT: Record<string, string> = { feu: 'Feu', air: 'Air', eau: 'Eau', bonta: 'Bonta', brakmar: 'Brâkmar' };
 const NOM_TYPE: Record<string, string> = { attaque: 'Attaque', defense: 'Défense', pv: 'PV', soutien: 'Soutien' };

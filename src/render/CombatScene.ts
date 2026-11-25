@@ -31,7 +31,7 @@ const ZOOM = 0.85;
 const POLICE = 'Lexend, sans-serif';
 const POLICE_CHIFFRES = 'Rowdies, Lexend, sans-serif';
 
-const COULEUR: Record<Element, number> = { feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xf4e8a8, brakmar: 0xa965de };
+const COULEUR: Record<Element, number> = { feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xfff1b8, brakmar: 0xa965de };
 
 const NOM_EFFET: Record<TypeEffet, string> = {
   atq_hausse: 'Attaque +', def_hausse: 'Défense +', vit_hausse: 'Vitesse +', tc_hausse: 'Critique +', bouclier: 'Bouclier', immunite: 'Immunité',

@@ -67,7 +67,9 @@ export class MonstresScene extends Phaser.Scene {
     const t = this.textures.createCanvas(cle, 96, 96)!, c = t.getContext();
     const col = hex(COULEUR[e]);
     const g = c.createRadialGradient(48, 58, 4, 48, 58, 62);
-    g.addColorStop(0, col); g.addColorStop(0.55, col + '88'); g.addColorStop(1, '#141d18');
+    // Lumière (planche n° 6, A) : cœur blanc qui rayonne vers l'or, pour ne ressembler à aucun autre élément
+    if (e === 'bonta') { g.addColorStop(0, '#ffffff'); g.addColorStop(0.4, '#fff3c0'); g.addColorStop(0.85, '#f3c64a'); g.addColorStop(1, '#b98a22'); }
+    else { g.addColorStop(0, col); g.addColorStop(0.55, col + '88'); g.addColorStop(1, '#141d18'); }
     c.fillStyle = '#141d18'; c.fillRect(0, 0, 96, 96);
     c.fillStyle = g; c.fillRect(0, 0, 96, 96);
     t.refresh();

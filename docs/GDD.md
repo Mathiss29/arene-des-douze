@@ -333,3 +333,10 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 - ⚠ Toujours à confirmer : défense ±70 %, lenteur −30 %, la nouvelle table d'XP de RELOADED (Com2uS ne l'a pas publiée ;
   on garde l'ancienne, identique au tableau de référence), coûts exacts et XP de la nourriture après RELOADED.
 
+
+
+## Direction artistique (choix de Mathis)
+
+- Identité « Pierre et émeraude » (interface de Dofus 3 assumée : pierre sombre, vert Dofus), à appliquer à tout le jeu ; police Fredoka.
+- Lumière (Bonta) : blanc doré éclatant (cœur blanc qui rayonne vers l'or), jamais jaune sable.
+- Cartes de monstre : étoiles dessinées sur leur propre bandeau, niveau en plaque, monstre entier dans le cadre.

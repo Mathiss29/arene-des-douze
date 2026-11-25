@@ -15,7 +15,7 @@ export const H = 720;
 export const POLICE = 'Fredoka, Lexend, sans-serif';
 export const CHIFFRES = 'Rowdies, Lexend, sans-serif';
 export const OR = '#e3b54c';
-export const COULEUR: Record<Element, number> = { feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xf4e8a8, brakmar: 0xa965de };
+export const COULEUR: Record<Element, number> = { feu: 0xe8673f, air: 0x69d391, eau: 0x4aa3e6, bonta: 0xfff1b8, brakmar: 0xa965de };
 export const NOM_ELEMENT: Record<Element, string> = { feu: 'Feu', air: 'Air', eau: 'Eau', bonta: 'Bonta', brakmar: 'Brâkmar' };
 export const NOM_TYPE: Record<string, string> = { attaque: 'Attaque', defense: 'Défense', pv: 'PV', soutien: 'Soutien' };
 export const hex = (c: number) => '#' + c.toString(16).padStart(6, '0');
