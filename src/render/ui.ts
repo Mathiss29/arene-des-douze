@@ -170,8 +170,9 @@ export function portrait(scene: Phaser.Scene, id: string, x: number, y: number, 
     : pret ? scene.add.sprite(x, y, atlas, 'AnimStatique_1_0').setDepth(profondeur) : scene.add.sprite(x, y, silhouette(scene)).setDepth(profondeur);
   teinter(sp, id);
   const f = sp.frame;
-  const k = (taille * 1.1) / Math.max(f.cutWidth, f.cutHeight);
-  sp.setOrigin((f.x + f.cutWidth / 2) / f.realWidth, (f.y + f.cutHeight * 0.47) / f.realHeight).setScale(miroir ? -k : k, k);
+  // rond : le monstre déborde un peu (gros plan) ; carré : il tient en entier dans le cadre, avec de la marge
+  const k = (taille * (rond ? 1.1 : 0.8)) / Math.max(f.cutWidth, f.cutHeight);
+  sp.setOrigin((f.x + f.cutWidth / 2) / f.realWidth, (f.y + f.cutHeight * (rond ? 0.47 : 0.5)) / f.realHeight).setScale(miroir ? -k : k, k);
   const m = scene.make.graphics({}, false);
   if (rond) m.fillCircle(x, y, taille / 2 - 2); else m.fillRect(x - taille / 2 + 3, y - taille / 2 + 3, taille - 6, taille - 6);
   sp.setMask(m.createGeometryMask());
