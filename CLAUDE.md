@@ -14,9 +14,9 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   v8.1.4 : compétences d'invocateur à la place des bâtiments de gloire). Le GDD marque ✓ ce qui est vérifié et ⚠ ce qui ne l'est pas.
   Éléments : Feu > Air > Eau > Feu, Bonta ⇄ Brâkmar (Lumière/Ténèbres). Types : Attaque, Défense, PV, Soutien.
 - Planches de monstres : celles de Diablofus (dépôt `Mathiss29/dofus-diablo`, `tools/extraction/monster_planche.py`).
-  Règle de Mathis : rien de flou dans le jeu. 39 planches sont refaites en grand (`SCALE=5`, ou 3 à 3,6 pour les gros monstres) et sont DANS le dépôt,
+  Règle de Mathis : rien de flou dans le jeu. Les 45 planches sont refaites en grand (`SCALE=5`, moins pour les gros monstres ; Scarafeuilles et Pichon Vert avec `BOX=` repris de l'ancienne planche, car `BOX=auto` explose) et sont DANS le dépôt,
   atlas JSON et AVIF dans `public/assets/sprites/` ; `src/data/planches_hd.json` donne leur facteur d'agrandissement, dont `looks.ts` divise l'échelle
-  (même taille à l'écran). Les 6 autres (Pichon Vert, Scarafeuilles : le rendu en grand échoue) restent sur le R2 de Diablofus
+  (même taille à l'écran). Une planche absente de ce fichier serait lue sur le R2 de Diablofus
   (`dossierPlanche()` choisit ; en dév, relayé par Vite sous `/r2` ; en ligne, `VITE_ASSETS_URL=https://assets.diablofus.com`).
   Seule la direction 1 sert : alliés tels quels, ennemis en miroir (`flipX`).
   Monstre affiché en grand (écran Monstres, Stèle) : `poseNette()` (`ui.ts`) pose par-dessus le sprite la pose de repos rendue en grand,

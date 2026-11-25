@@ -37,5 +37,11 @@
 "piou_rouge": 1.9769,
 "piou_vert": 1.9841,
 "piou_violet": 1.9764,
-"royal": 3.1044
+"royal": 3.1044,
+"pichon_vert": 1.155,
+"scarafeuille_blanc": 2.0,
+"scarafeuille_bleu": 2.0,
+"scarafeuille_noir": 2.0,
+"scarafeuille_rouge": 2.0,
+"scarafeuille_vert": 2.0
 }
