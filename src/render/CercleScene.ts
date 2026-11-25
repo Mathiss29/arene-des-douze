@@ -4,22 +4,24 @@ import { apercuNourrir, evoluer, monstre, nourrir, pointsNourriture, trierMonstr
 import { ajouterXp, COUT_EVOLUTION, NIVEAU_MAX, NOURRITURE_MAX, pointsRequis, XP_NIVEAU, type Etoiles } from '../sim/progression';
 import { Rng } from '../sim/rng';
 import { noterMission } from '../sim/missions';
-import { LISTE_STAGES, stage } from '../sim/stages';
 import { LOOKS } from './looks';
-import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { preparerTextures } from './effets';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerPuis, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, texte, W } from './ui';
+import { bouton, caseSombre, chargerPuis, chargerUi, CHIFFRES, COULEUR, fmt, H, monstreEnPied, NOM_TYPE, OR, panneau, portrait, POLICE, texte, W } from './ui';
+import { VERT, bandeauPierre, carteMonstre, chargerIdentite, decorVivant, etoiles as etoilesDessinees } from './identite';
 
 /**
- * Cercle d'amélioration (maquette « Évolution : » 1A…9A) : bâtiment de l'île où l'on nourrit (XP) et fait évoluer les monstres.
- * Le monstre choisi au centre, jusqu'à 5 cases de nourriture en arc au-dessus, la collection en bas.
+ * Stèle d'amélioration, disposée comme dans Summoners War (vidéo de Mathis du 25/11/2026 ✓, règles de la maquette « Évolution : » 1A…9A) :
+ * trois onglets en colonne à gauche (Amélioration, Évoluer, Éveil), le monstre choisi au centre avec sa jauge, la nourriture dans une
+ * rangée de cases (« + » ouvre la fenêtre « Sélectionner le monstre », « Sélection auto » la remplit), la collection en grille à droite.
  * Protégés (cadenas) : l'équipe toujours ; les 3★ et plus quand on nourrit (ils servent à l'évolution, avec confirmation).
  */
 
 type Onglet = 'xp' | 'evo';
-const PAR_PAGE = 13;
+const PAR_PAGE = 20;
+/** Centre de la zone du monstre choisi. */
+const CX = 510;
 const ETOILE = '★';
 
 export class CercleScene extends Phaser.Scene {
@@ -31,7 +33,10 @@ export class CercleScene extends Phaser.Scene {
   private alerte = '';
   private occupe = false;
   private calque: { destroy(): void }[] = [];
-  private retour = LISTE_STAGES[0].id;
+  private choixNourr = false;
+  private pageNourr = 0;
+  private triCroissant = true;
+  private decor?: { teinter: (c: number) => void };
   /** Portraits des cases de nourriture (pour l'animation où ils volent vers le monstre). */
   private casesNourr: Phaser.GameObjects.Sprite[] = [];
   private sujet: Phaser.GameObjects.Sprite | null = null;
@@ -42,26 +47,25 @@ export class CercleScene extends Phaser.Scene {
 
   init(data: { stage?: string; cible?: number }) {
     this.joueur = charger();
-    if (data?.stage) this.retour = data.stage;
     this.cible = data?.cible ?? null;
     this.nourr = [];
     this.alerte = '';
     this.occupe = false;
+    this.choixNourr = false; this.pageNourr = 0; this.page = 0;
   }
 
   preload() {
-    const arene = stage(this.retour).arene;
-    if (!this.textures.exists(`arene:${arene}`)) this.load.image(`arene:${arene}`, distant(arene));
     // portraits en vignettes ; la planche du monstre choisi est chargée quand on le choisit
     chargerUi(this, []);
+    chargerIdentite(this);
   }
 
   create() {
     this.calque = [];
     preparerTextures(this);
-    const s = W / 2300;
-    this.add.image(-520 * s, -600 * s, `arene:${stage(this.retour).arene}`).setOrigin(0).setScale(s);
-    this.add.rectangle(W / 2, H / 2, W, H, 0x050a08, 0.72).setDepth(1);
+    this.decor = decorVivant(this, CX);
+    bandeauPierre(this, 'Incarnam', () => !this.occupe && this.scene.start('ile'));
+    texte(this, W / 2, 25, 'Stèle d\'amélioration', 21, '#eef2e4', true, 0.5, 0.5).setDepth(2001);
     for (const id of new Set(this.joueur.monstres.map((m) => m.id))) creerAnimations(this, LOOKS[id].atlas);
     this.dessiner();
   }
@@ -89,8 +93,7 @@ export class CercleScene extends Phaser.Scene {
   }
 
   private positionCase(i: number) {
-    const a = Math.PI * (1 - (i + 0.5) / NOURRITURE_MAX);
-    return { x: 640 + Math.cos(a) * 228, y: 262 - Math.sin(a) * 112 };
+    return { x: CX + (i - (NOURRITURE_MAX - 1) / 2) * 84, y: 574 };
   }
 
   // ───────────── actions ─────────────
@@ -103,29 +106,62 @@ export class CercleScene extends Phaser.Scene {
     this.dessiner();
   }
 
+  /** Grille de droite : choisir le monstre à améliorer. */
+  private choisirCible(m: MonstrePossede) {
+    if (this.occupe) return;
+    this.cible = this.cible === m.uid ? null : m.uid; this.nourr = []; this.alerte = ''; this.dessiner();
+  }
+
+  /** Pourquoi ce monstre ne peut pas être donné (ou null s'il le peut). */
+  private refus(m: MonstrePossede): string | null {
+    const c = this.cibleM();
+    if (!c) return 'Choisis d\'abord le monstre à améliorer.';
+    const v = this.verrou(m);
+    if (v) return v;
+    if (this.onglet === 'evo') {
+      if (c.etoiles >= 6) return 'Déjà 6★ : il ne peut plus évoluer.';
+      if (m.etoiles > c.etoiles) return `La nourriture doit avoir ${c.etoiles}★ ou moins.`;
+    }
+    return null;
+  }
+
+  /** Fenêtre de nourriture ou case de nourriture : donner ou reprendre un monstre. */
   private clicCollection(m: MonstrePossede) {
     if (this.occupe) return;
     const c = this.cibleM();
-    if (!c) { this.cible = m.uid; this.nourr = []; this.alerte = ''; this.dessiner(); return; }
+    if (!c) return;
     const i = this.nourr.indexOf(m.uid);
     if (i >= 0) { this.nourr.splice(i, 1); this.alerte = ''; this.dessiner(); return; }
-    const v = this.verrou(m);
-    if (v) { this.alerte = v; this.dessiner(); return; }
-    if (this.onglet === 'evo') {
-      if (c.etoiles >= 6) { this.alerte = 'Déjà 6★ : il ne peut plus évoluer.'; this.dessiner(); return; }
-      if (m.etoiles > c.etoiles) { this.alerte = `La nourriture doit avoir ${c.etoiles}★ ou moins.`; this.dessiner(); return; }
-      if (pointsNourriture(this.joueur, this.nourr) >= pointsRequis(c.etoiles as 1 | 2 | 3 | 4 | 5)) { this.alerte = 'Il y a déjà assez de points.'; this.dessiner(); return; }
-    }
+    const r = this.refus(m);
+    if (r) { this.alerte = r; this.dessiner(); return; }
+    if (this.onglet === 'evo' && pointsNourriture(this.joueur, this.nourr) >= pointsRequis(c.etoiles as 1 | 2 | 3 | 4 | 5)) { this.alerte = 'Il y a déjà assez de points.'; this.dessiner(); return; }
     if (this.nourr.length >= NOURRITURE_MAX) { this.alerte = `${NOURRITURE_MAX} monstres au plus.`; this.dessiner(); return; }
     this.nourr.push(m.uid);
     this.alerte = '';
     this.dessiner();
   }
 
+  /** « Sélection auto » : les monstres les moins étoilés et les moins montés d'abord, sans toucher aux protégés. */
+  private selectionAuto() {
+    const c = this.cibleM();
+    if (this.occupe || !c) return;
+    const dispo = this.joueur.monstres.filter((m) => m.uid !== c.uid && !this.refus(m)).sort((a, b) => a.etoiles - b.etoiles || a.niveau - b.niveau);
+    this.nourr = [];
+    if (this.onglet === 'xp') this.nourr = dispo.slice(0, NOURRITURE_MAX).map((m) => m.uid);
+    else if (c.etoiles < 6) {
+      // évolution : les plus étoilés permis d'abord, pour atteindre les points avec 5 monstres au plus
+      const req = pointsRequis(c.etoiles as 1 | 2 | 3 | 4 | 5);
+      for (const m of [...dispo].reverse()) { if (this.nourr.length >= NOURRITURE_MAX || pointsNourriture(this.joueur, this.nourr) >= req) break; this.nourr.push(m.uid); }
+    }
+    this.alerte = this.nourr.length ? '' : 'Aucun monstre à donner pour l\'instant.';
+    this.dessiner();
+  }
+
   private pret(): boolean {
     const c = this.cibleM();
     if (!c || !this.nourr.length) return false;
-    if (this.onglet === 'xp') return this.joueur.kamas >= apercuNourrir(this.joueur, this.nourr).kamas;
+    // au niveau max, l'XP serait perdue : on ne laisse pas payer pour rien
+    if (this.onglet === 'xp') return c.niveau < NIVEAU_MAX[c.etoiles as Etoiles] && this.joueur.kamas >= apercuNourrir(this.joueur, this.nourr).kamas;
     if (c.etoiles >= 6) return false;
     const e = c.etoiles as 1 | 2 | 3 | 4 | 5;
     return pointsNourriture(this.joueur, this.nourr) >= pointsRequis(e) && this.joueur.kamas >= COUT_EVOLUTION[e];
@@ -162,6 +198,7 @@ export class CercleScene extends Phaser.Scene {
     for (const o of this.calque) if (o instanceof Phaser.GameObjects.Text && (o.getData('nourr') || o.getData('titre') || o.getData('alerte'))) this.tweens.add({ targets: o, alpha: 0, duration: 250 });
     const sujet = this.sujet!;
     const cx = sujet.x, cy = sujet.y - 60;
+    this.choixNourr = false;
     this.casesNourr.forEach((p, i) => {
       p.clearMask();
       this.tweens.add({ targets: p, x: cx, y: cy, scale: p.scale * 0.2, alpha: 0, duration: 480, delay: i * 70, ease: 'Cubic.easeIn' });
@@ -181,12 +218,12 @@ export class CercleScene extends Phaser.Scene {
     this.joueur = noterMission(evoluer(this.joueur, c.uid, this.nourr), 'ameliorer', 1, Date.now());
     sauver(this.joueur);
     const total = c.etoiles + 1;
-    const y = 412, larg = 26;
+    const y = 452, larg = 26;
     const etoiles: Phaser.GameObjects.Text[] = [];
-    this.calque.filter((o) => o instanceof Phaser.GameObjects.Text && (o as Phaser.GameObjects.Text).getData('etoiles')).forEach((o) => (o as Phaser.GameObjects.Text).setVisible(false));
+    this.calque.filter((o) => o instanceof Phaser.GameObjects.Image && o.getData('etoiles')).forEach((o) => (o as Phaser.GameObjects.Image).setVisible(false));
     for (let i = 0; i < total; i++) {
       this.time.delayedCall(i * 260, () => {
-        const s = this.add.text(640 + (i - (total - 1) / 2) * larg, y, ETOILE, { fontFamily: 'Lexend', fontSize: '28px', color: '#ffcf4a', resolution: 2 })
+        const s = this.add.text(CX + (i - (total - 1) / 2) * larg, y, ETOILE, { fontFamily: 'Lexend', fontSize: '28px', color: '#ffcf4a', resolution: 2 })
           .setOrigin(0.5).setStroke('#5a3a00', 4).setDepth(3001).setScale(0);
         etoiles.push(s);
         this.tweens.add({ targets: s, scale: 1, angle: { from: -90, to: 0 }, duration: 320, ease: 'Back.easeOut' });
@@ -197,9 +234,9 @@ export class CercleScene extends Phaser.Scene {
       this.cameras.main.flash(450, 255, 246, 200);
       this.eclats(cx, cy, [0xfff6c8, COULEUR[fiche(c.id).element], 0xffffff], 40);
       const nom = fiche(c.id).nom;
-      const ban = this.add.text(640, 236, `${nom} passe à ${this.etoiles(total)} !`, { fontFamily: CHIFFRES, fontSize: '30px', color: '#ffcf4a', resolution: 2 })
+      const ban = this.add.text(CX, 186, `${nom} passe à ${this.etoiles(total)} !`, { fontFamily: CHIFFRES, fontSize: '30px', color: '#ffcf4a', resolution: 2 })
         .setOrigin(0.5).setStroke('#3a2400', 6).setDepth(3002).setAlpha(0);
-      this.tweens.add({ targets: ban, alpha: 1, y: 226, duration: 300 });
+      this.tweens.add({ targets: ban, alpha: 1, y: 176, duration: 300 });
       this.tweens.add({ targets: ban, alpha: 0, delay: 1800, duration: 400, onComplete: () => ban.destroy() });
       this.time.delayedCall(700, () => {
         etoiles.forEach((s) => s.destroy());
@@ -231,6 +268,12 @@ export class CercleScene extends Phaser.Scene {
 
   // ───────────── écran ─────────────
 
+  private puce(x: number, y: number, w: number, h: number, lib: string, on: boolean, action: () => void, profondeur = 1001, taille = 13) {
+    this.g(this.add.graphics().setDepth(profondeur).fillStyle(on ? VERT : 0x161b13).fillRoundedRect(x, y - h / 2, w, h, 7).lineStyle(1.5, on ? 0xf0ff9a : 0x4a5a3c).strokeRoundedRect(x, y - h / 2, w, h, 7));
+    this.g(this.add.text(x + w / 2, y, lib, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: on ? '#1c2408' : '#dfe8d6' }).setOrigin(0.5).setDepth(profondeur + 1));
+    this.g(this.add.zone(x, y - h / 2, w, h).setOrigin(0).setDepth(profondeur + 2).setInteractive({ useHandCursor: true })).on('pointerdown', () => { if (!this.occupe) action(); });
+  }
+
   private dessiner() {
     for (const o of this.calque) o.destroy();
     this.calque = [];
@@ -239,155 +282,176 @@ export class CercleScene extends Phaser.Scene {
     const j = this.joueur;
     const c = this.cibleM();
     const xp = this.onglet === 'xp';
+    this.decor?.teinter(c ? COULEUR[fiche(c.id).element] : VERT);
+    this.t(W - 18, 25, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0.5).setDepth(2001);
 
-    // En-tête
-    const ret = this.t(16, 14, '‹ Incarnam', 15, '#ffe08a', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => !this.occupe && this.scene.start('ile'));
-    this.t(ret.x + ret.width + 10, 14, `Cercle d'amélioration · ${xp ? 'Nourrir' : 'Évoluer'}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    this.t(W - 16, 14, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    let ox = 640 - 95;
-    for (const [o, nom] of [['xp', 'Nourrir'], ['evo', 'Évoluer']] as [Onglet, string][]) {
+    // les trois onglets en colonne, comme dans SW
+    ([['xp', 'Amélioration'], ['evo', 'Évoluer']] as [Onglet, string][]).forEach(([o, nom], i) => {
       const actif = this.onglet === o;
-      const b = this.t(ox, 15, nom, 14, actif ? '#1d1405' : '#cfdccf', true, 0, 0).setBackgroundColor(actif ? '#e3b54c' : 'rgba(42,58,50,0.95)').setPadding(18, 7, 18, 7).setShadow(0, 0, '#000', 0);
-      b.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.changerOnglet(o));
-      ox += b.width + 8;
-    }
+      const b = bouton(this, actif ? 100 : 96, 96 + i * 58, actif ? 160 : 152, 48, nom, actif, () => this.changerOnglet(o));
+      b.t.setFontSize(actif ? 17 : 16); if (!actif) b.t.setColor('#c9d6bf');
+      this.g(b.fond); this.g(b.t);
+    });
+    const ev = bouton(this, 96, 212, 152, 48, 'Éveil', false, () => { this.alerte = 'L\'éveil des monstres arrive dans une prochaine version.'; this.dessiner(); });
+    ev.t.setFontSize(16).setColor('#5f6a5c'); ev.fond.setAlpha(0.5); this.g(ev.fond); this.g(ev.t);
 
-    // Zone principale
-    this.g(panneau(this, 20, 62, 1240, 448));
     if (!c) {
-      this.t(640, 250, 'Choisis dans ta collection le monstre à améliorer.', 20, '#ffe08a', true);
-      this.t(640, 284, xp ? 'Nourrir : il gagne l\'XP des monstres que tu lui donnes (jusqu\'à 5).' : 'Évoluer : il gagne une étoile et garde son niveau.', 14, '#9fb3a6');
+      this.t(CX, 300, 'Choisis à droite le monstre à améliorer.', 20, '#ffe08a', true);
+      this.t(CX, 334, xp ? 'Amélioration : il gagne l\'XP des monstres que tu lui donnes (jusqu\'à 5).' : 'Évoluer : il gagne une étoile et garde son niveau.', 14, '#9fb3a6');
     } else this.zoneCible(c, xp);
 
-    // Bouton principal
+    // bouton principal, avec son coût
     if (c) {
       const pret = this.pret();
       const cout = xp ? apercuNourrir(j, this.nourr).kamas : c.etoiles < 6 ? COUT_EVOLUTION[c.etoiles as 1 | 2 | 3 | 4 | 5] : 0;
-      const b = bouton(this, 640, 545, 300, 54, `${xp ? 'Nourrir' : 'Évoluer'}  ·  ${fmt(cout)} kamas`, true, () => this.valider());
+      const b = bouton(this, CX, 660, 300, 54, `${xp ? 'Amélioration' : 'Évoluer'}  ·  ${fmt(cout)} kamas`, true, () => this.valider());
       this.g(b.fond); this.g(b.t);
       if (!pret || this.occupe) b.griser();
       if (!xp && c.etoiles < 6 && j.kamas < cout) this.alerte ||= `Il manque ${fmt(cout - j.kamas)} kamas.`;
     }
-    if (this.alerte) this.t(640, 488, this.alerte, 13, '#ff8a7a', true).setBackgroundColor('rgba(0,0,0,0.6)').setPadding(10, 4, 10, 4).setData('alerte', true);
+    if (this.alerte) this.t(CX, 506, this.alerte, 13, '#ff8a7a', true).setBackgroundColor('rgba(0,0,0,0.7)').setPadding(10, 4, 10, 4).setDepth(1500).setData('alerte', true);
 
     this.collection(c);
+    if (this.choixNourr && c) this.fenetreNourriture(c);
   }
 
   private zoneCible(c: MonstrePossede, xp: boolean) {
     const j = this.joueur;
     const f = fiche(c.id);
     const e = c.etoiles as Etoiles;
-
-    // Cases de nourriture en arc
     const req = e < 6 ? pointsRequis(e as 1 | 2 | 3 | 4 | 5) : 0;
-    this.t(640, 78, xp ? `NOURRITURE · JUSQU'À ${NOURRITURE_MAX} MONSTRES` : `NOURRITURE · ${req} POINT${req > 1 ? 'S' : ''}, MONSTRES ${e}★ OU MOINS`, 12, OR, true).setData('titre', true);
-    for (let i = 0; i < NOURRITURE_MAX; i++) {
-      const { x, y } = this.positionCase(i);
-      const uid = this.nourr[i];
-      const cs = caseSombre(this, x, y, 78);
-      this.g(cs.g); this.g(cs.zone);
-      if (uid === undefined) { this.t(x, y, '+', 26, '#5d6f62', false, 0.5, 0.5); continue; }
-      const m = monstre(j, uid);
-      const p = portrait(this, m.id, x, y, 74, false);
-      this.g(p.masque); this.g(p.sp);
-      this.casesNourr.push(p.sp);
-      this.t(x - 35, y - 39, this.etoiles(m.etoiles), 10, '#ffcf4a', false, 0).setDepth(1003).setData('nourr', true);
-      this.t(x + 34, y + 37, String(m.niveau), 12, '#ffffff', true, 1, 1).setDepth(1003).setData('nourr', true);
-      cs.zone.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.clicCollection(m));
-    }
 
-    // Monstre choisi
-    this.g(this.add.ellipse(640, 380, 190, 52, COULEUR[f.element], 0.2).setStrokeStyle(3, COULEUR[f.element]).setDepth(999));
-    if (!this.textures.exists(LOOKS[c.id].atlas)) chargerPuis(this, [c.id], () => { creerAnimations(this, LOOKS[c.id].atlas); if (this.cible === c.uid) this.dessiner(); });
-    this.sujet = this.g(monstreEnPied(this, c.id, 640, 380, 1.35).setDepth(1001));
-    this.t(640, 396, this.etoiles(c.etoiles), 24, '#ffcf4a').setData('etoiles', true);
-    this.t(640, 428, `${f.nom}`, 16, '#ffffff', true);
-    this.t(640, 450, `Niv. ${c.niveau} / ${NIVEAU_MAX[e]} · ${NOM_TYPE[f.type]}`, 12, '#9fb3a6');
-    const ch = this.t(150, 470, '↺ Changer de monstre', 12, '#cfdccf', true).setBackgroundColor('rgba(42,58,50,0.95)').setPadding(10, 5, 10, 5);
-    ch.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (this.occupe) return; this.cible = null; this.nourr = []; this.alerte = ''; this.dessiner(); });
-    // fiche du monstre, onglet Runes (maquette « Runes : » 1A)
-    const ru = this.t(150, 432, '⬢ Runes', 13, '#1d1405', true).setBackgroundColor('#c58cff').setPadding(14, 6, 14, 6).setShadow(0, 0, '#000', 0);
-    ru.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (!this.occupe) this.scene.start('monstre', { uid: c.uid, retour: { scene: 'cercle', data: { cible: c.uid } } }); });
-
-    // À droite : points ou XP, stats avant → après
-    const sx = 935, sy = 196;
+    // en tête : nom, étoiles, puis la jauge (XP ou points de nourriture)
+    this.g(this.add.circle(CX - 150, 84, 7, COULEUR[f.element]).setStrokeStyle(2, 0x0b100d).setDepth(1001));
+    this.t(CX - 136, 84, f.nom, 19, '#ffffff', true, 0, 0.5);
+    for (const o of etoilesDessinees(this, CX + 160, 84, c.etoiles, 17, 1)) { this.g(o); (o as Phaser.GameObjects.Image).setData('etoiles', true); }
+    const gx = CX - 160, gw = 320, gy = 132;
+    const jauge = (part: number, couleur: number, lib: string) => {
+      const gb = this.g(this.add.graphics().setDepth(1001));
+      gb.fillStyle(0x0b0d0a).fillRoundedRect(gx, gy - 9, gw, 18, 5).lineStyle(1.5, 0x4a5a3c).strokeRoundedRect(gx, gy - 9, gw, 18, 5);
+      if (part > 0) gb.fillStyle(couleur).fillRoundedRect(gx + 2, gy - 7, Math.max(4, (gw - 4) * Math.min(1, part)), 14, 4);
+      this.t(CX, gy, lib, 12, '#ffffff', true, 0.5, 0.5).setDepth(1002);
+    };
     if (xp) {
       const ap = apercuNourrir(j, this.nourr);
       const apres = ajouterXp(e, c.niveau, c.xp, ap.xp);
       const part = (n: number, x: number) => (n >= NIVEAU_MAX[e] ? 1 : x / XP_NIVEAU[e][n - 1]);
-      this.t(sx, sy, 'XP REÇUE', 12, OR, true, 0);
-      this.t(sx, sy + 22, this.nourr.length ? `+${fmt(ap.xp)} XP` : 'Choisis des monstres à donner', 18, '#ffffff', true, 0);
-      this.t(sx, sy + 50, '20 % de chances de recevoir ×1,5', 11, '#9fb3a6', false, 0);
-      const gb = this.g(this.add.graphics().setDepth(1001));
-      gb.fillStyle(0x000000, 0.65).fillRoundedRect(sx, sy + 78, 300, 14, 6)
-        .fillStyle(0x3d8cff).fillRoundedRect(sx, sy + 78, Math.max(4, 300 * part(apres.niveau, apres.xp)), 14, 6);
-      if (this.nourr.length) this.t(sx, sy + 100, `Niv. ${c.niveau}  →  `, 15, '#cfdccf', false, 0);
-      if (this.nourr.length) this.t(sx + 82, sy + 100, apres.niveau >= NIVEAU_MAX[e] ? `Niv. ${apres.niveau} (max)` : `Niv. ${apres.niveau}`, 15, apres.niveau > c.niveau ? '#7ee07a' : '#ffffff', true, 0);
-      if (c.niveau >= NIVEAU_MAX[e]) this.t(sx, sy + 130, 'Déjà au niveau max : fais-le évoluer pour aller plus loin.', 11, '#ffcf4a', false, 0).setWordWrapWidth(310);
-      return;
+      this.t(gx, 110, `Niv. ${c.niveau}  ▸`, 15, '#dfe8d6', true, 0, 0.5);
+      this.t(gx + 78, 110, apres.niveau >= NIVEAU_MAX[e] ? `${apres.niveau} (max)` : String(apres.niveau), 15, apres.niveau > c.niveau ? '#7ee07a' : '#ffffff', true, 0, 0.5);
+      this.t(gx + gw, 110, this.nourr.length ? `+${fmt(ap.xp)} XP` : `${NOM_TYPE[f.type]}`, 13, this.nourr.length ? '#7ee07a' : '#93a89b', true, 1, 0.5);
+      jauge(part(apres.niveau, apres.xp), VERT, `${Math.round(part(apres.niveau, apres.xp) * 1000) / 10} %`);
+      this.t(CX, 156, c.niveau >= NIVEAU_MAX[e] ? 'Déjà au niveau max : fais-le évoluer pour aller plus loin.' : '20 % de chances de recevoir ×1,5', 11, c.niveau >= NIVEAU_MAX[e] ? '#ffcf4a' : '#93a89b', false, 0.5, 0.5);
+    } else if (e >= 6) {
+      this.t(CX, 126, 'Déjà 6★ : niveau d\'évolution maximal.', 15, '#ffcf4a', true, 0.5, 0.5);
+    } else {
+      const pts = pointsNourriture(j, this.nourr);
+      for (const o of etoilesDessinees(this, CX - 22, 110, e, 15, 1)) this.g(o);
+      this.t(CX, 110, '▸', 15, '#dfe8d6', true, 0.5, 0.5);
+      for (const o of etoilesDessinees(this, CX + 22, 110, e + 1, 15, 0)) this.g(o);
+      jauge(pts / req, pts >= req ? 0x7ee07a : 0xe3b54c, `${pts} / ${req} points`);
+      this.t(CX, 156, `Nourriture ${e}★ ou moins  ·  1★ = 1 · 2★ = 2 · 3★ = 6 · 4★ = 24 · 5★ = 120`, 11, '#93a89b', false, 0.5, 0.5);
+      // à gauche, sous les onglets : ses stats maintenant, après l'évolution, puis au nouveau niveau max
+      const e2 = (e + 1) as Etoiles, sx = 24, y0 = 296;
+      const s0 = monstreCombat(c.id, e, c.niveau).stats, s1 = monstreCombat(c.id, e2, c.niveau).stats, s2 = monstreCombat(c.id, e2, NIVEAU_MAX[e2]).stats;
+      this.g(this.add.rectangle(sx - 6, y0 - 14, 286, 150, 0x000000, 0.45).setOrigin(0).setStrokeStyle(1.5, 0x4a5a3c).setDepth(900));
+      this.t(sx + 122, y0, `${e}★ niv. ${c.niveau}`, 10, '#93a89b', false, 1, 0.5);
+      this.t(sx + 196, y0, `${e2}★ niv. ${c.niveau}`, 10, '#93a89b', false, 1, 0.5);
+      this.t(sx + 270, y0, `${e2}★ niv. ${NIVEAU_MAX[e2]}`, 10, '#93a89b', false, 1, 0.5);
+      (['pv', 'atq', 'def'] as const).forEach((k, i) => {
+        const y = y0 + 26 + i * 26;
+        this.t(sx, y, { pv: 'PV', atq: 'ATQ', def: 'DEF' }[k], 13, '#dfe8d6', false, 0, 0.5);
+        this.t(sx + 122, y, fmt(s0[k]), 13, '#ffffff', true, 1, 0.5);
+        this.t(sx + 196, y, fmt(s1[k]), 13, '#7ee07a', true, 1, 0.5);
+        this.t(sx + 270, y, fmt(s2[k]), 13, '#7ee07a', true, 1, 0.5);
+      });
+      this.t(sx, y0 + 112, 'Il garde son niveau : ses stats\nmontent tout de suite.', 11, '#93a89b', false, 0, 0.5);
     }
-    if (e >= 6) { this.t(sx, sy + 40, 'Déjà 6★ : niveau d\'évolution maximal.', 14, '#ffcf4a', true, 0); return; }
-    const pts = pointsNourriture(j, this.nourr);
-    this.t(sx, sy, `POINTS DE NOURRITURE`, 12, OR, true, 0);
-    this.t(sx + 300, sy - 2, `${pts} / ${req}`, 16, pts >= req ? '#7ee07a' : '#ffffff', true, 1);
-    const gb = this.g(this.add.graphics().setDepth(1001));
-    gb.fillStyle(0x000000, 0.65).fillRoundedRect(sx, sy + 24, 300, 14, 6)
-      .fillStyle(pts >= req ? 0x7ee07a : 0xe3b54c).fillRoundedRect(sx, sy + 24, Math.max(4, 300 * Math.min(1, pts / req)), 14, 6);
-    this.t(sx, sy + 44, '1★ = 1 · 2★ = 2 · 3★ = 6 · 4★ = 24 · 5★ = 120', 11, '#9fb3a6', false, 0);
-    // Stats : maintenant → après l'évolution (même niveau) → au nouveau niveau max
-    const e2 = (e + 1) as Etoiles;
-    const s0 = monstreCombat(c.id, e, c.niveau).stats, s1 = monstreCombat(c.id, e2, c.niveau).stats, s2 = monstreCombat(c.id, e2, NIVEAU_MAX[e2]).stats;
-    const y0 = sy + 78;
-    this.t(sx + 135, y0, `${e}★ niv. ${c.niveau}`, 10, '#9fb3a6', false, 1);
-    this.t(sx + 225, y0, `${e2}★ niv. ${c.niveau}`, 10, '#9fb3a6', false, 1);
-    this.t(sx + 310, y0, `${e2}★ niv. ${NIVEAU_MAX[e2]}`, 10, '#9fb3a6', false, 1);
-    (['pv', 'atq', 'def'] as const).forEach((k, i) => {
-      const y = y0 + 20 + i * 24;
-      this.t(sx, y, { pv: 'PV', atq: 'Attaque', def: 'Défense' }[k], 13, '#9fb3a6', false, 0);
-      this.t(sx + 135, y, fmt(s0[k]), 13, '#ffffff', true, 1);
-      this.t(sx + 225, y, fmt(s1[k]), 13, '#7ee07a', true, 1);
-      this.t(sx + 310, y, fmt(s2[k]), 13, '#7ee07a', true, 1);
-    });
-    this.t(sx, y0 + 96, 'Il garde son niveau : ses stats montent tout de suite.', 11, '#9fb3a6', false, 0);
+
+    // le monstre choisi
+    this.g(this.add.ellipse(CX, 440, 230, 50, 0x000000, 0.5).setDepth(999));
+    if (!this.textures.exists(LOOKS[c.id].atlas)) chargerPuis(this, [c.id], () => { creerAnimations(this, LOOKS[c.id].atlas); if (this.cible === c.uid) this.dessiner(); });
+    const sp = this.g(monstreEnPied(this, c.id, CX, 432, 1).setDepth(1001));
+    // environ 230 px de haut, sans agrandir une planche au-delà de ×1,5 (pour rester net)
+    const gr = Math.min(230 / (sp.frame.cutHeight * Math.abs(sp.scaleY)), 1.5 / Math.abs(sp.scaleY));
+    sp.setScale(sp.scaleX * gr, sp.scaleY * gr);
+    this.sujet = sp;
+    const ru = bouton(this, 96, 470, 152, 40, 'Runes', false, () => { if (!this.occupe) this.scene.start('monstre', { uid: c.uid, retour: { scene: 'cercle', data: { cible: c.uid } } }); });
+    ru.t.setFontSize(14); this.g(ru.fond); this.g(ru.t);
+
+    // la nourriture : cinq cases en rangée (« + » ouvre le choix), et « Sélection auto »
+    this.puce(CX + 112, 516, 138, 30, 'Sélection auto', false, () => this.selectionAuto());
+    this.t(CX - 210, 516, xp ? `Nourriture ${this.nourr.length} / ${NOURRITURE_MAX}` : `Nourriture ${this.nourr.length} / ${NOURRITURE_MAX}`, 13, OR, true, 0, 0.5).setData('titre', true);
+    for (let i = 0; i < NOURRITURE_MAX; i++) {
+      const { x, y } = this.positionCase(i);
+      const uid = this.nourr[i];
+      const cs = caseSombre(this, x, y, 74);
+      this.g(cs.g); this.g(cs.zone);
+      if (uid === undefined) {
+        this.t(x, y, '+', 28, '#c6f02e', true, 0.5, 0.5);
+        cs.zone.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (!this.occupe) { this.choixNourr = true; this.pageNourr = 0; this.dessiner(); } });
+        continue;
+      }
+      const m = monstre(j, uid);
+      const p = portrait(this, m.id, x, y, 70, false);
+      this.g(p.masque); this.g(p.sp);
+      this.casesNourr.push(p.sp);
+      this.t(x - 33, y - 37, this.etoiles(m.etoiles), 10, '#ffcf4a', false, 0).setDepth(1003).setData('nourr', true);
+      this.t(x + 32, y + 35, String(m.niveau), 12, '#ffffff', true, 1, 1).setDepth(1003).setData('nourr', true);
+      cs.zone.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.clicCollection(m));
+    }
   }
 
+  /** À droite : la collection en grille de quatre colonnes ; toucher un monstre le choisit pour l'améliorer. */
   private collection(c: MonstrePossede | null) {
-    const j = this.joueur;
-    this.g(panneau(this, 20, 584, 1240, 128));
-    const liste = trierMonstres(j.monstres, 'etoiles').filter((m) => m.uid !== c?.uid);
-    this.t(38, 596, c ? `MA COLLECTION · touche un monstre pour le donner` : 'MA COLLECTION · touche le monstre à améliorer', 12, OR, true, 0);
+    const j = this.joueur, X = 846, L = 414;
+    this.g(panneau(this, X, 62, L, 644));
+    const liste = trierMonstres(j.monstres, 'etoiles');
+    this.t(X + L / 2, 92, 'Collection', 16, '#ffffff', true, 0.5, 0.5);
     const pages = Math.max(1, Math.ceil(liste.length / PAR_PAGE));
     this.page = Math.min(this.page, pages - 1);
     liste.slice(this.page * PAR_PAGE, (this.page + 1) * PAR_PAGE).forEach((m, i) => {
-      const x = 74 + i * 88, y = 662;
-      const cs = caseSombre(this, x, y, 76);
-      this.g(cs.g); this.g(cs.zone);
-      const p = portrait(this, m.id, x, y, 72, false);
-      this.g(p.masque); this.g(p.sp);
-      const pris = this.nourr.includes(m.uid);
-      const verrou = c ? this.verrou(m) : null;
-      const interdit = c && this.onglet === 'evo' && m.etoiles > c.etoiles;
-      if (pris || interdit) p.sp.setTint(pris ? 0x555555 : 0x3a3a3a);
-      this.g(this.add.circle(x + 28, y - 28, 6, COULEUR[fiche(m.id).element]).setStrokeStyle(1.5, 0x000000).setDepth(1002));
-      this.t(x - 34, y - 38, this.etoiles(m.etoiles), 10, '#ffcf4a', false, 0).setDepth(1003);
-      const max = m.niveau >= NIVEAU_MAX[m.etoiles as Etoiles];
-      this.t(x + 33, y + 36, max ? 'MAX' : String(m.niveau), max ? 11 : 12, max ? '#ffcf4a' : '#ffffff', true, 1, 1).setDepth(1003);
-      if (pris) this.t(x, y, '✓', 28, '#7ee07a', true, 0.5, 0.5).setDepth(1004);
-      if (verrou) {
-        this.g(this.add.circle(x - 25, y + 25, 10, 0x1d2420).setStrokeStyle(1.5, 0x9fb3a6).setDepth(1003));
-        this.t(x - 25, y + 25, '🔒', 10, '#ffffff', false, 0.5, 0.5).setDepth(1004);
-      }
-      cs.zone.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.clicCollection(m));
+      const x = X + 66 + (i % 4) * 94, y = 160 + Math.floor(i / 4) * 100, choisi = m.uid === c?.uid;
+      for (const o of carteMonstre(this, m, fiche(m.id).element, x, y, 86, { choisie: choisi, equipe: j.equipe.includes(m.uid), verrou: (j.verrous ?? []).includes(m.uid), action: () => this.choisirCible(m) })) this.g(o);
+      if (choisi) this.t(x + 26, y - 26, '✔', 22, '#d8ff5a', true, 0.5, 0.5).setDepth(1010);
+      if (this.nourr.includes(m.uid)) { this.g(this.add.rectangle(x, y, 78, 78, 0x0b0d0a, 0.65).setDepth(1008)); this.t(x, y, 'donné', 12, '#ffcf4a', true, 0.5, 0.5).setDepth(1009); }
     });
     if (pages > 1) {
-      const fl = (x: number, s: string, ok: boolean, f: () => void) => {
-        const b = this.t(x, 596, s, 14, ok ? '#ffe08a' : '#4d5d53', true, 0.5, 0);
-        if (ok) b.setInteractive({ useHandCursor: true }).on('pointerdown', f);
-      };
-      fl(1150, '◀', this.page > 0, () => { this.page--; this.dessiner(); });
-      this.t(1190, 597, `${this.page + 1}/${pages}`, 12, '#cfdccf', true, 0.5, 0);
-      fl(1230, '▶', this.page < pages - 1, () => { this.page++; this.dessiner(); });
+      this.t(X + L / 2, 682, `${this.page + 1} / ${pages}`, 13, '#c9cfc4', true, 0.5, 0.5);
+      if (this.page > 0) this.puce(X + L / 2 - 80, 682, 40, 28, '‹', false, () => { this.page--; this.dessiner(); }, 1001, 16);
+      if (this.page < pages - 1) this.puce(X + L / 2 + 40, 682, 40, 28, '›', false, () => { this.page++; this.dessiner(); }, 1001, 16);
     }
+  }
+
+  /** « Sélectionner le monstre » : la nourriture possible en grille de huit colonnes, tri par étoiles, coche sur les monstres donnés. */
+  private fenetreNourriture(c: MonstrePossede) {
+    const j = this.joueur, P = 3002, X = 250, Y = 96, L = 780, HT = 540;
+    const fermer = () => { if (!this.occupe) { this.choixNourr = false; this.dessiner(); } };
+    this.g(this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.6).setDepth(3000).setInteractive()).on('pointerdown', fermer);
+    this.g(panneau(this, X, Y, L, HT, 3001));
+    this.g(this.add.zone(X, Y, L, HT).setOrigin(0).setDepth(3001).setInteractive());
+    this.t(X + L / 2, Y + 32, 'Sélectionner le monstre', 18, '#ffffff', true, 0.5, 0.5).setDepth(P);
+    this.t(X + L - 30, Y + 30, '✕', 20, '#dfe8d6', true, 0.5, 0.5).setDepth(P + 2).setInteractive({ useHandCursor: true }).on('pointerdown', fermer);
+    const xp = this.onglet === 'xp';
+    const req = !xp && c.etoiles < 6 ? pointsRequis(c.etoiles as 1 | 2 | 3 | 4 | 5) : 0;
+    this.t(X + 34, Y + 74, xp ? `Nourriture ${this.nourr.length} / ${NOURRITURE_MAX}  ·  +${fmt(apercuNourrir(j, this.nourr).xp)} XP` : `Points ${pointsNourriture(j, this.nourr)} / ${req}  ·  ${this.nourr.length} / ${NOURRITURE_MAX} monstres`, 14, OR, true, 0, 0.5).setDepth(P);
+    this.puce(X + L - 330, Y + 74, 130, 30, this.triCroissant ? 'Étoiles min. ▾' : 'Étoiles max. ▾', false, () => { this.triCroissant = !this.triCroissant; this.pageNourr = 0; this.dessiner(); }, P);
+    this.puce(X + L - 192, Y + 74, 160, 30, 'Sélection auto', false, () => this.selectionAuto(), P);
+    const liste = j.monstres.filter((m) => m.uid !== c.uid).sort((a, b) => (a.etoiles - b.etoiles || a.niveau - b.niveau) * (this.triCroissant ? 1 : -1));
+    const parPage = 32, pages = Math.max(1, Math.ceil(liste.length / parPage));
+    this.pageNourr = Math.min(this.pageNourr, pages - 1);
+    liste.slice(this.pageNourr * parPage, (this.pageNourr + 1) * parPage).forEach((m, i) => {
+      const x = X + 68 + (i % 8) * 92, y = Y + 148 + Math.floor(i / 8) * 92, pris = this.nourr.includes(m.uid), refus = pris ? null : this.refus(m);
+      for (const o of carteMonstre(this, m, fiche(m.id).element, x, y, 80, { choisie: pris, equipe: j.equipe.includes(m.uid), verrou: (j.verrous ?? []).includes(m.uid) })) { this.g(o); (o as unknown as Phaser.GameObjects.Components.Depth).setDepth?.(((o as unknown as { depth: number }).depth ?? 1000) + 2100); }
+      if (refus) this.g(this.add.rectangle(x, y, 72, 72, 0x0b0d0a, 0.62).setDepth(3120));
+      if (pris) this.t(x + 24, y - 24, '✔', 20, '#d8ff5a', true, 0.5, 0.5).setDepth(3122);
+      this.g(this.add.zone(x, y, 80, 80).setDepth(3125).setInteractive({ useHandCursor: true })).on('pointerdown', () => this.clicCollection(m));
+    });
+    if (this.alerte) this.t(X + L / 2, Y + HT - 86, this.alerte, 13, '#ff8a7a', true, 0.5, 0.5).setDepth(3130).setBackgroundColor('rgba(0,0,0,0.75)').setPadding(10, 4, 10, 4);
+    if (pages > 1) {
+      this.t(X + 110, Y + HT - 44, `${this.pageNourr + 1} / ${pages}`, 13, '#c9cfc4', true, 0.5, 0.5).setDepth(P);
+      if (this.pageNourr > 0) this.puce(X + 34, Y + HT - 44, 40, 28, '‹', false, () => { this.pageNourr--; this.dessiner(); }, P, 16);
+      if (this.pageNourr < pages - 1) this.puce(X + 146, Y + HT - 44, 40, 28, '›', false, () => { this.pageNourr++; this.dessiner(); }, P, 16);
+    }
+    const ok = bouton(this, X + L / 2, Y + HT - 44, 180, 42, 'OK', true, fermer, P + 1); this.g(ok.fond); this.g(ok.t);
   }
 }

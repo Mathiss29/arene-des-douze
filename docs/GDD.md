@@ -342,3 +342,5 @@ Planches de Diablofus sur le R2. Plus tard : serveur de comptes (comme Diablofus
 - Cartes de monstre : étoiles dessinées sur leur propre bandeau, niveau en plaque, monstre entier dans le cadre.
 
 - ✓ Gestion des runes (vidéo SW du 25/11/2026) : onglet Rune du monstre = roue des 6 places, effet de set, bouton « Gérer », mes runes par set avec leur nombre ; écran « Gérer » = stats du monstre, runes Avant / Après, coût de déséquipement, « Appliquer » ; filtres : set (tuiles avec compteur), places en fleur, propriété principale, deux propriétés secondaires ; tri : grade, propriété secondaire, niveau d'amélioration, obtenu… ; inventaire en grille avec le portrait du porteur.
+
+- Combat (choix de Mathis, 25/11/2026) : pas de liste d'ordre des tours ; l'ordre se lit sur la jauge d'attaque sous la barre de PV de chaque monstre, comme dans SW (remplace le choix 4B de la planche n° 2).
