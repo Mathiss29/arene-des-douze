@@ -31,6 +31,8 @@ const STATS_PRINCIPALES: StatRune[] = ['atq', 'atq_fixe', 'pv', 'pv_fixe', 'def'
 const NOM_COURT: Record<keyof Stats, string> = { pv: 'PV', atq: 'ATQ', def: 'DEF', vit: 'VIT', tc: 'Tx crit.', dc: 'Dég. crit.', res: 'Résist.', pre: 'Précision' };
 const POURCENT = new Set<keyof Stats>(['tc', 'dc', 'res', 'pre']);
 const COLS = 6, LIGNES = 4;
+/** « ATQ +9 % » plutôt que « ATQ % +9 ». */
+const libStat = (s: StatRune, v: number) => { const n = NOM_STAT_RUNE[s]; return n.endsWith(' %') ? `${n.slice(0, -2)} +${v} %` : `${n} +${v}`; };
 
 export class MonstreScene extends Phaser.Scene {
   private joueur!: Joueur;
@@ -183,7 +185,7 @@ export class MonstreScene extends Phaser.Scene {
       const x = gx + 43 + (k % COLS) * 86, y = 222 + Math.floor(k / COLS) * 108;
       const coche = this.coche?.has(r.uid) ?? false;
       this.gs(runeMedaillon(this, r, x, y, 62, { choisie: this.coche ? coche : this.choisie === r.uid, profondeur: 1000 }));
-      this.g(texte(this, x, y + 38, `${NOM_STAT_RUNE[r.principale]} +${valeurPrincipale(r)}`, 10.5, '#dfe8d6', false, 0.5, 0.5));
+      this.g(texte(this, x, y + 38, libStat(r.principale, valeurPrincipale(r)), 10.5, '#dfe8d6', false, 0.5, 0.5));
       this.g(texte(this, x, y + 51, r.porteur !== undefined ? `sur ${fiche(monstre(j, r.porteur).id).nom}`.slice(0, 16) : SETS[r.set].nom, 9.5, r.porteur !== undefined ? '#d9a35a' : '#93a89b', false, 0.5, 0.5));
       if (coche) this.g(texte(this, x - 24, y - 24, '✔', 16, '#d8ff5a', true, 0.5, 0.5).setDepth(1012));
       this.g(this.add.zone(x, y + 6, 82, 100).setDepth(1015).setInteractive({ useHandCursor: true })).on('pointerdown', () => {
@@ -226,8 +228,8 @@ export class MonstreScene extends Phaser.Scene {
     this.gs(etoiles(this, X + 92, 142, r.etoiles, 13, 0, 1002));
     const porteur = r.porteur !== undefined ? monstre(j, r.porteur) : undefined;
     this.g(texte(this, X, 176, porteur ? (r.porteur === this.uid ? 'Portée par ce monstre' : `Portée par ${fiche(porteur.id).nom}`) : `${SETS[r.set].dieu} · libre`, 11.5, porteur && r.porteur !== this.uid ? '#d9a35a' : '#93a89b', false, 0, 0.5));
-    this.g(texte(this, X, 204, `${NOM_STAT_RUNE[r.principale]} +${valeurPrincipale(r)}`, 18, '#ffffff', true, 0, 0.5));
-    r.sous.forEach((s, i) => this.g(texte(this, X, 232 + i * 21, `${NOM_STAT_RUNE[s.stat]} +${s.valeur}${s.montees ? `  ${'▲'.repeat(s.montees)}` : ''}`, 13.5, s.montees ? '#b8f5a0' : '#dfe8d6', false, 0, 0.5)));
+    this.g(texte(this, X, 204, libStat(r.principale, valeurPrincipale(r)), 18, '#ffffff', true, 0, 0.5));
+    r.sous.forEach((s, i) => this.g(texte(this, X, 232 + i * 21, `${libStat(s.stat, s.valeur)}${s.montees ? `  ${'▲'.repeat(s.montees)}` : ''}`, 13.5, s.montees ? '#b8f5a0' : '#dfe8d6', false, 0, 0.5)));
     for (let i = r.sous.length; i < 4; i++) this.g(texte(this, X, 232 + i * 21, `— sous-stat à +${(i + 1) * 3}`, 12.5, '#5f6a5c', false, 0, 0.5));
     this.g(texte(this, X, 322, `${SETS[r.set].nom} (${SETS[r.set].pieces} runes) : ${SETS[r.set].effet}`, 11, '#93a89b', false, 0, 0).setWordWrapWidth(262));
 
@@ -311,9 +313,9 @@ export class MonstreScene extends Phaser.Scene {
 
   /** Filtres en plus (planche n° 8, 2B+C) : libres seulement, étoiles et grade minimum, stat principale. */
   private fenetreFiltres() {
-    const f = this.f, P = 3002, X = 330, Y = 150;
+    const f = this.f, P = 3002, X = 330, Y = 125;
     this.g(this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.6).setDepth(3000).setInteractive());
-    this.g(panneau(this, X, Y, 620, 420, 3001));
+    this.g(panneau(this, X, Y, 620, 470, 3001));
     this.g(texte(this, W / 2, Y + 36, 'Filtres', 20, '#ffffff', true, 0.5, 0.5).setDepth(P));
     const re = (action: () => void) => () => { action(); this.page = 0; this.dessiner(); };
     const lab = (y: number, t: string) => this.g(texte(this, X + 36, y, t, 13, '#93a89b', true, 0, 0.5).setDepth(P));
@@ -327,8 +329,8 @@ export class MonstreScene extends Phaser.Scene {
     lab(Y + 238, 'Stat principale');
     this.puce(X + 150, Y + 238, 70, 32, 'Toutes', f.principale === null, re(() => { f.principale = null; }), P);
     STATS_PRINCIPALES.forEach((s, i) => this.puce(X + 150 + (i % 4) * 110, Y + 278 + Math.floor(i / 4) * 38, 104, 32, NOM_STAT_RUNE[s], f.principale === s, re(() => { f.principale = f.principale === s ? null : s; }), P));
-    const z = bouton(this, W / 2 - 110, Y + 386, 190, 38, 'Tout remettre à zéro', false, re(() => { f.libres = false; f.etoiles = 1; f.grade = 0; f.principale = null; }), P); z.t.setFontSize(13); this.g(z.fond); this.g(z.t);
-    const ok = bouton(this, W / 2 + 110, Y + 386, 190, 40, 'Voir les runes', true, () => { this.filtres = false; this.dessiner(); }, P); ok.t.setFontSize(16); this.g(ok.fond); this.g(ok.t);
+    const z = bouton(this, W / 2 - 110, Y + 432, 190, 38, 'Tout remettre à zéro', false, re(() => { f.libres = false; f.etoiles = 1; f.grade = 0; f.principale = null; }), P); z.t.setFontSize(13); this.g(z.fond); this.g(z.t);
+    const ok = bouton(this, W / 2 + 110, Y + 432, 190, 40, 'Voir les runes', true, () => { this.filtres = false; this.dessiner(); }, P); ok.t.setFontSize(16); this.g(ok.fond); this.g(ok.t);
   }
 
   /** Vente sélective (choix 7B) : runes non portées et jamais montées, jusqu'à N étoiles et un grade. */
