@@ -27,7 +27,9 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Test de fumée de tous les écrans : `npm run fumee` (Chrome sans tête, lancé aussi avant chaque mise en ligne).
   Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).
   Écran « Monstres » façon SW (`MonstresScene`, clé `monstres` : grille ou vue détail animée, onglets Info / Sorts / Runes / Éveil), ouvert par la plaque « Monstres » de l'île.
-  DA « verre sombre » : textures de Dofus 3 (`public/assets/ui/`), police Fredoka, `panneau()`, `bouton()` (vert ou sombre), `boutonOr()` pour les moments forts et l'onglet choisi.
+  DA « Pierre et émeraude » (à étendre à tout le jeu, l'écran Monstres est le modèle) : `src/render/identite.ts` (`decorVivant()` : fond de pierre, rayons, brume, lucioles de la couleur de l'élément ;
+  `bandeauPierre()`, `carteMonstre()` en médaillon de pierre, `etoiles()` dessinées), textures de Dofus 3 (`public/assets/ui/`), police Fredoka, `panneau()`, `bouton()` (vert = choisi ou action principale), `boutonOr()` pour les moments forts.
+  Lumière (Bonta) : blanc doré, jamais jaune sable.
   Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement : monde de 1280 × 720,
   dessiné à la taille réelle de l'écran (`src/render/nettete.ts` : canevas ×K, caméras zoomées ×K, textes en résolution K).
   Débogage dans la console : `window.game.scene.getScene('combat')`.
