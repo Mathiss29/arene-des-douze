@@ -37,3 +37,15 @@ Pas dans la 0.1 : Madrestam et Bastion (et donc les donjons du Dragon Cochon et 
 - [x] **8 bis. Chemin de l'invocateur, missions du jour, Réception.**
 - [x] **8 ter. Solidité** — sauvegarde versionnée, export/import, signalement de bug, test de fumée.
 - [ ] **9. Test** — 3 à 5 joueurs du Discord y jouent (Mathis), retours, puis 0.2.
+
+# Vers la 1.0 (maquette « 1.0 : » 1B 2A 3C 4A 5C 6A 7A 8C 9B, 25 nov. 2026)
+
+La 1.0 est un **jeu solo complet, sans serveur** ; le en-ligne vient après. On enchaîne jusqu'à la 1.0, un seul grand test à la fin.
+
+- **Contenu** : 13 zones d'histoire comme SW (3 difficultés), les 3 donjons et leurs sets, environ 150 monstres (30 familles × 5 éléments).
+- **Éveil** : éveil et Sanctuaires élémentaires, compétences d'invocateur, améliorations de sorts, fusion, combat d'exploration.
+- **Défis** : Tour des Douze (100 étages), Brèche du jour, trophées, boutique (Ogrines seulement gagnées en jeu, jamais achetées), fabrication.
+- **Direction artistique** : une vraie DA pour toutes les interfaces (demande de Mathis), musiques par écran.
+- **Téléphone** : site installable sur l'écran d'accueil, application Android plus tard.
+- **Après la 1.0** : comptes et serveur (solution à proposer), Kolizéum façon Arène de SW (défense d'un autre joueur jouée par l'ordinateur),
+  amis, guilde, événements.
