@@ -83,6 +83,7 @@ export class CercleScene extends Phaser.Scene {
   /** Cadenas : l'équipe, et les 3★ et plus quand on nourrit. */
   private verrou(m: MonstrePossede): string | null {
     if (this.joueur.equipe.includes(m.uid)) return 'Monstre de ton équipe : retire-le de l\'équipe pour le donner.';
+    if ((this.joueur.verrous ?? []).includes(m.uid)) return 'Monstre verrouillé : retire son cadenas dans l\'écran Monstres pour le donner.';
     if (this.onglet === 'xp' && m.etoiles >= 3) return 'Les 3★ et plus sont gardés pour l\'évolution.';
     return null;
   }

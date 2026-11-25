@@ -1,14 +1,14 @@
 import Phaser from 'phaser';
-import { charger } from './sauvegarde';
-import type { Joueur, MonstrePossede } from '../sim/joueur';
+import { charger, sauver } from './sauvegarde';
+import { basculerVerrou, verrouille, type Joueur, type MonstrePossede } from '../sim/joueur';
 import { fiche, monstreCombat } from '../sim/fiches';
 import { NIVEAU_MAX, XP_NIVEAU } from '../sim/progression';
-import { avecRunes } from '../sim/runes';
+import { SETS, avecRunes, setsActifs, type SetRune } from '../sim/runes';
 import { runesDe } from '../sim/inventaire';
 import type { Element, Stats } from '../sim/types';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
-import { VERT, bandeauPierre, carteMonstre, chargerIdentite, decorVivant, etoiles } from './identite';
+import { VERT, bandeauPierre, carteMonstre, chargerIdentite, decorVivant, eclatEntree, emblemeGrave, etoiles, hexagoneStats, pastille, runeMedaillon } from './identite';
 import {
   COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerPuis, chargerUi, fmt, hex, monstreEnPied, panneau, texte, texteLeader,
 } from './ui';
@@ -21,6 +21,7 @@ import {
 type Tri = 'etoiles' | 'niveau' | 'element';
 const NOM_TRI: Record<Tri, string> = { etoiles: 'étoiles', niveau: 'niveau', element: 'élément' };
 const ORDRE: Element[] = ['feu', 'eau', 'air', 'bonta', 'brakmar'];
+const CLE_VUS = 'arene-des-douze:monstres-vus';
 const COLS = 8, LIGNES = 7, PAS = 85, TAILLE = 80;
 
 export class MonstresScene extends Phaser.Scene {
@@ -33,6 +34,10 @@ export class MonstresScene extends Phaser.Scene {
   private calque: Phaser.GameObjects.GameObject[] = [];
   private avis?: Phaser.GameObjects.Container;
   private decor?: { teinter: (c: number) => void };
+  /** Sens d'arrivée du prochain monstre affiché en grand (1 : par la droite, -1 : par la gauche, 0 : sans entrée). */
+  private entree = 1;
+  /** Monstres déjà regardés (les autres portent l'étiquette « Nouveau »). */
+  private vus = new Set<number>();
 
   constructor() { super('monstres'); }
 
@@ -40,7 +45,12 @@ export class MonstresScene extends Phaser.Scene {
     this.joueur = charger();
     this.uid = data?.uid ?? this.joueur.equipe[0] ?? this.joueur.monstres[0].uid;
     this.vue = data?.vue ?? 'grille';
-    this.onglet = 'info'; this.page = 0; this.calque = [];
+    this.onglet = 'info'; this.page = 0; this.calque = []; this.entree = 1;
+    // « Nouveau » : la première fois, toute la collection est considérée comme déjà vue
+    try {
+      const v = localStorage.getItem(CLE_VUS);
+      this.vus = new Set(v ? (JSON.parse(v) as number[]) : this.joueur.monstres.map((m) => m.uid));
+    } catch { this.vus = new Set(this.joueur.monstres.map((m) => m.uid)); }
   }
 
   preload() {
@@ -55,6 +65,16 @@ export class MonstresScene extends Phaser.Scene {
     // identité « Pierre et émeraude » : fond de pierre, décor vivant de la couleur de l'élément du monstre choisi
     this.decor = decorVivant(this, 350);
     bandeauPierre(this, 'Incarnam', () => this.scene.start('ile'));
+    // vue détail : glisser à gauche ou à droite sur le monstre pour passer au voisin
+    let depart: number | null = null;
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => { depart = this.vue === 'detail' && p.worldX < 700 && p.worldY > 60 && p.worldY < 600 ? p.worldX : null; });
+    this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      if (depart === null) return;
+      const d = p.worldX - depart; depart = null;
+      if (Math.abs(d) < 60) return;
+      const l = this.tries(), v = l[l.findIndex((x) => x.uid === this.uid) + (d < 0 ? 1 : -1)];
+      if (v) { this.uid = v.uid; this.entree = d < 0 ? 1 : -1; this.dessiner(); }
+    });
     this.dessiner();
   }
 
@@ -70,7 +90,9 @@ export class MonstresScene extends Phaser.Scene {
   }
 
   private carte(m: MonstrePossede, x: number, y: number, t: number, action: () => void) {
-    for (const o of carteMonstre(this, m, fiche(m.id).element, x, y, t, { choisie: m.uid === this.uid, equipe: this.joueur.equipe.includes(m.uid), action })) this.g(o);
+    for (const o of carteMonstre(this, m, fiche(m.id).element, x, y, t, {
+      choisie: m.uid === this.uid, equipe: this.joueur.equipe.includes(m.uid), verrou: verrouille(this.joueur, m.uid), nouveau: !this.vus.has(m.uid), action,
+    })) this.g(o);
   }
 
   private dessiner() {
@@ -86,6 +108,7 @@ export class MonstresScene extends Phaser.Scene {
       this.g(b.fond); this.g(b.t);
     });
     if (this.vue === 'grille') this.grille(l); else this.detail(l);
+    if (!this.vus.has(this.uid)) { this.vus.add(this.uid); try { localStorage.setItem(CLE_VUS, JSON.stringify([...this.vus])); } catch { /* stockage indisponible */ } }
     this.fiche();
   }
 
@@ -94,7 +117,7 @@ export class MonstresScene extends Phaser.Scene {
     this.page = Math.min(this.page, pages - 1);
     l.slice(this.page * parPage, (this.page + 1) * parPage).forEach((m, k) => {
       const x = 62 + (k % COLS) * PAS, y = 108 + Math.floor(k / COLS) * PAS;
-      this.carte(m, x, y, TAILLE, () => { if (this.uid === m.uid) this.vue = 'detail'; this.uid = m.uid; this.onglet = 'info'; this.dessiner(); });
+      this.carte(m, x, y, TAILLE, () => { if (this.uid === m.uid) this.vue = 'detail'; this.uid = m.uid; this.onglet = 'info'; this.entree = 1; this.dessiner(); });
     });
     if (pages > 1) {
       this.g(texte(this, 356, 692, `${this.page + 1} / ${pages}`, 14, '#c9cfc4', false, 0.5, 0.5));
@@ -112,10 +135,13 @@ export class MonstresScene extends Phaser.Scene {
   private detail(l: MonstrePossede[]) {
     const m = l.find((x) => x.uid === this.uid)!, f = fiche(m.id), atlas = LOOKS[m.id].atlas;
     // le monstre en grand, animé (sa vraie planche, chargée à la demande) ; le toucher lui fait jouer une attaque
+    for (const o of emblemeGrave(this, f.element, 350, 300, 400)) this.g(o);
     this.g(this.add.ellipse(350, 486, 300, 56, 0x000000, 0.5).setDepth(1000));
+    const entree = this.entree; this.entree = 0;
+    const idx = l.findIndex((x) => x.uid === this.uid);
     if (!this.textures.exists(atlas)) {
       this.g(texte(this, 350, 300, 'Chargement…', 15, '#93a89b', false, 0.5, 0.5));
-      chargerPuis(this, [m.id], () => { creerAnimations(this, atlas); if (this.vue === 'detail' && this.uid === m.uid) this.dessiner(); });
+      chargerPuis(this, [m.id], () => { creerAnimations(this, atlas); if (this.vue === 'detail' && this.uid === m.uid) { this.entree = entree || 1; this.dessiner(); } });
     } else {
       creerAnimations(this, atlas);
       // environ 300 px de haut, sans agrandir une planche au-delà de ×1,5 (pour rester net)
@@ -124,11 +150,17 @@ export class MonstresScene extends Phaser.Scene {
       sp.setScale(sp.scaleX * gr, sp.scaleY * gr);
       // au repos la planche n'a qu'une image : une respiration légère donne vie au monstre
       const ex = sp.scaleX, ey = sp.scaleY;
-      this.tweens.add({ targets: sp, scaleX: ex * 1.015, scaleY: ey * 0.975, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      const respirer = () => { if (sp.active) this.tweens.add({ targets: sp, scaleX: ex * 1.015, scaleY: ey * 0.975, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); };
+      if (entree) {
+        // entrée en scène : il arrive du côté d'où l'on vient, avec un rebond et un éclat de son élément
+        sp.setX(350 + entree * 380).setAlpha(0).setScale(ex * 0.8, ey * 0.8);
+        this.tweens.add({ targets: sp, x: 350, alpha: 1, scaleX: ex, scaleY: ey, duration: 480, ease: 'Back.easeOut', onComplete: respirer });
+        this.time.delayedCall(140, () => { if (sp.active) eclatEntree(this, 350, 380, COULEUR[f.element]); });
+      } else respirer();
       const attaques = [0, 1, 2, 3].map((n) => `${atlas}/AnimAttaque${n}_1`).filter((n) => this.anims.exists(n));
       let k = 0;
-      sp.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-        if (!attaques.length || !sp.active) return;
+      sp.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
+        if (!attaques.length || !sp.active || Math.abs(p.upX - p.downX) > 20) return;
         sp.play(attaques[k++ % attaques.length]).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { if (sp.active) sp.play(`${atlas}/AnimStatique_1`); });
       });
     }
@@ -140,9 +172,9 @@ export class MonstresScene extends Phaser.Scene {
     this.g(this.add.rectangle(0, 610, W, 110, 0x10130d, 0.82).setOrigin(0).setDepth(990));
     this.g(this.add.rectangle(0, 610, W, 1.5, 0x7a846c).setOrigin(0).setDepth(991));
     const i = l.findIndex((x) => x.uid === this.uid), N = 12, debut = Math.max(0, Math.min(l.length - N, i - Math.floor(N / 2)));
-    l.slice(debut, debut + N).forEach((x, k) => this.carte(x, 96 + k * 80, 666, 74, () => { this.uid = x.uid; this.dessiner(); }));
-    if (debut > 0) { const b = bouton(this, 30, 664, 36, 60, '‹', false, () => { this.uid = l[Math.max(0, i - N)].uid; this.dessiner(); }); this.g(b.fond); this.g(b.t); }
-    if (debut + N < l.length) { const b = bouton(this, 1042, 664, 36, 60, '›', false, () => { this.uid = l[Math.min(l.length - 1, i + N)].uid; this.dessiner(); }); this.g(b.fond); this.g(b.t); }
+    l.slice(debut, debut + N).forEach((x, k) => { const sel = x.uid === this.uid; this.carte(x, 96 + k * 80, sel ? 658 : 668, sel ? 86 : 70, () => { this.entree = l.indexOf(x) >= idx ? 1 : -1; this.uid = x.uid; this.dessiner(); }); });
+    if (debut > 0) { const b = bouton(this, 30, 664, 36, 60, '‹', false, () => { this.uid = l[Math.max(0, i - N)].uid; this.entree = -1; this.dessiner(); }); this.g(b.fond); this.g(b.t); }
+    if (debut + N < l.length) { const b = bouton(this, 1042, 664, 36, 60, '›', false, () => { this.uid = l[Math.min(l.length - 1, i + N)].uid; this.entree = 1; this.dessiner(); }); this.g(b.fond); this.g(b.t); }
     const be = bouton(this, 1168, 664, 160, 48, 'Bestiaire', true, () => this.scene.start('bestiaire'));
     this.g(be.fond); this.g(be.t);
   }
@@ -163,7 +195,7 @@ export class MonstresScene extends Phaser.Scene {
       if (!actif) b.fond.setAlpha(0.5);
       this.g(b.fond); this.g(b.t);
     });
-    const X = 866, Y = 76, L = 392, HT = this.vue === 'grille' ? 540 : 500;
+    const X = 866, Y = 76, L = 392, HT = this.vue === 'grille' ? 540 : 516;
     this.g(panneau(this, X, Y, L, HT));
     this.g(this.add.circle(X + 30, Y + 34, 8, COULEUR[f.element]).setStrokeStyle(2, 0x0b100d).setDepth(1001));
     this.g(texte(this, X + 46, Y + 34, f.nom, 20, '#ffffff', true, 0, 0.5));
@@ -171,34 +203,61 @@ export class MonstresScene extends Phaser.Scene {
     // XP et « + » vers le Cercle d'amélioration
     const max = NIVEAU_MAX[m.etoiles as keyof typeof NIVEAU_MAX], plein = m.niveau >= max;
     this.g(texte(this, X + 24, Y + 70, 'XP', 13, '#93a89b', false, 0, 0.5));
-    this.g(this.add.rectangle(X + 54, Y + 70, L - 140, 14, 0x0e1511).setOrigin(0, 0.5).setStrokeStyle(1.5, 0x4a5a3c).setDepth(1001));
+    this.g(this.add.rectangle(X + 54, Y + 70, L - 184, 14, 0x0e1511).setOrigin(0, 0.5).setStrokeStyle(1.5, 0x4a5a3c).setDepth(1001));
     const besoin = plein ? 0 : XP_NIVEAU[m.etoiles as keyof typeof XP_NIVEAU][m.niveau - 1], part = plein ? 1 : Math.min(1, m.xp / besoin);
-    if (part > 0) this.g(this.add.rectangle(X + 55, Y + 70, (L - 142) * part, 11, VERT).setOrigin(0, 0.5).setDepth(1002));
-    this.g(texte(this, X + 54 + (L - 140) / 2, Y + 70, plein ? 'MAX' : `${fmt(m.xp)} / ${fmt(besoin)}`, 11, '#ffffff', true, 0.5, 0.5).setDepth(1003));
+    if (part > 0) this.g(this.add.rectangle(X + 55, Y + 70, (L - 186) * part, 11, VERT).setOrigin(0, 0.5).setDepth(1002));
+    this.g(texte(this, X + 54 + (L - 184) / 2, Y + 70, plein ? 'MAX' : `${fmt(m.xp)} / ${fmt(besoin)}`, 11, '#ffffff', true, 0.5, 0.5).setDepth(1003));
     const plus = bouton(this, X + L - 46, Y + 70, 40, 32, '+', false, () => this.scene.start('cercle', { cible: m.uid }));
     plus.t.setFontSize(20).setColor('#c6f02e'); this.g(plus.fond); this.g(plus.t);
 
+    // cadenas : un monstre verrouillé ne peut pas servir de nourriture
+    const ferme = verrouille(j, m.uid);
+    const cad = pastille(this, X + L - 96, Y + 70, ferme ? 'ico_cadenas' : 'ico_cadenas_ouvert', 30, 1003);
+    for (const o of cad) this.g(o);
+    (cad[0] as Phaser.GameObjects.Arc).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+      this.joueur = basculerVerrou(this.joueur, m.uid); sauver(this.joueur);
+      this.message(ferme ? 'Cadenas retiré.' : 'Monstre verrouillé : il ne peut plus servir de nourriture.'); this.dessiner();
+    });
+
     if (this.onglet === 'info') {
-      const base = monstreCombat(m.id, m.etoiles, m.niveau), avec = avecRunes(base, runesDe(j, m.uid));
+      const runes = runesDe(j, m.uid), base = monstreCombat(m.id, m.etoiles, m.niveau), avec = avecRunes(base, runes), st = avec.stats;
+      // hexagone : le profil du monstre d'un coup d'œil (runes comprises)
+      for (const o of hexagoneStats(this, X + 86, Y + 196, 52, [st.pv / 14000, st.atq / 950, st.def / 800, (st.vit - 80) / 50, st.tc / 100, st.res / 100],
+        ['PV', 'ATQ', 'DEF', 'VIT', 'CRIT', 'RÉS'], COULEUR[f.element])) this.g(o);
       const lignes: [string, string, number][] = [
         ['Niveau', `${m.niveau} / ${max}`, 0],
         ...((['pv', 'atq', 'def', 'vit', 'tc', 'dc', 'res', 'pre'] as (keyof Stats)[]).map((k): [string, string, number] => {
           const pc = k === 'tc' || k === 'dc' || k === 'res' || k === 'pre';
-          const nom = { pv: 'PV', atq: 'ATQ', def: 'DEF', vit: 'VIT', tc: 'Taux crit.', dc: 'Dégâts crit.', res: 'Résistance', pre: 'Précision' }[k];
+          const nom = { pv: 'PV', atq: 'ATQ', def: 'DEF', vit: 'VIT', tc: 'Tx crit.', dc: 'Dég. crit.', res: 'Résist.', pre: 'Précision' }[k];
           return [nom, `${fmt(Math.round(base.stats[k]))}${pc ? ' %' : ''}`, Math.round(avec.stats[k] - base.stats[k])];
         })),
       ];
+      const XS = X + 172, LS = L - 172 - 20;
       lignes.forEach(([nom, val, bonus], i) => {
-        const y = Y + 112 + i * 34;
-        if (i % 2 === 0) this.g(this.add.rectangle(X + 16, y, L - 32, 30, 0x000000, 0.5).setOrigin(0, 0.5).setDepth(1000));
-        this.g(texte(this, X + 28, y, nom, 16, '#dfe8d6', false, 0, 0.5));
-        this.g(texte(this, X + L - (bonus ? 100 : 28), y, val, 16, '#ffffff', true, 1, 0.5));
-        if (bonus) this.g(texte(this, X + L - 28, y, `+${fmt(bonus)}`, 15, '#7fd05a', true, 1, 0.5));
+        const y = Y + 108 + i * 22;
+        if (i % 2 === 0) this.g(this.add.rectangle(XS, y, LS, 21, 0x000000, 0.5).setOrigin(0, 0.5).setDepth(1000));
+        this.g(texte(this, XS + 8, y, nom, 13.5, '#dfe8d6', false, 0, 0.5));
+        this.g(texte(this, XS + LS - 56, y, val, 13.5, '#ffffff', true, 1, 0.5));
+        if (bonus) this.g(texte(this, XS + LS - 6, y, `+${fmt(bonus)}`, 12.5, '#7fd05a', true, 1, 0.5));
       });
-      const yb = Y + 112 + lignes.length * 34 + 8;
-      this.g(texte(this, X + 28, yb, `${NOM_ELEMENT[f.element]} · ${NOM_TYPE[f.type]}`, 14, hex(COULEUR[f.element]), true, 0, 0.5));
+      const yb = Y + 312;
+      this.g(texte(this, X + 24, yb, `${NOM_ELEMENT[f.element]} · ${NOM_TYPE[f.type]}`, 13, hex(COULEUR[f.element]), true, 0, 0.5));
       const lead = monstreCombat(m.id).leader;
-      if (lead) this.g(texte(this, X + 28, yb + 26, `♛ Leader : ${texteLeader(lead)}`, 13, '#ffe08a', true, 0, 0.5).setWordWrapWidth(L - 56));
+      if (lead) this.g(texte(this, X + L - 24, yb, `♛ ${texteLeader(lead)}`, 12, '#ffe08a', true, 1, 0.5));
+      // résumé des runes, comme dans SW : les six emplacements, les sets actifs et leur effet
+      const yr = Y + 330, hr = HT - 330 - 22;
+      this.g(this.add.rectangle(X + 20, yr, L - 40, hr, 0x000000, 0.5).setOrigin(0).setStrokeStyle(1.5, 0x4a5a3c).setDepth(1000));
+      const actifs = Object.entries(setsActifs(runes)) as [SetRune, number][];
+      this.g(texte(this, X + 32, yr + 16, 'Runes', 12.5, '#93a89b', true, 0, 0.5));
+      this.g(texte(this, X + L - 32, yr + 16, actifs.length ? actifs.map(([s2, n]) => `${SETS[s2].nom}${n > 1 ? ` ×${n}` : ''}`).join(' · ') : runes.length ? 'Aucun set complet' : 'Aucune rune', 12.5, '#ffe08a', true, 1, 0.5));
+      for (let e = 1; e <= 6; e++) {
+        const r = runes.find((x) => x.emplacement === e) ?? null;
+        for (const o of runeMedaillon(this, r, X + 54 + (e - 1) * 57, yr + 58, 54, { numero: e, profondeur: 1001 })) this.g(o);
+      }
+      const effets = actifs.map(([s2]) => `${SETS[s2].nom} : ${SETS[s2].effet}`).join('\n') || 'Touche « Runes » pour équiper ce monstre.';
+      this.g(texte(this, X + 32, yr + 92, effets, 11.5, '#dfe8d6', false, 0, 0).setWordWrapWidth(L - 64).setLineSpacing(1));
+      const zr = this.g(this.add.zone(X + 20, yr, L - 40, hr).setOrigin(0).setDepth(1010).setInteractive({ useHandCursor: true }));
+      zr.on('pointerdown', () => this.scene.start('monstre', { uid: m.uid, retour }));
     } else {
       let y = Y + 104;
       for (const s of monstreCombat(m.id, m.etoiles, m.niveau).sorts) {

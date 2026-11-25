@@ -19,7 +19,7 @@ import { H, OR, POLICE, W, bouton, chargerUi, fmt, monstreEnPied, panneau, texte
  * la rune choisie (monter palier par palier ou jusqu'à +15, avec l'animation de forgemagie), retirer, équiper,
  * l'inventaire filtré par emplacement, la vente sélective et 3 préréglages.
  */
-const COULEUR_GRADE = [0xb9c4bd, 0x7fd05a, 0x4aa3e6, 0xb47aff, 0xffb23a];
+import { COULEUR_GRADE, chargerIdentite, runeMedaillon } from './identite';
 const hexa = (c: number) => '#' + c.toString(16).padStart(6, '0');
 const CX = 290, CY = 360, R = 170;
 const POS = [-90, -30, 30, 90, 150, 210].map((a) => ({ x: CX + Math.cos((a * Math.PI) / 180) * R, y: CY + Math.sin((a * Math.PI) / 180) * R }));
@@ -47,6 +47,7 @@ export class MonstreScene extends Phaser.Scene {
 
   preload() {
     chargerUi(this, [monstre(this.joueur, this.uid).id]);
+    chargerIdentite(this);
     if (!this.textures.exists('zaap_incarnam')) this.load.image('zaap_incarnam', 'assets/zaap/incarnam.webp');
   }
 
@@ -95,9 +96,8 @@ export class MonstreScene extends Phaser.Scene {
     POS.forEach((p, i) => {
       const e = i + 1, r = portees.find((x) => x.emplacement === e);
       const sel = this.emplacement === e;
-      const hx = this.g(this.add.polygon(p.x, p.y, hexagone(34), r ? 0x1e2c26 : 0x0f1612).setStrokeStyle(sel ? 4 : 2, r ? COULEUR_GRADE[r.grade] : 0x4a5446).setDepth(20));
-      this.g(texte(this, p.x, p.y - (r ? 10 : 0), r ? SETS[r.set].dieu : String(e), r ? 12 : 18, r ? '#ffffff' : '#6f7a6c', true, 0.5, 0.5).setDepth(21));
-      if (r) this.g(texte(this, p.x, p.y + 10, `${r.etoiles}★ +${r.niveau}`, 12, hexa(COULEUR_GRADE[r.grade]), true, 0.5, 0.5).setDepth(21));
+      for (const o of runeMedaillon(this, r ?? null, p.x, p.y, 78, { choisie: sel, numero: e, profondeur: 20 })) this.g(o);
+      const hx = this.g(this.add.zone(p.x, p.y, 74, 74).setDepth(40));
       hx.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
         if (this.occupe) return;
         this.emplacement = sel ? null : e; this.page = 0;
@@ -204,11 +204,10 @@ export class MonstreScene extends Phaser.Scene {
     if (!liste.length) this.g(texte(this, 920, 470, 'Aucune rune ici. Elles tombent dans les zones, les coffres des missions et le donjon.', 13, '#93a89b', false, 0.5, 0.5).setWordWrapWidth(520).setAlign('center'));
     liste.slice(this.page * parPage, (this.page + 1) * parPage).forEach((r, k) => {
       const x = 660 + (k % 8) * 74, y = 410 + Math.floor(k / 8) * 84, sel = this.choisie === r.uid;
-      const hx = this.g(this.add.polygon(x, y, hexagone(30), 0x1a2620).setStrokeStyle(sel ? 4 : 2, COULEUR_GRADE[r.grade]).setDepth(1000));
-      this.g(texte(this, x, y - 9, SETS[r.set].dieu, 11, '#ffffff', true, 0.5, 0.5));
-      this.g(texte(this, x, y + 8, `${r.etoiles}★ +${r.niveau}`, 11, hexa(COULEUR_GRADE[r.grade]), true, 0.5, 0.5));
-      if (r.porteur !== undefined) this.g(texte(this, x, y + 34, 'portée', 10, '#93a89b', false, 0.5, 0.5));
-      else if (e === null) this.g(texte(this, x, y + 34, `empl. ${r.emplacement}`, 10, '#93a89b', false, 0.5, 0.5));
+      for (const o of runeMedaillon(this, r, x, y, 66, { choisie: sel, profondeur: 1000 })) this.g(o);
+      const hx = this.g(this.add.zone(x, y, 64, 64).setDepth(1010));
+      if (r.porteur !== undefined) this.g(texte(this, x, y + 41, 'portée', 10, '#93a89b', false, 0.5, 0.5));
+      else if (e === null) this.g(texte(this, x, y + 41, `empl. ${r.emplacement}`, 10, '#93a89b', false, 0.5, 0.5));
       hx.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (!this.occupe) { this.choisie = r.uid; this.dessiner(); } });
     });
     if (pages > 1) {
@@ -259,8 +258,3 @@ export class MonstreScene extends Phaser.Scene {
   }
 }
 
-function hexagone(r: number): number[] {
-  const p: number[] = [];
-  for (let i = 0; i < 6; i++) { const a = (Math.PI / 3) * i + Math.PI / 6; p.push(r + Math.cos(a) * r, r + Math.sin(a) * r); }
-  return p;
-}

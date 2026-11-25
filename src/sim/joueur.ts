@@ -66,6 +66,8 @@ export interface Joueur {
   prochainUidRune?: number;
   /** Préréglages de runes par monstre (uid → jusqu'à 3 listes de runes). */
   prereglages?: Record<number, { nom: string; runes: number[] }[]>;
+  /** Monstres verrouillés (uid) : ils ne peuvent pas servir de nourriture (✓ cadenas de SW). */
+  verrous?: number[];
   /** Première visite, dernière visite, fin des avantages de retour (ms) : retrait de rune gratuit (maquette « Runes : » 6A). */
   cree?: number;
   derniereVisite?: number;
@@ -179,10 +181,20 @@ export function apercuNourrir(j: Joueur, uids: readonly number[]) {
  * ✓ Nourrir au Cercle d'amélioration (SW) : jusqu'à 5 monstres sacrifiés donnent leur XP ; ~20 % de chances de ×1,5.
  * Le hasard passe par le Rng (combat et serveur déterministes).
  */
+export const verrouille = (j: Joueur, uid: number) => (j.verrous ?? []).includes(uid);
+
+/** Pose ou retire le cadenas d'un monstre. */
+export function basculerVerrou(j: Joueur, uid: number): Joueur {
+  monstre(j, uid);
+  const v = j.verrous ?? [];
+  return { ...j, verrous: v.includes(uid) ? v.filter((u) => u !== uid) : [...v, uid] };
+}
+
 export function nourrir(j: Joueur, uid: number, nourriture: number[], rng: Rng): { joueur: Joueur; xp: number; bonus: boolean; niveaux: number } {
   monstre(j, uid); // vérifie qu'il existe
   if (!nourriture.length || nourriture.length > NOURRITURE_MAX) throw new Error(`De 1 à ${NOURRITURE_MAX} monstres`);
   if (new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
+  if (nourriture.some((u) => verrouille(j, u))) throw new Error('Monstre verrouillé');
   const { xp: base, kamas } = apercuNourrir(j, nourriture);
   if (j.kamas < kamas) throw new Error(`Il faut ${kamas} kamas`);
   const bonus = rng.suivant() < CHANCE_BONUS_XP;
@@ -201,6 +213,7 @@ export function evoluer(j: Joueur, uid: number, nourriture: number[]): Joueur {
   const e = m.etoiles as 1 | 2 | 3 | 4 | 5;
   if (!nourriture.length || new Set(nourriture).size !== nourriture.length || nourriture.includes(uid)) throw new Error('Nourriture invalide');
   for (const u of nourriture) if (monstre(j, u).etoiles > e) throw new Error(`La nourriture doit avoir ${e}★ ou moins`);
+  if (nourriture.some((u) => verrouille(j, u))) throw new Error('Monstre verrouillé');
   const points = pointsNourriture(j, nourriture), requis = pointsRequis(e);
   if (points < requis) throw new Error(`Il faut ${requis} points de nourriture (${points} donnés)`);
   const cout = COUT_EVOLUTION[e];

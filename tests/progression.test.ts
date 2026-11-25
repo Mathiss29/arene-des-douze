@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { NIVEAU_MAX, XP_NIVEAU, ajouterXp, partStats, statsAuNiveau, type Etoiles } from '../src/sim/progression';
 import { pointsRequis, xpDonnee } from '../src/sim/progression';
 import { Rng } from '../src/sim/rng';
-import { apercuNourrir, nourrir, ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
+import { basculerVerrou, apercuNourrir, nourrir, ajouterMonstre, definirEquipe, donnerXp, equipePourStage, evoluer, lireSauvegarde, nouveauJoueur, monstre, peutEvoluer, trierMonstres } from '../src/sim/joueur';
 import { appliquerVictoire, vaguesEnnemies, equipeJoueur, LISTE_STAGES, stage, tirerButin } from '../src/sim/stages';
 import { Combat } from '../src/sim/combat';
 import { choisirAction } from '../src/sim/ia';
@@ -93,6 +93,10 @@ describe('joueur', () => {
     expect(r.joueur.kamas).toBe(j.kamas - ap.kamas);
     expect(monstre(r.joueur, 1).niveau).toBeGreaterThan(1);
     expect(() => nourrir(j, 1, [1], new Rng(1))).toThrow();
+    // un monstre verrouillé ne peut pas servir de nourriture ; le cadenas se retire
+    const v = basculerVerrou(j, 3);
+    expect(() => nourrir(v, 1, [3], new Rng(1))).toThrow();
+    expect(() => nourrir(basculerVerrou(v, 3), 1, [3], new Rng(1))).not.toThrow();
     // le bonus tombe environ une fois sur cinq
     let bonus = 0;
     for (let g = 0; g < 1000; g++) if (nourrir(j, 1, [3], new Rng(g)).bonus) bonus++;
