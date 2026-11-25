@@ -306,9 +306,9 @@ export class MonstreScene extends Phaser.Scene {
 
   /** Choix du set : une tuile par set avec le nombre de runes possédées (plusieurs sets possibles). */
   private choixSet() {
-    const P = this.fenetre(330, 110, 620, 470, 'Set'), f = this.f, tous = runes(this.joueur);
+    const P = this.fenetre(330, 96, 620, 510, 'Set'), f = this.f, tous = runes(this.joueur);
     const tuile = (i: number, nom: string, n: number, on: boolean, action: () => void, set?: SetRune) => {
-      const x = 372 + (i % 4) * 142, y = 178 + Math.floor(i / 4) * 92;
+      const x = 372 + (i % 4) * 142, y = 160 + Math.floor(i / 4) * 92;
       this.g(this.add.graphics().setDepth(P).fillStyle(on ? 0x2f3a16 : 0x161b13).fillRoundedRect(x, y, 132, 82, 8).lineStyle(on ? 2.5 : 1.5, on ? VERT : 0x4a5a3c).strokeRoundedRect(x, y, 132, 82, 8));
       if (set && this.textures.exists('symboles')) this.g(this.add.image(x + 66, y + 30, 'symboles', set).setDisplaySize(40, 40).setDepth(P + 1));
       else this.g(texte(this, x + 66, y + 30, `${n}`, 20, '#ffe08a', true, 0.5, 0.5).setDepth(P + 1));
@@ -318,7 +318,7 @@ export class MonstreScene extends Phaser.Scene {
     };
     tuile(0, 'Tous', tous.length, f.sets.size === 0, () => { f.sets.clear(); this.popup = null; });
     LISTE_SETS.forEach((s, i) => tuile(i + 1, SETS[s].nom, tous.filter((r) => r.set === s).length, f.sets.has(s), () => { if (f.sets.has(s)) f.sets.delete(s); else f.sets.add(s); }, s));
-    const ok = bouton(this, 640, 554, 200, 38, 'Voir les runes', true, () => { this.popup = null; this.dessiner(); }, P + 1); ok.t.setFontSize(16); this.g(ok.fond); this.g(ok.t);
+    const ok = bouton(this, 640, 566, 200, 38, 'Voir les runes', true, () => { this.popup = null; this.dessiner(); }, P + 1); ok.t.setFontSize(16); this.g(ok.fond); this.g(ok.t);
   }
 
   /** Choix d'une stat (principale ou sous-stat) : deux colonnes, comme SW. */
