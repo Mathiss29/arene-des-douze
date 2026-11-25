@@ -17,9 +17,9 @@ import { COULEUR, H, OR, POLICE, W, bouton, chargerUi, fmt, monstreEnPied, panne
 import { COULEUR_GRADE, VERT, bandeauPierre, chargerIdentite, decorVivant, etoiles, runeMedaillon } from './identite';
 
 /**
- * Écran des runes d'un monstre (planche n° 8 : 1A 2B+C 3B 4A 5A, sur la maquette « Runes : » 1A 5C 6A 7B 8C).
+ * Écran des runes d'un monstre (planche n° 8 : 1A 2A+C 3B 4A 5A, sur la maquette « Runes : » 1A 5C 6A 7B 8C).
  * À gauche : la roue des 6 places autour du monstre, les sets, les stats, les préréglages.
- * Au milieu : l'inventaire en grille, filtré par place et par set (le reste derrière « Filtres »), trié par étoiles puis grade.
+ * Au milieu : l'inventaire en grille, tous les filtres visibles (place, set, libres ou portées, étoiles, grade, stat principale), trié par étoiles puis grade.
  * À droite : la fiche de la rune touchée, comparée d'office à la rune portée à la même place.
  */
 const hexa = (c: number) => '#' + c.toString(16).padStart(6, '0');
@@ -31,6 +31,7 @@ const STATS_PRINCIPALES: StatRune[] = ['atq', 'atq_fixe', 'pv', 'pv_fixe', 'def'
 const NOM_COURT: Record<keyof Stats, string> = { pv: 'PV', atq: 'ATQ', def: 'DEF', vit: 'VIT', tc: 'Tx crit.', dc: 'Dég. crit.', res: 'Résist.', pre: 'Précision' };
 const POURCENT = new Set<keyof Stats>(['tc', 'dc', 'res', 'pre']);
 const COLS = 6, LIGNES = 4;
+const STAT_COURTE: Record<StatRune, string> = { atq: 'ATQ%', atq_fixe: 'ATQ', pv: 'PV%', pv_fixe: 'PV', def: 'DEF%', def_fixe: 'DEF', vit: 'VIT', tc: 'Crit', dc: 'Dég', res: 'Rés', pre: 'Préc' };
 /** « ATQ +9 % » plutôt que « ATQ % +9 ». */
 const libStat = (s: StatRune, v: number) => { const n = NOM_STAT_RUNE[s]; return n.endsWith(' %') ? `${n.slice(0, -2)} +${v} %` : `${n} +${v}`; };
 
@@ -42,9 +43,8 @@ export class MonstreScene extends Phaser.Scene {
   private page = 0;
   private occupe = false;
   private vente: { etoiles: number; grade: number } | null = null;
-  private filtres = false;
   private tri: Tri = 'etoiles';
-  private f: { place: number | null; set: SetRune | null; libres: boolean; etoiles: number; grade: number; principale: StatRune | null } = { place: null, set: null, libres: false, etoiles: 1, grade: 0, principale: null };
+  private f: { place: number | null; set: SetRune | null; porte: 'toutes' | 'libres' | 'portees'; etoiles: number; grade: number; principale: StatRune | null } = { place: null, set: null, porte: 'toutes', etoiles: 1, grade: 0, principale: null };
   /** Sélection multiple pour la vente (null : mode normal). */
   private coche: Set<number> | null = null;
   private calque: Phaser.GameObjects.GameObject[] = [];
@@ -56,8 +56,8 @@ export class MonstreScene extends Phaser.Scene {
     this.joueur = charger();
     this.uid = data.uid ?? this.joueur.monstres[0].uid;
     this.retour = data.retour ?? { scene: 'cercle' };
-    this.choisie = null; this.page = 0; this.occupe = false; this.vente = null; this.filtres = false; this.coche = null; this.calque = [];
-    this.tri = 'etoiles'; this.f = { place: null, set: null, libres: false, etoiles: 1, grade: 0, principale: null };
+    this.choisie = null; this.page = 0; this.occupe = false; this.vente = null; this.coche = null; this.calque = [];
+    this.tri = 'etoiles'; this.f = { place: null, set: null, porte: 'toutes', etoiles: 1, grade: 0, principale: null };
   }
 
   preload() {
@@ -99,7 +99,7 @@ export class MonstreScene extends Phaser.Scene {
   private liste(): Rune[] {
     const f = this.f;
     const l = runes(this.joueur).filter((r) => r.porteur !== this.uid && (f.place === null || r.emplacement === f.place) && (!f.set || r.set === f.set)
-      && (!f.libres || r.porteur === undefined) && r.etoiles >= f.etoiles && r.grade >= f.grade && (!f.principale || r.principale === f.principale));
+      && (f.porte === 'toutes' || (r.porteur === undefined) === (f.porte === 'libres')) && r.etoiles >= f.etoiles && r.grade >= f.grade && (!f.principale || r.principale === f.principale));
     if (this.tri === 'etoiles') l.sort((a, b) => b.etoiles - a.etoiles || b.grade - a.grade || b.niveau - a.niveau || b.uid - a.uid);
     else if (this.tri === 'niveau') l.sort((a, b) => b.niveau - a.niveau || b.etoiles - a.etoiles || b.grade - a.grade || b.uid - a.uid);
     else l.sort((a, b) => b.uid - a.uid);
@@ -158,7 +158,6 @@ export class MonstreScene extends Phaser.Scene {
     const r = this.choisie !== null ? runes(j).find((x) => x.uid === this.choisie) : undefined;
     if (!r) this.g(texte(this, 1109, 360, 'Touche une place de la roue\nou une rune de l\'inventaire.', 14, '#93a89b', false, 0.5, 0.5).setAlign('center'));
     else this.carte(r, portees, now);
-    if (this.filtres) this.fenetreFiltres();
     if (this.vente) this.fenetreVente();
   }
 
@@ -174,15 +173,24 @@ export class MonstreScene extends Phaser.Scene {
     // set, par symbole
     this.puce(gx, 138, 46, 30, 'Tous', f.set === null, filtrer(() => { f.set = null; }));
     LISTE_SETS.forEach((s, i) => this.puce(gx + 51 + i * 31, 138, 28, 30, '', f.set === s, filtrer(() => { f.set = f.set === s ? null : s; }), 1001, s));
-    // filtres en plus et tri
-    const actifs = (f.libres ? 1 : 0) + (f.etoiles > 1 ? 1 : 0) + (f.grade > 0 ? 1 : 0) + (f.principale ? 1 : 0);
-    this.puce(gx + 330, 100, 92, 30, actifs ? `Filtres (${actifs})` : 'Filtres', actifs > 0, () => { this.filtres = true; this.dessiner(); });
-    this.puce(gx + 428, 100, 86, 30, `Tri : ${NOM_TRI[this.tri]}`, false, () => { this.tri = this.tri === 'etoiles' ? 'niveau' : this.tri === 'niveau' ? 'recent' : 'etoiles'; this.page = 0; this.dessiner(); });
-    const resume = [`${liste.length} rune${liste.length > 1 ? 's' : ''}`, f.place ? `place ${f.place}` : '', f.set ? SETS[f.set].nom : '', f.libres ? 'libres' : '', f.principale ? NOM_STAT_RUNE[f.principale] : ''].filter(Boolean).join(' · ');
-    this.g(texte(this, gx, 172, resume, 12, '#93a89b', false, 0, 0.5));
-    if (!liste.length) this.g(texte(this, X + L / 2, 380, runes(j).length ? 'Aucune rune ne correspond à ces filtres.' : 'Aucune rune pour l\'instant. Elles tombent dans les zones,\nles coffres des missions et les donjons.', 13, '#93a89b', false, 0.5, 0.5).setAlign('center'));
+    this.puce(gx + 420, 100, 94, 30, `Tri : ${NOM_TRI[this.tri]}`, false, () => { this.tri = this.tri === 'etoiles' ? 'niveau' : this.tri === 'niveau' ? 'recent' : 'etoiles'; this.page = 0; this.dessiner(); });
+    // tous les filtres restent visibles (planche n° 8, 2A+C) : libres ou portées, étoiles, grade, puis la stat principale
+    let x = gx;
+    const suite = (w: number, lib: string, on: boolean, action: () => void) => { this.puce(x, 176, w, 30, lib, on, filtrer(action)); x += w + 5; };
+    suite(56, 'Libres', f.porte === 'libres', () => { f.porte = f.porte === 'libres' ? 'toutes' : 'libres'; });
+    suite(64, 'Portées', f.porte === 'portees', () => { f.porte = f.porte === 'portees' ? 'toutes' : 'portees'; });
+    x += 5;
+    for (const e of [4, 5, 6]) suite(44, `${e}★ +`, f.etoiles === e, () => { f.etoiles = f.etoiles === e ? 1 : e; });
+    x += 5;
+    ([[1, 'Mag. +'], [2, 'Rare +'], [3, 'Hér. +'], [4, 'Lég.']] as const).forEach(([g, lib]) => suite(54, lib, f.grade === g, () => { f.grade = f.grade === g ? 0 : g; }));
+    this.puce(gx, 214, 54, 30, 'Toutes', f.principale === null, filtrer(() => { f.principale = null; }));
+    STATS_PRINCIPALES.forEach((st, i) => this.puce(gx + 59 + i * 41.5, 214, 37.5, 30, STAT_COURTE[st], f.principale === st, filtrer(() => { f.principale = f.principale === st ? null : st; })));
+    const resume = [`${liste.length} rune${liste.length > 1 ? 's' : ''}`, f.place ? `place ${f.place}` : '', f.set ? SETS[f.set].nom : '', f.porte === 'libres' ? 'libres' : f.porte === 'portees' ? 'portées par un autre monstre' : '',
+      f.etoiles > 1 ? `${f.etoiles}★ et plus` : '', f.grade ? `${GRADES[f.grade]} et plus` : '', f.principale ? NOM_STAT_RUNE[f.principale] : ''].filter(Boolean).join(' · ');
+    this.g(texte(this, gx, 244, resume, 12, '#93a89b', false, 0, 0.5));
+    if (!liste.length) this.g(texte(this, X + L / 2, 430, runes(j).length ? 'Aucune rune ne correspond à ces filtres.' : 'Aucune rune pour l\'instant. Elles tombent dans les zones,\nles coffres des missions et les donjons.', 13, '#93a89b', false, 0.5, 0.5).setAlign('center'));
     liste.slice(this.page * parPage, (this.page + 1) * parPage).forEach((r, k) => {
-      const x = gx + 43 + (k % COLS) * 86, y = 222 + Math.floor(k / COLS) * 108;
+      const x = gx + 43 + (k % COLS) * 86, y = 288 + Math.floor(k / COLS) * 95;
       const coche = this.coche?.has(r.uid) ?? false;
       this.gs(runeMedaillon(this, r, x, y, 62, { choisie: this.coche ? coche : this.choisie === r.uid, profondeur: 1000 }));
       this.g(texte(this, x, y + 38, libStat(r.principale, valeurPrincipale(r)), 10.5, '#dfe8d6', false, 0.5, 0.5));
@@ -309,28 +317,6 @@ export class MonstreScene extends Phaser.Scene {
       this.tweens.add({ targets: [eclat, t], alpha: 0, delay: 450, duration: 400, onComplete: () => { eclat.destroy(); t.destroy(); } });
     }));
     this.time.delayedCall(250 + res.paliers.length * 650 + 200, () => { this.occupe = false; });
-  }
-
-  /** Filtres en plus (planche n° 8, 2B+C) : libres seulement, étoiles et grade minimum, stat principale. */
-  private fenetreFiltres() {
-    const f = this.f, P = 3002, X = 330, Y = 125;
-    this.g(this.add.rectangle(W / 2, H / 2, W, H, 0x000000, 0.6).setDepth(3000).setInteractive());
-    this.g(panneau(this, X, Y, 620, 470, 3001));
-    this.g(texte(this, W / 2, Y + 36, 'Filtres', 20, '#ffffff', true, 0.5, 0.5).setDepth(P));
-    const re = (action: () => void) => () => { action(); this.page = 0; this.dessiner(); };
-    const lab = (y: number, t: string) => this.g(texte(this, X + 36, y, t, 13, '#93a89b', true, 0, 0.5).setDepth(P));
-    lab(Y + 88, 'Afficher');
-    this.puce(X + 150, Y + 88, 110, 32, 'Toutes', !f.libres, re(() => { f.libres = false; }), P);
-    this.puce(X + 268, Y + 88, 150, 32, 'Libres seulement', f.libres, re(() => { f.libres = true; }), P);
-    lab(Y + 138, 'Étoiles');
-    for (let e = 1; e <= 6; e++) this.puce(X + 150 + (e - 1) * 70, Y + 138, 62, 32, e === 1 ? 'Toutes' : `${e}★ et +`, f.etoiles === e, re(() => { f.etoiles = e; }), P);
-    lab(Y + 188, 'Grade');
-    GRADES.forEach((g, i) => this.puce(X + 150 + i * 88, Y + 188, 82, 32, i ? `${g} +` : 'Tous', f.grade === i, re(() => { f.grade = i; }), P));
-    lab(Y + 238, 'Stat principale');
-    this.puce(X + 150, Y + 238, 70, 32, 'Toutes', f.principale === null, re(() => { f.principale = null; }), P);
-    STATS_PRINCIPALES.forEach((s, i) => this.puce(X + 150 + (i % 4) * 110, Y + 278 + Math.floor(i / 4) * 38, 104, 32, NOM_STAT_RUNE[s], f.principale === s, re(() => { f.principale = f.principale === s ? null : s; }), P));
-    const z = bouton(this, W / 2 - 110, Y + 432, 190, 38, 'Tout remettre à zéro', false, re(() => { f.libres = false; f.etoiles = 1; f.grade = 0; f.principale = null; }), P); z.t.setFontSize(13); this.g(z.fond); this.g(z.t);
-    const ok = bouton(this, W / 2 + 110, Y + 432, 190, 40, 'Voir les runes', true, () => { this.filtres = false; this.dessiner(); }, P); ok.t.setFontSize(16); this.g(ok.fond); this.g(ok.t);
   }
 
   /** Vente sélective (choix 7B) : runes non portées et jamais montées, jusqu'à N étoiles et un grade. */
