@@ -211,18 +211,19 @@ export function runeMedaillon(scene: Phaser.Scene, r: { set: string; grade: numb
     return o;
   }
   o.push(scene.add.image(x, y, 'rune_cadre').setDisplaySize(t, t).setDepth(p), scene.add.image(x, y, `rune_coeur_${r.grade}`).setDisplaySize(t, t).setDepth(p + 1));
-  const [fx, fy] = sommet(r.emplacement - 1, 100 * u);
-  o.push(scene.add.image(x + fx, y + fy, 'rune_fleche').setDisplaySize(t * 0.17, t * 0.17).setAngle((r.emplacement - 1) * 60).setDepth(p + 4));
+  const [fx, fy] = sommet(r.emplacement - 1, 108 * u);
+  o.push(scene.add.image(x + fx, y + fy, 'rune_fleche').setDisplaySize(t * 0.17, t * 0.17).setAngle((r.emplacement - 1) * 60).setDepth(p + 7));
   if (scene.textures.exists('symboles')) {
-    const s = t * 0.52;
-    o.push(scene.add.image(x + 1, y + s * 0.1 + 2, 'symboles', r.set).setDisplaySize(s, s).setTintFill(0x10130d).setAlpha(0.55).setDepth(p + 2),
-      scene.add.image(x, y + s * 0.1, 'symboles', r.set).setDisplaySize(s, s).setDepth(p + 3));
+    // le symbole tient en entier dans le cœur, centré, sans passer sous les étoiles ni sous la plaque du niveau
+    const s = t * 0.44, sy = y + t * 0.02;
+    o.push(scene.add.image(x + 1, sy + 2, 'symboles', r.set).setDisplaySize(s, s).setTintFill(0x10130d).setAlpha(0.55).setDepth(p + 2),
+      scene.add.image(x, sy, 'symboles', r.set).setDisplaySize(s, s).setDepth(p + 3));
   }
   if (options.sansDetails) return o;
   const te = Math.min(t * 0.15, (t * 0.62) / r.etoiles / 0.95);
-  o.push(scene.add.rectangle(x, y - t * 0.3, r.etoiles * te * 0.95 + 6, te + 4, 0x10130d, 0.86).setDepth(p + 4), ...etoiles(scene, x, y - t * 0.3, r.etoiles, te, 0.5, p + 5));
+  o.push(scene.add.rectangle(x, y - t * 0.37, r.etoiles * te * 0.95 + 6, te + 4, 0x10130d, 0.92).setDepth(p + 4), ...etoiles(scene, x, y - t * 0.37, r.etoiles, te, 0.5, p + 5));
   const taille = Math.max(9, Math.round(t * 0.17)), n = scene.add.text(0, 0, `+${r.niveau}`, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: '#ffffff' }).setOrigin(0.5).setDepth(p + 6);
-  const lp = n.width + 8, hp = taille + 4, px = x + t * 0.24, py = y + t * 0.34;
+  const lp = n.width + 8, hp = taille + 4, px = x + t * 0.27, py = y + t * 0.39;
   n.setPosition(px, py);
   o.push(scene.add.graphics().setDepth(p + 5).fillStyle(0x10130d, 0.94).fillRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 4).lineStyle(1, 0x6f7862).strokeRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 4), n);
   return o;
