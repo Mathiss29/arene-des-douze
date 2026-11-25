@@ -131,8 +131,8 @@ export function bandeauPierre(scene: Phaser.Scene, retour: string, action: () =>
  * Carte de monstre « médaillon de pierre » : cadre de pierre, fond de la couleur de l'élément, étoiles dessinées sur leur
  * bandeau en haut, monstre entier dessous, niveau dans une plaque en bas à droite. Renvoie les objets (à détruire avec le calque).
  */
-export function carteMonstre(scene: Phaser.Scene, m: { id: string; etoiles: number; niveau: number }, element: Element, x: number, y: number, t: number,
-  options: { choisie?: boolean; equipe?: boolean; verrou?: boolean; nouveau?: boolean; action?: () => void } = {}): Phaser.GameObjects.GameObject[] {
+export function carteMonstre(scene: Phaser.Scene, m: { id: string; etoiles: number; niveau?: number }, element: Element, x: number, y: number, t: number,
+  options: { choisie?: boolean; equipe?: boolean; verrou?: boolean; nouveau?: boolean; inconnu?: boolean; action?: () => void } = {}): Phaser.GameObjects.GameObject[] {
   textures(scene);
   const o: Phaser.GameObjects.GameObject[] = [], u = t / 240;
   if (options.choisie) o.push(scene.add.rectangle(x, y, t + 6, t + 6, VERT, 0.35).setStrokeStyle(3, 0xd8ff5a).setDepth(999));
@@ -141,13 +141,17 @@ export function carteMonstre(scene: Phaser.Scene, m: { id: string; etoiles: numb
   const zone = t - 36 * u - 46 * u, cy = y - t / 2 + 64 * u + zone / 2;
   const p = portrait(scene, m.id, x, cy, zone * 1.12, false, false, 1001);
   o.push(p.sp, p.masque);
+  // monstre jamais eu (bestiaire) : silhouette sombre sur un fond éteint
+  if (options.inconnu) { p.sp.setTintFill(0x0e120c); o.push(scene.add.rectangle(x, y + 23 * u, t - 40 * u, t - 86 * u, 0x12160f, 0.72).setDepth(1000.5)); }
   const pas = Math.min(30 * u, (t - 52 * u) / m.etoiles), te = 30 * u;
   for (let i = 0; i < m.etoiles; i++) o.push(scene.add.image(x + (i - (m.etoiles - 1) / 2) * pas, y - t / 2 + 41 * u, 'etoile').setDisplaySize(te, te).setDepth(1003));
-  const taille = Math.round(t * 0.17), n = scene.add.text(0, 0, String(m.niveau), { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: '#ffffff' }).setOrigin(0.5).setDepth(1004);
-  const lp = Math.max(n.width + 9, t * 0.3), hp = taille + 5, px = x + t / 2 - 10 * u - lp / 2, py = y + t / 2 - 10 * u - hp / 2;
-  n.setPosition(px, py);
-  o.push(scene.add.graphics().setDepth(1003).fillStyle(0x10130d, 0.92).fillRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 5).lineStyle(1.2, 0x6f7862).strokeRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 5), n);
-  if (m.etoiles >= 5) o.push(...reflet(scene, x, y, t, (x * 7 + y * 3) % 1800));
+  if (m.niveau !== undefined) {
+    const taille = Math.round(t * 0.17), n = scene.add.text(0, 0, String(m.niveau), { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: '#ffffff' }).setOrigin(0.5).setDepth(1004);
+    const lp = Math.max(n.width + 9, t * 0.3), hp = taille + 5, px = x + t / 2 - 10 * u - lp / 2, py = y + t / 2 - 10 * u - hp / 2;
+    n.setPosition(px, py);
+    o.push(scene.add.graphics().setDepth(1003).fillStyle(0x10130d, 0.92).fillRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 5).lineStyle(1.2, 0x6f7862).strokeRoundedRect(px - lp / 2, py - hp / 2, lp, hp, 5), n);
+  }
+  if (m.etoiles >= 5 && !options.inconnu) o.push(...reflet(scene, x, y, t, (x * 7 + y * 3) % 1800));
   if (options.equipe) o.push(...pastille(scene, x - t / 2 + 4, y + t / 2 - 4, 'ico_epee', Math.max(16, t * 0.25)));
   if (options.verrou) o.push(...pastille(scene, x + t / 2 - 3, y - t / 2 + 3, 'ico_cadenas', Math.max(16, t * 0.25)));
   if (options.nouveau) o.push(...etiquetteNouveau(scene, x, y - t / 2 - 2));
