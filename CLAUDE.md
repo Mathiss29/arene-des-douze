@@ -26,6 +26,8 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   Chemin de l'invocateur (`CheminScene`, `chemin.ts`, quêtes dans `src/data/quetes.json`), bestiaire (`BestiaireScene`), options (`OptionsScene`).
   Test de fumée de tous les écrans : `npm run fumee` (Chrome sans tête, lancé aussi avant chaque mise en ligne).
   Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).
+  Écran « Monstres » façon SW (`MonstresScene`, clé `monstres` : grille ou vue détail animée, onglets Info / Sorts / Runes / Éveil), ouvert par la plaque « Monstres » de l'île.
+  DA « verre sombre » : textures de Dofus 3 (`public/assets/ui/`), police Fredoka, `panneau()`, `bouton()` (vert ou sombre), `boutonOr()` pour les moments forts et l'onglet choisi.
   Outils d'interface partagés (boutons, portraits, panneaux) : `src/render/ui.ts`. Paysage uniquement : monde de 1280 × 720,
   dessiné à la taille réelle de l'écran (`src/render/nettete.ts` : canevas ×K, caméras zoomées ×K, textes en résolution K).
   Débogage dans la console : `window.game.scene.getScene('combat')`.

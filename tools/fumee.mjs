@@ -59,6 +59,8 @@ try {
   await ecran('Réception', 'reception');
   await ecran('Chemin de l\'invocateur', 'chemin');
   await ecran('Bestiaire', 'bestiaire');
+  await ecran('Monstres (grille)', 'monstres');
+  await ecran('Monstres (détail)', 'monstres', { uid: 1, vue: 'detail' });
   await ecran('Options', 'options');
 } finally {
   await navigateur.close();

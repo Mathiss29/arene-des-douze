@@ -41,7 +41,7 @@ export function jouerMusique(scene: Phaser.Scene, nom: string) {
     const s = sons.add(cle, { loop: true }) as Phaser.Sound.WebAudioSound;
     s.setVolume(0);
     courante = s;
-    const partir = () => { s.play(); fondu(s, volumeMusique(), 2000); };
+    const partir = () => { if (courante !== s) return; s.play(); fondu(s, volumeMusique(), 2000); };
     if (sons.locked) sons.once(Phaser.Sound.Events.UNLOCKED, partir); else partir();
   };
   if (scene.sys.game.cache.audio.exists(cle)) return lancer();

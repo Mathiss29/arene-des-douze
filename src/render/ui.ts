@@ -28,7 +28,7 @@ const NOM_ZONE: Record<string, string> = { general: 'général', arene: 'Arène'
 export const texteLeader = (l: Leader) => `+${l.valeur} % de ${NOM_STAT[l.stat]} (${NOM_ZONE[l.zone] ?? l.zone})`;
 export const nomStat = (s: keyof Stats) => NOM_STAT[s];
 
-const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over', 'btn_green_pressed', 'block_border_double', 'headerBgStone', 'slot_dark_background_full'];
+const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over', 'btn_green_pressed', 'block_border_double', 'headerBgStone', 'slot_dark_background_full', 'bouton_or'];
 
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
@@ -92,6 +92,18 @@ export function bouton(scene: Phaser.Scene, x: number, y: number, w: number, h: 
       .on('pointerdown', () => { if (fond.active && t.active) { fond.setTexture('btn_green_pressed'); t.setY(y + 2); } }).on('pointerup', () => { if (fond.active && t.active) { fond.setTexture('btn_green_over'); t.setY(y); } });
     else fond.on('pointerover', () => fond.setTint(0xcfe0c8)).on('pointerout', () => fond.clearTint());
   }
+  return { fond, t, griser() { fond.disableInteractive().setAlpha(0.45); t.setAlpha(0.6); } };
+}
+
+/** Bouton doré (cadre d'or de Dofus 3) pour les moments forts : invoquer, ouvrir un coffre, évoluer, onglet choisi. */
+export function boutonOr(scene: Phaser.Scene, x: number, y: number, w: number, h: number, libelle: string, action: () => void, profondeur = 1001) {
+  const fond: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle = scene.textures.exists('bouton_or')
+    ? scene.add.nineslice(x, y, 'bouton_or', undefined, w, h, 15, 15, 15, 15).setDepth(profondeur)
+    : scene.add.rectangle(x, y, w, h, 0xe6c15f).setDepth(profondeur);
+  const t = scene.add.text(x, y, libelle, { fontFamily: POLICE, fontSize: '19px', fontStyle: '600', color: '#3d2606' })
+    .setOrigin(0.5).setShadow(0, 1, '#ffe9a8', 0, false, true).setDepth(profondeur + 1);
+  fond.setInteractive({ useHandCursor: true }).on('pointerdown', action);
+  if (fond instanceof Phaser.GameObjects.NineSlice) fond.on('pointerover', () => fond.active && fond.setTint(0xfff2c0)).on('pointerout', () => fond.active && fond.clearTint());
   return { fond, t, griser() { fond.disableInteractive().setAlpha(0.45); t.setAlpha(0.6); } };
 }
 

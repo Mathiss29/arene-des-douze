@@ -16,6 +16,7 @@ import { MaquetteEveils } from './render/maquettes/MaquetteEveils';
 import { MaquetteEcrans } from './render/maquettes/MaquetteEcrans';
 import { camerasNettes, facteurNettete, textesNets } from './render/nettete';
 import { OptionsScene } from './render/OptionsScene';
+import { MonstresScene } from './render/MonstresScene';
 import { jouerMusique, pisteDe } from './render/musique';
 import { noterErreur } from './render/sauvegarde';
 
@@ -32,7 +33,7 @@ await Promise.all(['400 16px Fredoka', '600 16px Fredoka', '400 16px Lexend', '6
 const MAQUETTES: Record<string, typeof Phaser.Scene> = { '#maquette-eveils': MaquetteEveils, '#maquette-ecrans': MaquetteEcrans };
 const maquette = MAQUETTES[location.hash];
 if (maquette) document.getElementById('jeu')!.style.width = 'calc(100% - min(380px, 42vw))';
-const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, MonstreScene, DonjonsScene, CheminScene, BestiaireScene, OptionsScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
+const scenes = maquette ? [maquette] : location.hash === '#vitrine' ? [VitrineScene, IleScene, ZaapScene, InvocationScene, MissionsScene, PreparationScene, CombatScene, CercleScene] : [IleScene, ZaapScene, InvocationScene, MissionsScene, ReceptionScene, MonstreScene, DonjonsScene, CheminScene, BestiaireScene, OptionsScene, MonstresScene, PreparationScene, CombatScene, CercleScene, VitrineScene];
 
 // Netteté : canevas à la taille réelle de l'écran (voir nettete.ts)
 const K = facteurNettete(document.getElementById('jeu')!);
