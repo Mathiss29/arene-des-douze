@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { LOOKS } from '../looks';
-import { atlasPlanche, distant, dossierPlanches } from '../assetUrl';
+import { atlasPlanche, distant, dossierPlanche } from '../assetUrl';
 import { creerAnimations, origine } from '../animations';
 import { auraElement, cercleRunique, eveil, halo, type Corps, type Effet, type StyleEveil } from '../effets';
 import { creerPanneau, type Question } from './panneau';
@@ -76,7 +76,7 @@ export class MaquetteEveils extends Phaser.Scene {
     const ids = new Set([...SLOTS.flatMap((s) => [s.base, s.adulte].filter((x): x is string => !!x)), 'kwak_de_terre']);
     for (const id of ids) {
       const a = LOOKS[id].atlas;
-      this.load.multiatlas(a, atlasPlanche(a), dossierPlanches);
+      this.load.multiatlas(a, atlasPlanche(a), dossierPlanche(a));
       this.load.json(`${a}:meta`, atlasPlanche(a));
     }
   }

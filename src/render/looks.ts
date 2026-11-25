@@ -1,3 +1,4 @@
+import PLANCHES_HD from '../data/planches_hd.json';
 import type Phaser from 'phaser';
 /**
  * Apparence des monstres : planche, échelle et attaques disponibles (repris de src/render/looks.ts de Diablofus).
@@ -76,6 +77,10 @@ export const LOOKS: Record<string, Look> = {
   gelee_royale_citron: { atlas: 'gelee_royale_citron', echelle: 1.0, attaques: { 0: 12/41, 1: 24/45, 2: 16/37 }, animSorts: [0, 1, 2] },
   gelee_royale_mure: { atlas: 'gelee_royale_bleuet', echelle: 1.0, attaques: { 0: 12/41, 1: 24/45, 2: 16/37 }, animSorts: [0, 1, 2], teinte: { hue: 50, sat: 0, lum: 0.8 } },
 };
+
+// Planches refaites en grand pour rester nettes (`src/data/planches_hd.json` : facteur d'agrandissement de chaque planche) :
+// l'échelle est réduite d'autant, le monstre garde donc la même taille à l'écran.
+for (const l of Object.values(LOOKS)) l.echelle /= (PLANCHES_HD as Record<string, number>)[l.atlas] ?? 1;
 
 /** Applique la couleur refaite d'un monstre à son sprite (WebGL seulement ; sans effet en Canvas). */
 export function teinter(sprite: Phaser.GameObjects.Sprite, id: string) {

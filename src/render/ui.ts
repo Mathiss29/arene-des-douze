@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { Element, Leader, Stats } from '../sim/types';
 import { LOOKS, teinter } from './looks';
-import { atlasPlanche, dossierPlanches } from './assetUrl';
+import { atlasPlanche, dossierPlanche } from './assetUrl';
 import { origine } from './animations';
 import { fiche } from '../sim/fiches';
 import { PIERRES, type Pierre } from '../sim/invocation';
@@ -37,7 +37,7 @@ export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
   if (!scene.textures.exists('vignettes')) scene.load.atlas('vignettes', 'assets/ui/vignettes.webp', 'assets/ui/vignettes.json');
   for (const id of new Set(ids)) {
     const a = LOOKS[id].atlas;
-    if (!scene.textures.exists(a)) scene.load.multiatlas(a, atlasPlanche(a), dossierPlanches);
+    if (!scene.textures.exists(a)) scene.load.multiatlas(a, atlasPlanche(a), dossierPlanche(a));
     if (!scene.cache.json.exists(`${a}:meta`)) scene.load.json(`${a}:meta`, atlasPlanche(a));
   }
 }

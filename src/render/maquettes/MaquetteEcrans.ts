@@ -3,7 +3,7 @@ import MONSTRES from '../../data/monstres.json';
 import type { FicheMonstre, Element } from '../../sim/types';
 import { avantage } from '../../sim/types';
 import { LOOKS } from '../looks';
-import { atlasPlanche, distant, dossierPlanches } from '../assetUrl';
+import { atlasPlanche, distant, dossierPlanche } from '../assetUrl';
 import { creerAnimations, origine } from '../animations';
 import { preparerTextures } from '../effets';
 import { creerPanneau, type Question } from './panneau';
@@ -62,7 +62,7 @@ export class MaquetteEcrans extends Phaser.Scene {
     this.load.image('arene:maquette', distant('mondes/astrub/sol_arene_scarafeuilles.webp'));
     for (const id of new Set([...COLLECTION, ...ENNEMIS].map((m) => m.id))) {
       const a = LOOKS[id].atlas;
-      this.load.multiatlas(a, atlasPlanche(a), dossierPlanches);
+      this.load.multiatlas(a, atlasPlanche(a), dossierPlanche(a));
       this.load.json(`${a}:meta`, atlasPlanche(a));
     }
     for (const f of ['kamas_tas', 'background_levelup_banner', 'slot_dark_background_empty', 'slot_dark_background_full', 'btn_green_normal', 'btn_green_over']) this.load.image(f, `assets/ui/${f}.png`);

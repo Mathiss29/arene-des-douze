@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import MONSTRES from '../data/monstres.json';
 import type { FicheMonstre } from '../sim/types';
 import { LOOKS } from './looks';
-import { atlasPlanche, dossierPlanches } from './assetUrl';
+import { atlasPlanche, dossierPlanche } from './assetUrl';
 import { creerAnimations, origine } from './animations';
 
 const FICHES = MONSTRES as FicheMonstre[];
@@ -46,7 +46,7 @@ export class VitrineScene extends Phaser.Scene {
     this.load.once('complete', () => barre.destroy());
     for (const f of FICHES) {
       const look = LOOKS[f.id];
-      this.load.multiatlas(look.atlas, atlasPlanche(look.atlas), dossierPlanches);
+      this.load.multiatlas(look.atlas, atlasPlanche(look.atlas), dossierPlanche(look.atlas));
       this.load.json(`${look.atlas}:meta`, atlasPlanche(look.atlas));
     }
   }
