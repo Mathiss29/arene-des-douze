@@ -10,7 +10,7 @@ import { fiche, monstreCombat } from '../sim/fiches';
 import { noterMission } from '../sim/missions';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
-import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, poseNette, portrait, texte, texteLeader } from './ui';
+import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, poseNette, portrait, panneau, texte, texteLeader } from './ui';
 
 /**
  * Cercle d'invocation (maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A) : le Summonhenge de SW.
@@ -21,7 +21,7 @@ const COULEUR_PIERRE: Record<Pierre, number> = {
   ame: 0x8fd3ff, parfaite: 0xc58cff, feu: 0xff8a4a, eau: 0x4aa3e8, air: 0x6fcf5a, lumiere: 0xffe08a, legendaire: 0xffc02a, transcendante: 0xff6ad5,
 };
 const LUMIERE = (e: number) => (e >= 5 ? 0xffd23a : e === 4 ? 0xb47aff : 0x7ab4ff);
-const CX = 770, CY = 380;
+const CX = 430, CY = 380;
 
 export class InvocationScene extends Phaser.Scene {
   private joueur!: Joueur;
@@ -81,25 +81,32 @@ export class InvocationScene extends Phaser.Scene {
     this.garder(texte(this, W - 18, 25, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0.5).setDepth(2001));
     if (this.etat !== 'repos') return;
 
-    // pierres, en colonne à gauche (1A)
-    const visibles = ORDRE_PIERRES.filter((p) => p === 'ame' || p === 'parfaite' || nombre(j, p) > 0);
-    visibles.forEach((p, i) => {
-      const y = 92 + i * 62, on = p === this.pierre, n = nombre(j, p);
-      const r = this.garder(this.add.rectangle(170, y, 300, 54, on ? 0x1d2a20 : 0x0c1410, 0.92).setStrokeStyle(1.5, on ? 0xe3b54c : 0x3c5045).setDepth(900));
-      this.garder(this.add.image(46, y, `pierre_${p}`).setDisplaySize(38, 38).setDepth(901).setAlpha(n ? 1 : 0.4));
-      this.t(74, y - 18, PIERRES[p].nom, 14, n ? '#ffffff' : '#7d8a80', true, 0, 0, 901);
+    // comme le Summonhenge de SW : la collection en haut à gauche, la pierre choisie au-dessus du cercle, la liste des pierres dans une fenêtre à droite
+    this.t(20, 70, `Monstres ${j.monstres.length} / ${j.places}`, 14, j.monstres.length >= j.places ? '#ff9b7a' : '#dfe8d6', true, 0, 0, 1000);
+    const PX = 866, PL = 394;
+    this.garder(panneau(this, PX, 62, PL, 644));
+    this.t(PX + PL / 2, 92, 'Pierres d\'invocation', 16, '#ffffff', true, 0.5, 0.5, 1001);
+    ORDRE_PIERRES.forEach((p, i) => {
+      const y = 142 + i * 64, on = p === this.pierre, n = nombre(j, p);
+      const g = this.garder(this.add.graphics().setDepth(1000));
+      g.fillStyle(on ? 0x2f3a16 : 0x161b13).fillRoundedRect(PX + 24, y - 28, PL - 48, 56, 8).lineStyle(on ? 2.5 : 1.5, on ? 0xb9e61c : 0x4a5a3c).strokeRoundedRect(PX + 24, y - 28, PL - 48, 56, 8);
+      this.garder(this.add.image(PX + 58, y, `pierre_${p}`).setDisplaySize(42, 42).setDepth(1001).setAlpha(n ? 1 : 0.4));
       const ch = PIERRES[p].chances.map(([e]) => e);
-      this.t(74, y + 2, `${ch[0]}${ch.length > 1 ? `-${ch[ch.length - 1]}` : ''}★ · ${PIERRES[p].elements.map((e) => NOM_ELEMENT[e]).join(', ')}`, 11, '#9fb3a6', false, 0, 0, 901);
-      this.t(306, y - 10, `${n}`, 18, OR, true, 1, 0, 901);
-      r.setInteractive({ useHandCursor: true }).on('pointerdown', () => { this.pierre = p; this.dessiner(); });
+      this.t(PX + 90, y - 20, `${PIERRES[p].nom} (${ch[0]}${ch.length > 1 ? `-${ch[ch.length - 1]}` : ''}★)`, 14, n ? '#ffffff' : '#7d8a80', true, 0, 0, 1001);
+      this.t(PX + 90, y + 2, PIERRES[p].elements.map((e) => NOM_ELEMENT[e]).join(', '), 11, '#93a89b', false, 0, 0, 1001);
+      this.t(PX + PL - 40, y, `${n}`, 18, n ? OR : '#5f6a5c', true, 1, 0.5, 1001);
+      this.garder(this.add.zone(PX + 24, y - 30, PL - 48, 60).setOrigin(0).setDepth(1002).setInteractive({ useHandCursor: true })).on('pointerdown', () => { this.pierre = p; this.dessiner(); });
     });
-    // fragments de pierre transcendante
-    const yf = 92 + visibles.length * 62 + 6;
-    this.t(26, yf, `Fragments transcendants : ${j.fragments} / ${FRAGMENTS_TRANSCENDANCE}`, 12, '#ffb6ec', true, 0, 0, 901);
+    // fragments de pierre transcendante, comme « Pièces : 160/300 »
+    const yf = 142 + ORDRE_PIERRES.length * 64 - 8;
+    this.t(PX + 30, yf, `Fragments transcendants : ${j.fragments} / ${FRAGMENTS_TRANSCENDANCE}`, 12.5, '#ffb6ec', true, 0, 0.5, 1001);
     if (j.fragments >= FRAGMENTS_TRANSCENDANCE) {
-      const b = bouton(this, 170, yf + 40, 240, 36, 'Assembler une pierre', false, () => { this.joueur = assemblerTranscendante(this.joueur); sauver(this.joueur); this.pierre = 'transcendante'; this.dessiner(); }, 1001);
+      const b = bouton(this, PX + PL / 2, yf + 40, 240, 36, 'Assembler une pierre', false, () => { this.joueur = assemblerTranscendante(this.joueur); sauver(this.joueur); this.pierre = 'transcendante'; this.dessiner(); }, 1001);
       this.garder(b.fond); this.garder(b.t);
     }
+    // la pierre choisie, au-dessus du cercle
+    this.garder(this.add.image(CX - 86, 92, `pierre_${this.pierre}`).setDisplaySize(40, 40).setDepth(1001));
+    this.t(CX - 58, 92, `${PIERRES[this.pierre].nom}  ×${nombre(j, this.pierre)}`, 16, '#ffffff', true, 0, 0.5, 1001);
 
     // chances de la pierre choisie, sous le cercle
     const p = this.pierre;
@@ -121,8 +128,6 @@ export class InvocationScene extends Phaser.Scene {
     if (refus(j, p, 1)) b1.griser();
     if (refus(j, p, 10)) b10.griser();
 
-    // collection
-    this.t(W - 20, H - 60, `Collection : ${j.monstres.length} / ${j.places}`, 13, j.monstres.length >= j.places ? '#ff9b7a' : '#c9cfc4', true, 1, 0, 1000);
   }
 
   private message(s: string) {
