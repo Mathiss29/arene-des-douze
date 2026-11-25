@@ -22,7 +22,7 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
   préparation d'équipe (`PreparationScene.ts`)
   puis combat (`CombatScene.ts`, récompenses à la fin), Cercle d'amélioration (`CercleScene.ts`), Cercle d'invocation (`InvocationScene.ts`, règles dans `src/sim/invocation.ts`), vitrine avec `#vitrine`.
   Autres écrans : missions du jour (`MissionsScene`, `src/sim/missions.ts`), Réception (`ReceptionScene`, `reception.ts`, cadeaux et codes dans `src/data/cadeaux.json`),
-  écran des runes d'un monstre (`MonstreScene` : roue, inventaire en grille, tous les filtres visibles (place, set, libres/portées, étoiles, grade, stat principale), tri, fiche avec comparaison, sélection multiple ; `runes.ts`, `inventaire.ts`), donjons façon Cairos (`DonjonsScene`, `donjons.ts`, `src/data/donjons.json`),
+  « Gérer » les runes d'un monstre, disposé comme SW (`MonstreScene` : Avant / Après et « Appliquer » à gauche, filtres set / places en fleur / stat principale / deux sous-stats en haut, inventaire en grille avec tri en bas, fiche de rune en fenêtre ; `runes.ts`, `inventaire.ts`) ; la roue est dans l'onglet Runes de l'écran Monstres, donjons façon Cairos (`DonjonsScene`, `donjons.ts`, `src/data/donjons.json`),
   Chemin de l'invocateur (`CheminScene`, `chemin.ts`, quêtes dans `src/data/quetes.json`), bestiaire (`BestiaireScene`), options (`OptionsScene`).
   Test de fumée de tous les écrans : `npm run fumee` (Chrome sans tête, lancé aussi avant chaque mise en ligne).
   Mine de kamas : `src/sim/mine.ts` (le temps est passé en argument). Particules officielles : `src/render/particules.ts` (repris de Diablofus).

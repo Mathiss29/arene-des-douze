@@ -27,7 +27,7 @@ const COLS = 8, LIGNES = 7, PAS = 85, TAILLE = 80;
 export class MonstresScene extends Phaser.Scene {
   private joueur!: Joueur;
   private vue: 'grille' | 'detail' = 'grille';
-  private onglet: 'info' | 'sorts' = 'info';
+  private onglet: 'info' | 'sorts' | 'runes' = 'info';
   private tri: Tri = 'etoiles';
   private uid = 0;
   private page = 0;
@@ -186,7 +186,7 @@ export class MonstresScene extends Phaser.Scene {
     const onglets: [string, boolean, () => void, boolean][] = [
       ['Info', this.onglet === 'info', () => { this.onglet = 'info'; this.dessiner(); }, true],
       ['Sorts', this.onglet === 'sorts', () => { this.onglet = 'sorts'; this.dessiner(); }, true],
-      ['Runes', false, () => this.scene.start('monstre', { uid: m.uid, retour }), true],
+      ['Runes', this.onglet === 'runes', () => { this.onglet = 'runes'; this.dessiner(); }, true],
       ['Éveil', false, () => this.message('L\'éveil des monstres arrive dans une prochaine version.'), false],
     ];
     onglets.forEach(([nom, sel, action, actif], i) => {
@@ -258,6 +258,36 @@ export class MonstresScene extends Phaser.Scene {
       this.g(texte(this, X + 32, yr + 92, effets, 11.5, '#dfe8d6', false, 0, 0).setWordWrapWidth(L - 64).setLineSpacing(1));
       const zr = this.g(this.add.zone(X + 20, yr, L - 40, hr).setOrigin(0).setDepth(1010).setInteractive({ useHandCursor: true }));
       zr.on('pointerdown', () => this.scene.start('monstre', { uid: m.uid, retour }));
+    } else if (this.onglet === 'runes') {
+      // comme l'onglet Rune de SW : la roue des six places, l'effet de set, « Gérer », puis mes runes par set
+      const portees = runesDe(j, m.uid), cx = X + 118, cy = Y + 196, gerer = (set?: SetRune) => this.scene.start('monstre', { uid: m.uid, retour: { scene: 'monstres', data: { uid: m.uid, vue: this.vue } }, set });
+      const gr = this.g(this.add.graphics().setDepth(1000));
+      gr.lineStyle(5, 0x0b0d0a, 0.9).strokeCircle(cx, cy, 76).lineStyle(1.5, VERT, 0.45).strokeCircle(cx, cy, 76);
+      for (let e = 1; e <= 6; e++) {
+        const a = ((e - 1) * Math.PI) / 3;
+        for (const o of runeMedaillon(this, portees.find((x) => x.emplacement === e) ?? null, cx + Math.sin(a) * 76, cy - Math.cos(a) * 76, 62, { numero: e, profondeur: 1001 })) this.g(o);
+      }
+      this.g(this.add.zone(cx, cy, 220, 220).setDepth(1012).setInteractive({ useHandCursor: true })).on('pointerdown', () => gerer());
+      const actifs = Object.keys(setsActifs(portees)) as SetRune[];
+      this.g(texte(this, X + L - 24, Y + 110, 'Effet de set', 13, '#93a89b', true, 1, 0.5));
+      this.g(texte(this, X + L - 24, Y + 132, actifs.length ? actifs.map((s2) => SETS[s2].nom).join('\n') : 'Aucun', 15, actifs.length ? '#ffe08a' : '#5f6a5c', true, 1, 0).setAlign('right'));
+      this.g(texte(this, X + L - 24, Y + 190, actifs.map((s2) => SETS[s2].effet).join('\n'), 11, '#dfe8d6', false, 1, 0).setAlign('right').setWordWrapWidth(150));
+      const tous = j.runes ?? [];
+      this.g(this.add.rectangle(X + 20, Y + 300, L - 40, 1.5, 0x4a5a3c).setOrigin(0).setDepth(1000));
+      this.g(texte(this, X + 24, Y + 322, `Runes  ${tous.length}`, 14, '#ffffff', true, 0, 0.5));
+      const bg = bouton(this, X + L - 84, Y + 322, 120, 36, 'Gérer', true, () => gerer()); bg.t.setFontSize(16); this.g(bg.fond); this.g(bg.t);
+      // les sets que je possède, du plus fourni au moins fourni : toucher un set ouvre « Gérer » sur ce set
+      const parSet = (Object.keys(SETS) as SetRune[]).map((s2) => [s2, tous.filter((r) => r.set === s2).length] as const).filter(([, n]) => n).sort((a, b) => b[1] - a[1]);
+      const lignes = HT > 520 ? 3 : 2;
+      parSet.slice(0, lignes * 5).forEach(([s2, n], i) => {
+        const x = X + 56 + (i % 5) * 70, y = Y + 376 + Math.floor(i / 5) * 62;
+        this.g(this.add.graphics().setDepth(1000).fillStyle(0x161b13).fillRoundedRect(x - 31, y - 26, 62, 56, 7).lineStyle(1.5, 0x4a5a3c).strokeRoundedRect(x - 31, y - 26, 62, 56, 7));
+        if (this.textures.exists('symboles')) this.g(this.add.image(x, y - 6, 'symboles', s2).setDisplaySize(30, 30).setDepth(1001));
+        this.g(texte(this, x, y + 20, SETS[s2].nom, 9.5, '#dfe8d6', false, 0.5, 0.5));
+        this.g(this.add.circle(x + 24, y - 20, 10, 0xb3261e).setStrokeStyle(1.2, 0xffffff).setDepth(1002)); this.g(texte(this, x + 24, y - 20, String(n), 10, '#ffffff', true, 0.5, 0.5).setDepth(1003));
+        this.g(this.add.zone(x, y, 62, 56).setDepth(1012).setInteractive({ useHandCursor: true })).on('pointerdown', () => gerer(s2));
+      });
+      if (!parSet.length) this.g(texte(this, X + L / 2, Y + 400, 'Aucune rune pour l\'instant. Elles tombent dans les zones,\nles coffres des missions et les donjons.', 12.5, '#93a89b', false, 0.5, 0.5).setAlign('center'));
     } else {
       let y = Y + 104;
       for (const s of monstreCombat(m.id, m.etoiles, m.niveau).sorts) {
