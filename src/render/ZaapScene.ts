@@ -9,7 +9,7 @@ import {
 } from '../sim/stages';
 import { fiche } from '../sim/fiches';
 import type { Element } from '../sim/types';
-import { COULEUR, H, NOM_ELEMENT, OR, POLICE, W, bouton, chargerUi, fmt, hex, portrait, texte, texturePierreAme } from './ui';
+import { COULEUR, H, NOM_ELEMENT, OR, POLICE, W, bouton, chargerUi, coutBouton, coutEnergie, fmt, plaqueRessource, hex, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Zaap : la carte des combats (maquette « Zaap : » 1A…8A et idées 1 à 14).
@@ -33,7 +33,7 @@ export class ZaapScene extends Phaser.Scene {
   private dif = 0;
   private choix = 0;
   private calque: Phaser.GameObjects.GameObject[] = [];
-  private plaqueEnergie?: Phaser.GameObjects.Text;
+  private plaqueEnergie?: ReturnType<typeof plaqueRessource>;
   private avis?: Phaser.GameObjects.Container;
 
   constructor() { super('zaap'); }
@@ -96,17 +96,18 @@ export class ZaapScene extends Phaser.Scene {
     ret.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
       if (this.vue === 'carte') this.scene.start('ile'); else { this.vue = 'carte'; this.dessiner(); }
     });
-    const kamas = this.plaque(W - 16, 14, `${fmt(j.kamas)} kamas`, '#ffe08a', 1);
-    const pierres = this.plaque(kamas.x - kamas.width - 8, 14, `◆ ${j.pierresAme}`, '#d9b3ff', 1);
-    this.plaqueEnergie = this.plaque(pierres.x - pierres.width - 8, 14, '', '#8fd3ff', 1);
+    const kamas = plaqueRessource(this, W - 16, 14, 'icone_kama', fmt(j.kamas), '#ffe08a', 1, 900);
+    const pierres = plaqueRessource(this, W - 24 - kamas.largeur(), 14, 'pierre_ame', `${j.pierresAme}`, '#d9b3ff', 1, 900);
+    this.plaqueEnergie = plaqueRessource(this, pierres.c.x - pierres.largeur() - 8, 14, 'icone_energie', '', '#8fd3ff', 1, 900);
+    for (const p of [kamas, pierres, this.plaqueEnergie]) this.garder(p.c);
     this.majEnergie();
   }
 
   private majEnergie() {
-    if (!this.plaqueEnergie?.active) return;
+    if (!this.plaqueEnergie?.c.active) return;
     const now = Date.now(), n = energie(this.joueur, now), reste = avantProchaine(this.joueur, now);
     const mm = Math.floor(reste / 60000), ss = Math.floor((reste % 60000) / 1000).toString().padStart(2, '0');
-    this.plaqueEnergie.setText(`⚡ ${n} / ${ENERGIE.max}${reste ? `  ·  +1 dans ${mm}:${ss}` : ''}`);
+    this.plaqueEnergie.ecrire(`${n} / ${ENERGIE.max}${reste ? `  ·  +1 dans ${mm}:${ss}` : ''}`);
   }
 
   private message(s: string) {
@@ -284,7 +285,7 @@ export class ZaapScene extends Phaser.Scene {
       const r = this.garder(this.add.rectangle(px + pw / 2, y + 16, pw - 28, 38, on ? 0x1d2a20 : 0x121c17).setStrokeStyle(1.5, on ? 0xe3b54c : 0x121c17).setDepth(901));
       this.garder(this.add.image(px + 34, y + 16, n === 6 ? 'zaap_mapItemBoss_2' : 'zaap_mapItemFight_2').setDisplaySize(n === 6 ? 34 : 30, n === 6 ? 39 : 34).setDepth(902).setAlpha(ouvert ? 1 : 0.45));
       this.t(px + 58, y + 6, `Stage ${n + 1} · ${s.nom}`, 14, ouvert ? '#ffffff' : '#6f7f75', true, 0, 0, 902);
-      this.t(px + pw - 82, y + 8, `⚡${s.cout}`, 13, ouvert ? '#8fd3ff' : '#4f6070', true, 0, 0, 902);
+      for (const o of coutEnergie(this, px + pw - 88, y + 16, s.cout, 13, ouvert ? '#8fd3ff' : '#4f6070', 902, ouvert)) this.garder(o);
       this.t(px + pw - 34, y + 7, fait ? '✓' : ouvert ? '' : '🔒', 15, '#7ee07a', true, 0.5, 0, 902);
       r.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
         if (!ouvert) return this.message('Gagne d\'abord le stage d\'avant.');
@@ -336,13 +337,14 @@ export class ZaapScene extends Phaser.Scene {
 
     // boutons : préparer (énergie) et répéter (plus tard, 8A)
     const ouvert = stageOuvert(j, z, n, this.dif);
-    const b = bouton(this, px + 210, py + 244, 380, 46, ouvert ? `Préparer l'équipe   ⚡${s.cout}` : 'Gagne le stage d\'avant', true, () => {
+    const b = bouton(this, px + 210, py + 244, 380, 46, ouvert ? 'Préparer l\'équipe' : 'Gagne le stage d\'avant', true, () => {
       if (!ouvert) return;
       if (energie(j, Date.now()) < s.cout) return this.message(`Pas assez d'énergie : il en faut ${s.cout}. Elle revient d'elle-même, 1 toutes les 5 minutes.`);
       this.voir('tuto:zaap');
       this.scene.start('preparation', { stage: s.id });
     }, 1001);
     this.garder(b.fond); this.garder(b.t);
+    if (ouvert) for (const o of coutBouton(this, b, s.cout)) this.garder(o);
     if (!ouvert) b.griser();
     const r = bouton(this, px + 480, py + 244, 150, 46, '↻ Répéter', false, () => this.message('Le combat répété arrive plus tard.'), 1001);
     this.garder(r.fond); this.garder(r.t);

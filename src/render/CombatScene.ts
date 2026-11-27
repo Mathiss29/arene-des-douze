@@ -17,7 +17,7 @@ import { LOOKS, teinter } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations, FPS, origine } from './animations';
 import { preparerTextures } from './effets';
-import { bouton, caseSombre, chargerUi, monstreNet, OR, planchePrete, panneau, portrait, texte, texturePierreAme } from './ui';
+import { bouton, caseSombre, coutBouton, chargerUi, monstreNet, OR, planchePrete, panneau, portrait, texte, texturePierreAme } from './ui';
 
 /**
  * Étape 3 de l'alpha : scène de combat (maquette « Combat : » 1B 2B 3A 4B 5A).
@@ -795,14 +795,14 @@ export class CombatScene extends Phaser.Scene {
       sauver(apres);
       butinAffiche = [{ cle: 'kamas_tas', n: `+${fmt(butin.kamas)}`, label: 'kamas' }];
       if (butin.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${butin.pierresAme}`, label: `pierre${butin.pierresAme > 1 ? 's' : ''} d'âme${butin.premiere ? ' (1ʳᵉ victoire)' : ''}` });
-      if (butin.energie) butinAffiche.push({ cle: '', n: `+${butin.energie}`, label: 'énergie ⚡' });
+      if (butin.energie) butinAffiche.push({ cle: 'icone_energie', n: `+${butin.energie}`, label: 'énergie' });
       if (butin.monstre) butinAffiche.push({ cle: `monstre:${butin.monstre}`, n: fiche(butin.monstre).nom, label: avant.monstres.length < avant.places ? 'rejoint ta collection !' : 'collection pleine : à la Réception' });
       const dj = butin.donjon;
       if (dj?.rune) butinAffiche.push({ cle: 'rune', n: `Rune de ${SETS[dj.rune.set].dieu} ${dj.rune.etoiles}★`, label: SETS[dj.rune.set].nom });
       if (dj?.premiere?.rune) butinAffiche.push({ cle: 'rune', n: `Rune ${dj.premiere.rune.etoiles}★`, label: '1er passage !' });
-      if (dj?.premiere?.parfaite || dj?.parfaites) butinAffiche.push({ cle: '', n: `+${(dj.premiere?.parfaite ?? 0) + dj.parfaites}`, label: `pierre parfaite${dj.premiere?.parfaite ? ' (1er passage)' : ''}` });
+      if (dj?.premiere?.parfaite || dj?.parfaites) butinAffiche.push({ cle: 'pierre_parfaite', n: `+${(dj.premiere?.parfaite ?? 0) + dj.parfaites}`, label: `pierre parfaite${dj.premiere?.parfaite ? ' (1er passage)' : ''}` });
       if (dj?.pierresAme) butinAffiche.push({ cle: 'pierre_ame', n: `+${dj.pierresAme}`, label: 'pierre d\'âme' });
-      if (dj?.symbole) butinAffiche.push({ cle: '', n: '+1', label: dj.symbole });
+      if (dj?.symbole) butinAffiche.push({ cle: dj.symbole.includes('Bouftou') ? 'icone_symbole_bouftous' : '', n: '+1', label: dj.symbole });
       if (this.repetition) this.cumuler(butin);
       if (butin.rune) butinAffiche.push({ cle: 'rune', n: `Rune de ${SETS[butin.rune.set].dieu} ${butin.rune.etoiles}★`, label: SETS[butin.rune.set].nom });
       if (butin.zone) butinAffiche.push({ cle: `monstre:${butin.zone.id}`, n: `${fiche(butin.zone.id).nom} ${'★'.repeat(butin.zone.etoiles)}`, label: `récompense de ${zone(this.stage.zone).nom}, à la Réception !` });
@@ -841,7 +841,7 @@ export class CombatScene extends Phaser.Scene {
         if (o.cle.startsWith('monstre:')) portrait(this, o.cle.slice(8), x, yb + 30, 52, false, false, D + 3);
         else if (o.cle === 'rune') t(x, yb + 10, '⬢', 34, '#c58cff', true);
         else if (o.cle) this.add.image(x, yb + 30, o.cle).setDisplaySize(44, 44).setDepth(D + 3);
-        else t(x, yb + 14, o.label.includes('énergie') ? '⚡' : '✦', 26, '#8fd3ff', true);
+        else t(x, yb + 14, '✦', 26, '#8fd3ff', true);
         t(x + 40, yb + 14, o.n, 20, '#ffffff', true, 0);
         t(x + 40, yb + 40, o.label, 12, '#cfdccf', false, 0);
       });
@@ -872,18 +872,18 @@ export class CombatScene extends Phaser.Scene {
       const l: [string, boolean, () => void][] = [
         ['Donjons', false, () => this.scene.start('donjons', { donjon: d.id, niveau: n })],
         ['Préparation', false, () => this.scene.start('preparation', { stage: this.stage.id })],
-        [`↻ Rejouer ⚡${this.stage.cout}`, !victoire || !suite, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('donjons', { donjon: d.id, niveau: n }); }],
+        ['↻ Rejouer', !victoire || !suite, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('donjons', { donjon: d.id, niveau: n }); }],
       ];
       if (victoire && suite) l.push(['Niveau suivant ▸', true, () => this.scene.start('preparation', { stage: suite })]);
       let bx = W / 2 - (l.length * 190 - 14) / 2;
-      for (const [libelle, vert, action] of l) { bouton(this, bx + 88, 660, 176, 46, libelle, vert, action, D + 2); bx += 190; }
+      for (const [libelle, vert, action] of l) { const b = bouton(this, bx + 88, 660, 176, 46, libelle, vert, action, D + 2); if (libelle === '↻ Rejouer') coutBouton(this, b, this.stage.cout); bx += 190; }
       return;
     }
     const suivant = n < 7 && stageOuvert(apres, z, n, this.stage.dif) ? cleStage(z.stages[n], this.stage.dif) : null;
     const liste: [string, boolean, () => void][] = [
       ['Carte', false, () => this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 })],
       ['Préparation', false, () => this.scene.start('preparation', { stage: this.stage.id })],
-      [`↻ Rejouer ⚡${this.stage.cout}`, !victoire, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 }); }],
+      ['↻ Rejouer', !victoire, () => { if (!lancerCombat(this, this.stage.id)) this.scene.start('zaap', { zone: z.id, dif: this.stage.dif, stage: n - 1 }); }],
     ];
     if (victoire) liste.push([suivant ? 'Stage suivant ▸' : n === 7 ? 'Zone finie ! ▸' : 'Bientôt la suite', true, () => suivant ? this.scene.start('preparation', { stage: suivant }) : this.scene.start('zaap', { zone: z.id })]);
     const largeurs = liste.map(([, vert], k) => (vert ? 210 : k === 2 ? 170 : 130));
@@ -892,6 +892,7 @@ export class CombatScene extends Phaser.Scene {
       const w = largeurs[i];
       const b = bouton(this, x + w / 2, 660, w, 46, libelle, vert, action, D + 2);
       if (libelle === 'Bientôt la suite') b.griser();
+      if (libelle === '↻ Rejouer') coutBouton(this, b, this.stage.cout);
       x += w + 14;
     });
   }

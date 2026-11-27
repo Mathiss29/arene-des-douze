@@ -10,7 +10,7 @@ import { fiche, monstreCombat } from '../sim/fiches';
 import { noterMission } from '../sim/missions';
 import { LOOKS } from './looks';
 import { creerAnimations } from './animations';
-import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, poseNette, portrait, panneau, texte, texteLeader } from './ui';
+import { COULEUR, H, NOM_ELEMENT, NOM_TYPE, OR, POLICE, W, bouton, chargerUi, fmt, hex, monstreEnPied, poseNette, portrait, panneau, texte, texteLeader, plaqueRessource } from './ui';
 
 /**
  * Cercle d'invocation (maquette « Invocation : » 1A 2A 3A 4A 5C 6A 7B 8A 9A) : le Summonhenge de SW.
@@ -78,7 +78,7 @@ export class InvocationScene extends Phaser.Scene {
   private dessiner() {
     this.vider();
     const j = this.joueur;
-    this.garder(texte(this, W - 18, 25, `${fmt(j.kamas)} kamas`, 15, '#ffe08a', true, 1, 0.5).setDepth(2001));
+    this.garder(plaqueRessource(this, W - 18, 8, 'icone_kama', fmt(j.kamas), '#ffe08a', 1, 2001).c);
     if (this.etat !== 'repos') return;
 
     // comme le Summonhenge de SW : la collection en haut à gauche, la pierre choisie au-dessus du cercle, la liste des pierres dans une fenêtre à droite
@@ -99,7 +99,8 @@ export class InvocationScene extends Phaser.Scene {
     });
     // fragments de pierre transcendante, comme « Pièces : 160/300 »
     const yf = 142 + ORDRE_PIERRES.length * 64 - 8;
-    this.t(PX + 30, yf, `Fragments transcendants : ${j.fragments} / ${FRAGMENTS_TRANSCENDANCE}`, 12.5, '#ffb6ec', true, 0, 0.5, 1001);
+    this.garder(this.add.image(PX + 42, yf, 'icone_fragment').setDisplaySize(30, 30).setDepth(1001));
+    this.t(PX + 64, yf, `Fragments transcendants : ${j.fragments} / ${FRAGMENTS_TRANSCENDANCE}`, 12.5, '#ffb6ec', true, 0, 0.5, 1001);
     if (j.fragments >= FRAGMENTS_TRANSCENDANCE) {
       const b = bouton(this, PX + PL / 2, yf + 40, 240, 36, 'Assembler une pierre', false, () => { this.joueur = assemblerTranscendante(this.joueur); sauver(this.joueur); this.pierre = 'transcendante'; this.dessiner(); }, 1001);
       this.garder(b.fond); this.garder(b.t);

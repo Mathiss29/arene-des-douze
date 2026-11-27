@@ -9,7 +9,8 @@ import { LOOKS } from './looks';
 import { distant } from './assetUrl';
 import { creerAnimations } from './animations';
 import { charger, sauver } from './sauvegarde';
-import { bouton, caseSombre, chargerPuis, chargerUi, COULEUR, fmt, H, hex, monstreNet, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
+import { ENERGIE, energie } from '../sim/energie';
+import { bouton, caseSombre, coutBouton, plaqueRessource, chargerPuis, chargerUi, COULEUR, fmt, H, hex, monstreNet, NOM_ELEMENT, NOM_TYPE, nomStat, OR, panneau, portrait, texte, texteLeader, W } from './ui';
 
 /**
  * Préparation d'équipe (maquette « Écrans : » 1B 2B 3B 4A 5A 6A) : collection à gauche, ennemis et équipe à droite.
@@ -150,8 +151,8 @@ export class PreparationScene extends Phaser.Scene {
       ? this.scene.start('donjons', { donjon: dj, niveau: this.stage.numero })
       : this.scene.start('zaap', { zone: this.stage.zone, dif: this.stage.dif, stage: this.stage.numero - 1 })));
     this.t(ret.x + ret.width + 10, 14, dj ? this.stage.nom : `${zone(this.stage.zone).nom} · stage ${this.stage.numero} · ${this.stage.nom} · ${DIFFICULTES[this.stage.dif]}`, 15, '#ffffff', true, 0, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
-    this.t(W - 16, 14, `${fmt(j.kamas)} kamas  ·  ${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, 14, '#ffe08a', true, 1, 0)
-      .setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7);
+    const pk = plaqueRessource(this, W - 16, 14, 'icone_kama', fmt(j.kamas), '#ffe08a', 1);
+    plaqueRessource(this, W - 24 - pk.largeur(), 14, 'icone_energie', `${energie(j, Date.now())} / ${ENERGIE.max}`, '#8fd3ff', 1);
 
     this.collection();
     this.cote();
@@ -283,9 +284,11 @@ export class PreparationScene extends Phaser.Scene {
     this.t(658, yb, chef ? `♛ Leader : ${fiche(chef.id).nom} · ${lead ? texteLeader(lead) : 'pas de skill de leader'}` : '♛ Le premier monstre de l\'équipe est le leader.', 13, '#ffe08a', true, 0);
     if (chef) this.t(658, yb + 24, 'Le premier monstre de l\'équipe est le leader : retire-le pour changer.', 11, '#7d9184', false, 0);
 
-    const b = bouton(this, 1140, 660, 200, 54, `⚔ Combattre  ⚡${this.stage.cout}`, true, () => this.combattre());
+    const b = bouton(this, 1140, 660, 200, 54, 'Combattre', true, () => this.combattre());
     this.g(b.fond); this.g(b.t);
-    if (!this.equipe.length) b.griser();
+    const cout = coutBouton(this, b, this.stage.cout);
+    for (const o of cout) this.g(o);
+    if (!this.equipe.length) { b.griser(); for (const o of cout) o.setAlpha(0.5); }
     // combats à répétition (maquette « Donjons : » 5C) : 10, 20 ou 30 fois, en auto
     const r = bouton(this, 905, 660, 200, 54, `↻ Répéter ×${this.repetitions}`, false, () => this.combattre(this.repetitions));
     r.t.setFontSize(15); this.g(r.fond); this.g(r.t);

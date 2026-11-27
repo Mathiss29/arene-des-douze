@@ -8,7 +8,8 @@ import { cadeaux, distribuer } from '../sim/reception';
 import { visite } from '../sim/inventaire';
 import { aRecevoirChemin } from '../sim/chemin';
 import { Particules, type SysData } from './particules';
-import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, texte, texturePierreAme } from './ui';
+import { ENERGIE, energie } from '../sim/energie';
+import { CHIFFRES, H, OR, POLICE, W, bouton, chargerUi, fmt, plaqueRessource, texte, texturePierreAme } from './ui';
 
 /**
  * Île d'Incarnam, écran d'accueil (maquettes « Île : » et « Incarnam : » 1A 2A 3C 4A 5A 6A 7A 8A 9A).
@@ -57,8 +58,9 @@ export class IleScene extends Phaser.Scene {
   private etiquettes: { id: IdBat; c: Phaser.GameObjects.Container }[] = [];
   private bulleMine!: Phaser.GameObjects.Container;
   private texteMine!: Phaser.GameObjects.Text;
-  private bourse!: Phaser.GameObjects.Text;
-  private pierres!: Phaser.GameObjects.Text;
+  private bourse!: ReturnType<typeof plaqueRessource>;
+  private plaqueEnergie!: ReturnType<typeof plaqueRessource>;
+  private pierres!: ReturnType<typeof plaqueRessource>;
   private avis?: Phaser.GameObjects.Container;
   private t = 0;
   private glisse: { x: number; y: number; sx: number; sy: number; bouge: boolean } | null = null;
@@ -171,9 +173,11 @@ export class IleScene extends Phaser.Scene {
       u.add(this.add.circle(px, py, 12, 0xe8673f).setStrokeStyle(2, 0xffffff));
       u.add(this.add.text(px, py, String(nbCadeaux), { fontFamily: CHIFFRES, fontSize: '13px', color: '#ffffff' }).setOrigin(0.5));
     }
-    this.bourse = plaque(W - 16, 14, '', '#ffe08a', 1);
-    this.pierres = plaque(W - 16, 14, `${j.pierresAme} pierre${j.pierresAme > 1 ? 's' : ''} d'âme`, '#d9b3ff', 1);
-    u.add([this.bourse, this.pierres]);
+    // bandeau des ressources, comme SW : énergie, kamas, pierres d'âme
+    this.bourse = plaqueRessource(this, W - 16, 14, 'icone_kama', '', '#ffe08a', 1);
+    this.pierres = plaqueRessource(this, W - 16, 14, 'pierre_ame', `${j.pierresAme}`, '#d9b3ff', 1);
+    this.plaqueEnergie = plaqueRessource(this, W - 16, 14, 'icone_energie', '', '#8fd3ff', 1);
+    u.add([this.bourse.c, this.pierres.c, this.plaqueEnergie.c]);
     this.majBourse();
 
     // étiquettes des bâtiments (taille fixe à l'écran, placées sous chaque bâtiment)
@@ -204,7 +208,7 @@ export class IleScene extends Phaser.Scene {
     this.bulleMine.add([fondB, ic, this.texteMine]);
     u.add(this.bulleMine);
     this.majMine();
-    this.time.addEvent({ delay: 1000, loop: true, callback: () => this.majMine() });
+    this.time.addEvent({ delay: 1000, loop: true, callback: () => { this.majMine(); this.majBourse(); } });
 
     // Combattre : ouvre la carte des combats (comme le Zaap)
     const b = bouton(this, W - 110, H - 46, 180, 56, 'Combattre', true, () => this.ouvrir('zaap'), 20);
@@ -225,8 +229,11 @@ export class IleScene extends Phaser.Scene {
   private majPastilleMissions() { this.pastilleMissions.setVisible(aRecevoir(this.joueur, Date.now())); }
 
   private majBourse() {
-    this.bourse.setText(`${fmt(this.joueur.kamas)} kamas`);
-    this.pierres.setX(this.bourse.x - this.bourse.width - 8);
+    this.bourse.ecrire(fmt(this.joueur.kamas));
+    this.pierres.ecrire(`${this.joueur.pierresAme}`);
+    this.pierres.c.setX(this.bourse.c.x - this.bourse.largeur() - 8);
+    this.plaqueEnergie.ecrire(`${energie(this.joueur, Date.now())} / ${ENERGIE.max}`);
+    this.plaqueEnergie.c.setX(this.pierres.c.x - this.pierres.largeur() - 8);
   }
 
   private majMine() {

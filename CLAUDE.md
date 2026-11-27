@@ -50,6 +50,8 @@ Le GDD est dans `docs/GDD.md` ; la feuille de route de l'alpha dans `docs/ALPHA.
 - Images d'interface : toujours partir des paquets « 2x » de Dofus 3 (`StreamingAssets/Content/Picto/Spells/spell_assets_2x.bundle` : icônes de sorts 96 px,
   `Picto/Items/item_assets_2x.bundle` : objets 128 px, `aa/StandaloneWindows64/*_2x.bundle`), extraits avec UnityPy ; les « 1x » sont flous une fois agrandis.
 - Pierres d'invocation : `public/assets/ui/pierres/<pierre>.webp` (images générées avec ChatGPT par Mathis), chargées par `chargerUi()` sous la clé `pierre_<pierre>`.
+- Icônes de ressources (images de Mathis, ChatGPT) : `public/assets/ui/icones/` (énergie, kama, kamas = tas, fragment, symbole_<donjon>, clé), clés `icone_<nom>` (le tas reste `kamas_tas`) ;
+  `plaqueRessource()` pour le bandeau, `coutEnergie()` et `coutBouton()` pour les coûts (plus de « ⚡ » en texte).
 - Effets maison (`src/render/effets.ts`, choix de Mathis : plus beaux que les effets officiels) : particules et halos générés par le jeu,
   une matière par élément (braises, bulles, feuilles, rayons dorés, fumée), cercle runique, halo, moment de l'éveil.
 - Effets officiels de Dofus 3 (`src/render/fx.ts`, gardés pour plus tard) : atlas dans `public/assets/fx`, images sur le R2 (`fx/fx_<id>.webp`), définitions dans `src/data/fx.json`.

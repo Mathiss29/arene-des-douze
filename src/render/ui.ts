@@ -28,13 +28,41 @@ const NOM_ZONE: Record<string, string> = { general: 'général', arene: 'Arène'
 export const texteLeader = (l: Leader) => `+${l.valeur} % de ${NOM_STAT[l.stat]} (${NOM_ZONE[l.zone] ?? l.zone})`;
 export const nomStat = (s: keyof Stats) => NOM_STAT[s];
 
-const IMAGES_UI = ['kamas_tas', 'background_levelup_banner', 'btn_green_normal', 'btn_green_over', 'btn_green_pressed', 'block_border_double', 'headerBgStone', 'slot_dark_background_full', 'bouton_or'];
+const IMAGES_UI = ['background_levelup_banner', 'btn_green_normal', 'btn_green_over', 'btn_green_pressed', 'block_border_double', 'headerBgStone', 'slot_dark_background_full', 'bouton_or'];
+
+export const ICONES = ['energie', 'kama', 'fragment', 'symbole_bouftous', 'cle'] as const;
+
+/** Plaque de ressource du bandeau : icône + nombre sur fond sombre. ox = 1 : ancrée par la droite. */
+export function plaqueRessource(scene: Phaser.Scene, x: number, y: number, icone: string, s: string, couleur = '#ffffff', ox = 0, profondeur = 1000) {
+  const t = scene.add.text(0, 0, s, { fontFamily: POLICE, fontSize: '15px', fontStyle: '600', color: couleur }).setOrigin(0, 0.5).setShadow(0, 1, '#000', 3, false, true);
+  const fond = scene.add.rectangle(0, 0, 10, 34, 0x080e0b, 0.86).setOrigin(0, 0.5).setStrokeStyle(1, 0x2c3a30);
+  const ic = scene.add.image(0, 0, icone).setDisplaySize(30, 30);
+  const c = scene.add.container(x, y + 17, [fond, ic, t]).setDepth(profondeur);
+  const poser = () => {
+    const w = t.width + 58;
+    fond.setSize(w, 34); fond.setX(-ox * w); ic.setX(-ox * w + 20); t.setX(-ox * w + 40);
+    c.setSize(w, 34);
+  };
+  poser();
+  return { c, largeur: () => t.width + 58, ecrire: (v: string) => { t.setText(v); poser(); } };
+}
+
+/** « ⚡ 3 » avec la vraie icône d'énergie ; x, y = début du groupe, centré en hauteur. */
+export function coutEnergie(scene: Phaser.Scene, x: number, y: number, n: number, taille = 14, couleur = '#8fd3ff', profondeur = 1000, actif = true) {
+  const ic = scene.add.image(x + taille * 0.55, y, 'icone_energie').setDisplaySize(taille * 1.3, taille * 1.3).setDepth(profondeur).setAlpha(actif ? 1 : 0.45);
+  const t = scene.add.text(x + taille * 1.25, y, `${n}`, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: couleur })
+    .setOrigin(0, 0.5).setShadow(0, 1, '#000', 3, false, true).setDepth(profondeur);
+  return [ic, t] as const;
+}
 
 /** Charge les images d'interface et les planches des monstres demandés (une seule fois chacune). */
 export function chargerUi(scene: Phaser.Scene, ids: Iterable<string>) {
   for (const f of IMAGES_UI) if (!scene.textures.exists(f)) scene.load.image(f, `assets/ui/${f}.png`);
   // pierres d'invocation (images fournies par Mathis, 256 px) : elles remplacent les gemmes dessinées par le jeu
   for (const k of ['ame', 'parfaite', 'feu', 'eau', 'air', 'lumiere', 'legendaire', 'transcendante']) if (!scene.textures.exists(`pierre_${k}`)) scene.load.image(`pierre_${k}`, `assets/ui/pierres/${k}.webp`);
+  // icônes de ressources (images de Mathis, 256 px) ; « kamas_tas » = le tas de pièces
+  for (const k of ICONES) if (!scene.textures.exists(`icone_${k}`)) scene.load.image(`icone_${k}`, `assets/ui/icones/${k}.webp`);
+  if (!scene.textures.exists('kamas_tas')) scene.load.image('kamas_tas', 'assets/ui/icones/kamas.webp');
   // vignettes de tous les monstres (280 Ko) : les portraits n'ont pas besoin des planches (plusieurs Mo chacune)
   if (!scene.textures.exists('vignettes')) scene.load.atlas('vignettes', 'assets/ui/vignettes.webp', 'assets/ui/vignettes.json');
   for (const id of new Set(ids)) {
@@ -95,6 +123,19 @@ export function bouton(scene: Phaser.Scene, x: number, y: number, w: number, h: 
     else fond.on('pointerover', () => fond.setTint(0xcfe0c8)).on('pointerout', () => fond.clearTint());
   }
   return { fond, t, griser() { fond.disableInteractive().setAlpha(0.45); t.setAlpha(0.6); } };
+}
+
+/** Ajoute le coût en énergie (vraie icône) à droite du libellé d'un bouton ; renvoie les objets ajoutés. */
+export function coutBouton(scene: Phaser.Scene, b: { fond: { x: number; y: number }; t: Phaser.GameObjects.Text }, n: number) {
+  const taille = parseFloat(String(b.t.style.fontSize)) || 17;
+  const n0 = scene.add.text(0, b.fond.y, `${n}`, { fontFamily: POLICE, fontSize: `${taille}px`, fontStyle: '600', color: b.t.style.color as string })
+    .setOrigin(0, 0.5).setDepth(b.t.depth);
+  const ic = taille * 1.35, ecart = 14, large = b.t.width + ecart + ic + 2 + n0.width;
+  const x0 = b.fond.x - large / 2;
+  b.t.setOrigin(0, 0.5).setX(x0);
+  const img = scene.add.image(x0 + b.t.width + ecart + ic / 2, b.fond.y, 'icone_energie').setDisplaySize(ic, ic).setDepth(b.t.depth);
+  n0.setX(x0 + b.t.width + ecart + ic + 2);
+  return [img, n0] as const;
 }
 
 /** Bouton doré (cadre d'or de Dofus 3) pour les moments forts : invoquer, ouvrir un coffre, évoluer, onglet choisi. */

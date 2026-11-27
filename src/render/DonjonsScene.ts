@@ -3,12 +3,12 @@ import { bandeauPierre, chargerIdentite, decorVivant } from './identite';
 import { charger } from './sauvegarde';
 import type { Joueur } from '../sim/joueur';
 import { fiche } from '../sim/fiches';
-import { energie } from '../sim/energie';
+import { ENERGIE, energie } from '../sim/energie';
 import {
   CHANCES, DONJONS, NB_NIVEAUX, NIVEAUX, RUNES_NIVEAU, cleDonjon, donjonOuvert, niveauFini, niveauOuvert, niveauxFinis, nomZone, type Donjon,
 } from '../sim/donjons';
 import { SETS } from '../sim/runes';
-import { OR, POLICE, W, bouton, chargerUi, panneau, portrait, texte } from './ui';
+import { OR, POLICE, W, bouton, chargerUi, coutEnergie, panneau, plaqueRessource, portrait, texte } from './ui';
 
 /**
  * Donjons (maquette « Donjons : » 1C 2B 3C 4C 5C 6C 7A 8A) : comme le Donjon de Cairos de SW, un seul lieu,
@@ -50,7 +50,7 @@ export class DonjonsScene extends Phaser.Scene {
     for (const o of this.calque) o.destroy();
     this.calque = [];
     const j = this.joueur, now = Date.now();
-    this.g(texte(this, W - 16, 14, `⚡ ${energie(j, now)}`, 15, '#8fd3ff', true, 1, 0).setBackgroundColor('rgba(8,14,11,0.85)').setPadding(12, 7, 12, 7));
+    this.g(plaqueRessource(this, W - 16, 14, 'icone_energie', `${energie(j, now)} / ${ENERGIE.max}`, '#8fd3ff', 1).c);
 
     // liste des donjons
     DONJONS.forEach((d, i) => {
@@ -59,6 +59,9 @@ export class DonjonsScene extends Phaser.Scene {
       this.g(texte(this, 50, y + 14, d.nom, 16, ouvert ? '#ffffff' : '#8a9488', true, 0, 0));
       this.g(texte(this, 50, y + 40, d.sets.map((s) => SETS[s].dieu).join(', '), 12, ouvert ? OR : '#6f7a6c', false, 0, 0).setWordWrapWidth(280));
       this.g(texte(this, 50, y + 76, ouvert ? `${niveauxFinis(j, d)} / ${NB_NIVEAUX} niveaux` : d.boss ? `🔒 Finis ${nomZone(d.zone)} en Normal` : `🔒 Avec ${nomZone(d.zone)}, plus tard`, 12, '#93a89b', false, 0, 0));
+      // emblème du donjon (image de Mathis) ; les autres viendront
+      const em = `icone_symbole_${d.id}`;
+      if (this.textures.exists(em)) this.g(this.add.image(318, y + 54, em).setDisplaySize(66, 66).setDepth(1001).setAlpha(ouvert ? 1 : 0.4));
       f.setInteractive({ useHandCursor: true }).on('pointerdown', () => { this.donjon = d; this.niveau = 1; this.dessiner(); });
     });
     const sa = this.g(this.add.rectangle(30, 70 + 3 * 116, 330, 70, 0x0f1814, 0.7).setOrigin(0).setStrokeStyle(1.5, 0x3c4840).setDepth(1000));
@@ -91,7 +94,7 @@ export class DonjonsScene extends Phaser.Scene {
       this.g(texte(this, 490, y, `Boss ${'★'.repeat(b.etoiles)} niv. ${b.niveau}`, 13, ok ? '#ffcf4a' : '#5f6a5c', false, 0, 0.5));
       this.g(texte(this, 680, y, `Runes ${rmin === rmax ? rmin : `${rmin}-${rmax}`}★${n >= 8 ? ' Rare+' : ''}`, 13, ok ? '#d9b3ff' : '#5f6a5c', false, 0, 0.5));
       this.g(texte(this, 880, y, fini ? 'Fini' : ok ? 'Nouveau' : '🔒', 13, fini ? '#7fd05a' : ok ? '#ffe08a' : '#5f6a5c', true, 0, 0.5));
-      this.g(texte(this, 1000, y, `⚡${b.cout}`, 13, ok ? '#8fd3ff' : '#5f6a5c', true, 0, 0.5));
+      for (const o of coutEnergie(this, 996, y, b.cout, 13, ok ? '#8fd3ff' : '#5f6a5c', 1000, ok)) this.g(o);
       f.setInteractive({ useHandCursor: true }).on('pointerdown', () => { if (ok) { this.niveau = n; this.dessiner(); } else this.message(`Finis le niveau ${n - 1} pour ouvrir le niveau ${n}.`); });
     }
 
